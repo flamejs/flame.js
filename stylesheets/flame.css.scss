@@ -1,0 +1,819 @@
+//= require ./reset
+//= require ./mixins
+//= require_self
+//= require ./form_view
+
+@import "mixins";
+
+body {
+    font-size: 12px;
+    @include user-select(none);
+}
+
+.flame-view {
+    position: absolute;
+    cursor: default;
+    overflow: hidden;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    @include user-select(none);
+}
+
+.flame-border {
+    border: 1px solid #999;
+    border-radius: 2px;
+}
+
+.flame-label-view {
+}
+
+.is-selectable {
+    @include user-select(text);
+}
+
+.flame-button-view {
+    border: 1px solid #999;
+    border-radius: 4px;
+    @include gradient(#eeeeee, #cccccc);
+}
+
+.flame-button-view.is-hovered {
+    @include gradient(#f4f4f4, #d4d4d4);
+}
+
+.flame-button-view.is-default {
+    @include gradient(#77aae6, #5588c6);
+    @include inner-shadow(1px, #86beff);
+    border: 1px solid #426a9a;
+    color: #fff;
+    text-shadow: #426a9a 0 -1px;
+
+    &.is-active {
+        @include gradient(#5588c6, #77aae6);
+        border: 1px solid #426a9a;
+        color: #fff;
+    }
+
+    &.is-disabled {
+        @include no-box-shadow();
+        text-shadow: none;
+    }
+
+    &.is-hovered {
+        @include gradient(#82B3ED, #5588c6);
+    }
+}
+
+.flame-button-view.is-disabled, .flame-button-view.is-disabled:hover {
+    border: 1px solid #b3b3b3;
+    @include gradient(#eeeeee, #cccccc);
+    color: #888;
+}
+
+.flame-button-view.is-focused {
+    @include control-blur();
+}
+
+.flame-button-view.is-active {
+    border-color: #777 #999 #999 #777;
+    @include gradient(#bbbbbb, #dddddd);
+    color: black;
+}
+
+.flame-button-view.is-selected {
+    @include gradient(#77aae6, #5588c6);
+    color: #eee;
+}
+
+.flame-button-view label {
+    display: block;
+    text-align: center;
+    cursor: default;
+    overflow: hidden;
+    height: 100%;
+}
+
+.flame-button-view.flame-checkbox-view {
+    background-image: none;
+    @include no-gradient();
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+
+    &.is-selected {
+        .flame-checkbox-box {
+            @include gradient(#aacef9, #8ab2e6);
+            border: 1px solid #426a9a;
+        }
+
+        .flame-checkbox-checkmark {
+            display: inline;
+        }
+
+        &.is-active .flame-checkbox-box {
+            @include gradient(#77aae6, #5588c6);
+        }
+    }
+
+    &.is-active {
+        .flame-checkbox-box {
+            @include gradient(#eeeeee, #cdcdcd);
+        }
+    }
+
+    &.is-focused {
+        .flame-checkbox-box {
+            @include control-blur();
+        }
+    }
+
+    &.is-disabled {
+        @include no-gradient();
+        border: none;
+
+        .flame-checkbox-box {
+            @include no-gradient();
+            background: #EEE;
+        }
+    }
+
+    .flame-checkbox-box {
+        position: absolute;
+        border: 1px solid #888;
+        width: 12px;
+        height: 12px;
+        top: 4px;
+        left: 4px;
+        border-radius: 3px;
+        overflow: visible;
+    }
+
+    .flame-checkbox-checkmark {
+        display: none;
+        position: absolute;
+        z-index: 2;
+    }
+
+    .flame-checkbox-label {
+        text-align: left;
+        margin-left: 25px;
+        color: black;
+        padding-top: 1px;
+    }
+
+    &.flame-radio-button-view {
+        .flame-checkbox-box {
+            border-radius: 100px;
+        }
+        .flame-checkbox-checkmark {
+            background-color: #000;
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#888888', endColorstr='#000000');
+            background: -webkit-radial-gradient(left top, circle, #888, #000);
+            background: -moz-radial-gradient(top left,  circle, #888,  #000);
+            background: -ms-radial-gradient(top left,  circle, #888,  #000);
+            background: -o-radial-gradient(top left,  circle, #888,  #000);
+            border-radius: 100px;
+        }
+    }
+}
+
+.flame-select-button-view {
+    & label {
+        padding-left: 7px;
+        text-align: left;
+        font-size: 12px;
+    }
+
+    & div {
+        position: absolute;
+        top: 1px;
+        right: 1px;
+        bottom: 1px;
+        border: 1px #aaa;
+        border-left-style: solid;
+        font-size: 14px;
+        line-height: 13px;
+        padding: 0px 5px;
+        border-radius: 0px 3px 3px 0px;
+        @include gradient(#dddddd, #bbbbbb);
+    }
+}
+
+.flame-panel {
+    $panel-border-radius: 4px;
+    border: 1px solid #777;
+    border-radius: $panel-border-radius;
+    @include box-shadow(3, 3, 40, #555555);
+    @include gradient(#ffffff, #eeeeee);
+
+    .flame-panel-title {
+        font-size: 13px;
+        color: #333333;
+        margin: 0px;
+        border-radius: 3px 3px 0px 0px;
+        border: 1px #aaaaaa;
+        border-bottom-style: solid;
+        @include gradient(#eeeeee, #cccccc);
+        text-shadow: #efefef 0px 1px;
+    }
+}
+
+.flame-popover {
+    @include no-gradient();
+    @include no-box-shadow();
+    border: none;
+    overflow: visible;
+
+    .arrow {
+        position: relative;
+        z-index: 9999;
+
+        &.below {
+            width: 31px;
+            height: 15px;
+            top: -14px;
+        }
+
+        &.left {
+            height: 31px;
+            width: 15px;
+            left: 14px;
+        }
+
+        &.right {
+            height: 31px;
+            width: 15px;
+            left: -14px;
+        }
+
+        &.above {
+            width: 31px;
+            height: 15px;
+            top: 14px;
+        }
+    }
+
+    & > .flame-view { // The content view
+        background-color: #efefef;
+        border: 1px solid #9f9f9f !important;
+        border-radius: 4px;
+        @include box-shadow(0, 0, 10, rgba(50, 50, 50, 0.4));
+    }
+}
+
+.flame-modal-pane {
+}
+
+.flame-alert-panel {
+    .flame-alert-panel-title {
+        font-size: 16px;
+    }
+
+    .flame-label-view {
+        line-height: 18px;
+    }
+}
+
+.dim-background {
+     background-color: black;
+     @include opacity(0.15);
+}
+
+.flame-list-view {
+    overflow: auto;
+
+    & .flame-list-item-view.is-selected, & .flame-tree-item-view-container.is-selected {
+        color: #fff;
+        border-color: #5499c7;
+        font-weight: bold;
+        @include gradient(#b3bdd6, #8598b8);
+        text-shadow: #426a9a 0 1px;
+    }
+
+    &.is-focused .flame-list-item-view.is-selected, .is-dragged-clone .flame-list-item-view.is-selected, &.is-focused .flame-tree-item-view-container.is-selected, .is-dragged .flame-tree-item-view-container.is-selected {
+        @include gradient(#77aae6, #5588c6);
+        text-shadow: #426a9a 0 1px;
+    }
+
+    & .flame-list-item-view.is-dragged {
+        /* Does not combine with gradient in IE7/8 as they're both implemented through filter/-ms-filter attributes. */
+        @include opacity(0.3);
+    }
+
+    .is-dragged-clone .is-selected {
+        cursor: move !important;
+    }
+}
+
+.flame-list-item-view {
+    /*height: 16px;*/
+    padding: 3px 8px 3px 2px;
+    border: 1px #ccc;
+    overflow: hidden;
+    white-space: nowrap;
+    line-height: normal; /*this is to emulate pre-reset look, but this may be interpreted differently by browsers*/
+}
+
+.flame-list-item-view.flame-stack-item-view {
+    padding: 0px;
+}
+
+.flame-list-item-view.allow-reordering {
+    /*cursor: move;*/
+}
+
+.flame-tree-item-view {
+    &.flame-list-item-view {
+        padding: 0px;
+    }
+
+    @for $i from 0 through 6 {
+        &.level-#{$i + 1} .flame-tree-item-view-pad { padding-left: #{$i * 13}px; }
+    }
+
+    & .flame-tree-view-nested {
+        overflow: hidden;
+    }
+
+    .flame-tree-item-view-content {
+        margin-left: 13px;
+        padding: 3px 5px 1px 5px;
+        height: 16px;
+    }
+
+    .flame-tree-view-toggle {
+        float: left;
+        padding: 3px 3px 0px 4px;
+    }
+
+    .flame-tree-item-view-container {
+        &:hover .flame-tree-view-toggle span {
+            color: #27a;
+        }
+    }
+}
+
+.flame-horizontal-split-view {
+}
+
+.flame-split-view-divider {
+    border: 1px #a8a8a8;
+    border-style: none solid none solid;
+    @include horizontal-gradient(#f7f7f7, #d8d8d8);
+    cursor: ew-resize;
+    z-index: 10;
+}
+
+.flame-tab-view-tabs .flame-button-view {
+    position: static;
+    float: left;
+    padding: 0px 8px 2px 8px;
+    margin-left: 7px;
+    border-radius: 4px 4px 0px 0px;
+    -moz-border-radius: 4px 4px 0px 0px;
+    border-style: solid solid none solid;
+    font-weight: bold;
+    color: #555;
+
+    &.is-selected {
+        color: #fff;
+        border-color: #426a9a;
+        text-shadow: #426a9a 0 -1px;
+        @include inner-shadow(1px, #86beff);
+    }
+}
+
+.flame-tab-view-content {
+}
+
+.flame-border > .flame-border {
+    border: none;
+}
+
+.align-left {
+    text-align: left;
+}
+
+.align-right {
+    text-align: right;
+}
+
+.align-center {
+    text-align: center;
+}
+
+.flame-select-button-arrow {
+    position: absolute;
+    right: 6px;
+    top: 1px;
+}
+
+.flame-disclosure-view span {
+    font-size: 10px;
+    color: #777;
+}
+
+.flame-fullscreen-pane {
+    z-index: 40;
+    background-color: white;
+}
+
+.flame-fullscreen-close {
+    z-index: 99;
+    @include box-shadow(0, 0, 6, #ffffff);
+    position: fixed;
+}
+
+.flame-menu {
+    font-size: 12px;
+    border: 1px solid #bcbcbc;
+    @include box-shadow(0, 3, 16, rgba(0, 0, 0, 0.22));
+    $bgcolor: #FFFFFF;
+    @include no-gradient();
+    background-color: $bgcolor;
+
+
+    $padding: 5px;
+    padding-top: $padding;
+    padding-bottom: $padding;
+
+    .flame-menu-item-view.is-selected {
+        text-shadow: none;
+        font-weight: normal;
+        @include gradient(#77aae6, #5588c6);
+
+        &.is-disabled {
+            @include no-gradient();
+        }
+    }
+
+    .scroll-view-viewport {
+        overflow: hidden;
+    }
+
+    .scroll-view {
+        position: relative;
+        overflow: hidden;
+        background-color: $bgcolor;
+
+        .scroll-element {
+            z-index: 1;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-color: $bgcolor;
+            display: none;
+
+            &.is-shown {
+                display: block;
+                background-color: inherit;
+            }
+
+            &.scroll-up {
+                &.is-shown {
+                    background-image: image-url('images/triangle_up.png')
+                }
+            }
+
+            &.scroll-down {
+                &.is-shown {
+                    background-image: image-url('images/triangle_down.png')
+                }
+            }
+        }
+    }
+}
+
+.flame-menu-item-view {
+    position: relative;
+    background-color: white;
+    height: 21px; /* The same value should be given to MenuViews itemHeight property. */
+
+    &.is-disabled {
+        color: #aaa;
+
+        &.is-selected {
+            color: #aaa;
+        }
+
+        &.is-checked {
+            .title {
+                background: image-url('images/checkmark_grey.png') no-repeat 3px 3px !important;
+            }
+        }
+    }
+
+    &.is-selected {
+        color: white;
+
+        .menu-indicator.is-enabled {
+            background: image-url('images/triangle_right_white.png') no-repeat 50% 50%;
+        }
+    }
+
+    &.is-checked {
+        .title {
+            background: image-url('images/checkmark_grey.png') no-repeat 3px 3px;
+        }
+
+        &.is-selected {
+            .title {
+                background: image-url('images/checkmark_white.png') no-repeat 3px 3px;
+            }
+        }
+    }
+
+    .title {
+        padding-left: 18px;
+    }
+
+    .menu-indicator {
+        position: absolute;
+        right: 2px;
+        top: 0px;
+        width: 16px;
+        height: 100%;
+
+        &.is-enabled {
+          background: image-url('images/triangle_right.png') no-repeat 50% 50%;
+        }
+    }
+}
+
+.ember-view {
+    font-family: 'Lucida Sans', 'Lucida Grande', Verdana, Arial, sans-serif;
+}
+
+input[type="password"] {
+    font-family: 'Lucida Grande', 'Microsoft Sans Serif', sans-serif;
+}
+
+.flame-text {
+    overflow: visible;
+    padding-right: 6px;
+    padding-bottom: 2px;
+
+    & > input {
+        line-height: 21px;
+    }
+
+
+    & > textarea {
+        line-height: 16px;
+        padding-top: 2px;
+    }
+
+    & > input, & > textarea {
+        width: 100%;
+        height: 100%;
+        cursor: text;
+        resize: none;
+        padding-left: 2px;
+        padding-right: 2px;
+        border: 1px solid #acacac;
+        border-top: 1px solid #999;
+        @include inner-shadow(1px, #e1e1e1);
+        border-radius: 2px;
+        @include user-select(auto);
+        outline: none;
+
+        &.is-invalid {
+            background-color: pink;
+            @include inner-shadow(1px, #FAAFBE);
+        }
+
+        &.is-focused {
+            @include control-blur();
+            border-color: #448CD4 !important;
+        }
+
+        &.is-editable-label {
+            background-color: transparent;
+
+            border: 1px solid #ccc;
+            border-radius: 2px;
+
+            &.is-invalid {
+                background-color: pink;
+            }
+
+            &:hover, &:focus {
+                background-color: white;
+                border-color: #aaa;
+
+                &.is-invalid {
+                    background-color: pink;
+                }
+            }
+        }
+    }
+}
+
+.flame-search-field {
+    padding-right: 25px;
+
+    & > input {
+        background: image-url('images/search.png') no-repeat 4px 2px;
+        border-radius: 10px;
+        background-color: white;
+        padding-left: 21px;
+    }
+}
+
+.flame-progress-view {
+    .progress-container {
+        border: 1px solid #aaa;
+        border-radius: 3px;
+        background-color: white;
+    }
+
+    .progress-bar {
+        position: absolute;
+        border-radius: 2px;
+        top: 2px;
+        left: 2px;
+        @include gradient(#77aae6, #5588c6);
+    }
+}
+
+.flame-table-view {
+    line-height: normal;
+    font-size: 13px;
+
+    .table-corner {
+        background-color: #F5F5F5;
+        z-index: 2;
+        position: absolute;
+    }
+
+    .scrollable {
+        position: absolute;
+    }
+
+    a {
+        text-decoration: none;
+        color: black;
+        display: block;
+    }
+
+    tr {
+        height: 22px;
+        line-height: 20px;
+    }
+
+    td {
+        padding: 0;
+        padding-left: 2px;
+    }
+
+    div {
+        position: static;
+    }
+
+    div.resize-handle {
+        position: relative;
+        cursor: col-resize;
+        float: right;
+        width: 17px;
+        height: 21px;
+        left: 9px;
+        z-index: 2;
+    }
+
+    div.table-selection {
+        display: none;
+        border: 2px solid #6688EE;
+        padding-left: 2px;
+        position: absolute;
+        z-index: 2;
+        font-size: 12px;
+    }
+
+    div.read-only {
+        background-color: white;
+        line-height: 21px;
+        z-index: 3;
+        overflow: hidden;
+        white-space: nowrap;
+        @include user-select(text);
+    }
+
+    table {
+        table-layout: fixed;
+        border-spacing: 0px;
+        border-collapse: collapse;
+        margin: 0;
+        padding: 0;
+    }
+
+    .flame-table {
+        background-color: white;
+        @include user-select(none);
+
+        &.is-selectable {
+            @include user-select(auto);
+        }
+    }
+
+    .flame-table-data-view {
+        overflow: visible;
+
+        td {
+            box-sizing: border-box;
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            border: 1px solid #CFD6E3;
+            margin: 0; padding: 0;
+            padding-left: 2px;
+            padding-right: 2px;
+            line-height: 21px;
+
+            &.is-total {
+                background-color: #E9E9E9;
+                    &.is-double-total {
+                        background-color: #DDD;
+                    }
+            }
+            &.is-updating {
+                color: #D9D9D9;
+            }
+        }
+    }
+
+    .column-header {
+        .label {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        td {
+            overflow: visible;
+            border: 1px solid #366E6A;
+        }
+
+        tr {
+            &.level-1 td {
+                font-weight: bold;
+                @include gradient(#8BCFCA, #73C5C0);
+            }
+
+            &.level-2 td {
+                @include gradient(#ADE6E6, #98E0E0);
+            }
+
+            &.level-3 td {
+                background-color: #C9F0EF;
+            }
+        }
+    }
+
+    .row-header {
+        td {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            border: 1px solid #306082;
+        }
+
+        col {
+            &.level-1 {
+                font-weight: bold;
+                @include gradient(#7CB9E3, #55A4DB);
+            }
+
+            &.level-2 {
+                @include gradient(#8FC9ED, #7BC0EA);
+            }
+
+            &.level-3 {
+                background-color: #9FDBF8;
+            }
+        }
+    }
+
+    input {
+        border-radius: 0;
+        -moz-border-radius: 0;
+
+        &.invalid {
+            color: red;
+        }
+
+        &.table-edit-field {
+            font-size: 12px;
+            display: none;
+            border: none;
+            outline: none;
+            position: absolute;
+            z-index: 2;
+        }
+    }
+}
+
+.loading-indicator {
+    width : 16px;
+    height : 16px;
+}
+

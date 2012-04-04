@@ -1,0 +1,66 @@
+@mixin gradient($first, $second) {
+    background: $second;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($first)}', endColorstr='#{ie-hex-str($second)}');
+    background: -webkit-gradient(linear, left top, left bottom, from($first), to($second));
+    background: -moz-linear-gradient(top,  $first,  $second);
+}
+
+@mixin horizontal-gradient($first, $second) {
+    background: $second;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($first)}', endColorstr='#{ie-hex-str($second)}', GradientType=1);
+    background: -webkit-linear-gradient(left, $first, $second);
+    background: -moz-linear-gradient(left,  $first,  $second);
+}
+
+@mixin no-gradient() {
+    background: none;
+    filter: none;
+}
+
+@mixin opacity($opacity) {
+    opacity: $opacity;
+    filter: alpha(opacity = $opacity * 100);
+}
+
+@mixin box-shadow($xOffset, $yOffset, $blurRadius, $color) {
+    -moz-box-shadow: #{$xOffset}px #{$yOffset}px #{$blurRadius / 2}px $color;
+    -webkit-box-shadow: #{$xOffset}px #{$yOffset}px #{$blurRadius}px $color;
+}
+
+@mixin inner-shadow($size, $color) {
+    -moz-box-shadow: inset 0 $size 0 $color;
+    -webkit-box-shadow: inset 0 $size 0 $color;
+    box-shadow: inset 0 $size 0 $color;
+}
+
+@mixin no-box-shadow() {
+    -moz-box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+}
+
+@mixin control-blur() {
+    @include box-shadow(0, 0, 4, #0066cc);
+}
+
+@mixin border-radius($radius) {
+    border-radius: $radius;
+    -moz-border-radius: $radius;
+}
+
+@mixin user-select($user-select) {
+    // -ms-user-select is only supported in IE >= 10. See ie_user_select.js for workaround.
+    -ms-user-select: $user-select;
+    -webkit-user-select: $user-select;
+    -khtml-user-select: $user-select;
+    -o-user-select: $user-select;
+    user-select: $user-select;
+    @if $user-select == none {
+        -moz-user-select: -moz-none;
+    } @else if $user-select == auto {
+        -moz-user-select: text;
+    } @else {
+        -moz-user-select: $user-select;
+    }
+}
+
