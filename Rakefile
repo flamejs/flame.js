@@ -5,13 +5,14 @@ require 'uglifier'
 
 task :default => [:build]
 
-task :build do
+task :build => :clean do
   ENV['image_path'] ||= ''
 
   # Used by image-url in sass
   def image_path(image, options={})
     image_path = ENV['image_path'].dup
     image_path << '/' unless image_path =~ /(\/$)|(^$)/
+    image_path = '../' if image_path == ''
     "#{image_path}#{image}"
   end
   public :image_path
@@ -43,6 +44,10 @@ task :build do
 
   # Copy over images directory
   FileUtils.copy_entry('images', 'build/images')
+end
+
+task :clean do
+  FileUtils.rm_rf('build')
 end
 
 task :jshint do
