@@ -169,7 +169,7 @@ Flame.Panel = Flame.RootView.extend({
     },
 
     _focusDefaultInput: function() {
-        // Let SC render the element before we focus it
+        // Let Ember render the element before we focus it
         Ember.run.next(this, function() {
             var defaultFocus = this.firstDescendantWithProperty('isDefaultFocus');
             if (defaultFocus) { defaultFocus.becomeKeyResponder(); }

@@ -3,7 +3,7 @@
 //= require ../mixins/action_support
 //= require ./scroll_view
 
-/* Only to be used in Flame.MenuView. Represent menu items with normal JS objects as creation of one SC object took
+/* Only to be used in Flame.MenuView. Represent menu items with normal JS objects as creation of one Ember object took
  * 3.5 ms on fast IE8 machine.
  */
 Flame.MenuItem = function(opts) {

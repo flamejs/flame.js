@@ -74,7 +74,7 @@ Flame.ListViewDragHelper = Ember.Object.extend({
         this.set('clone', clone);
         this._updateCss();
 
-        // As the clone is not linked to any SC view, we have to add custom event handlers on it
+        // As the clone is not linked to any Ember view, we have to add custom event handlers on it
         var listView = this.get('listView');
         clone.mousemove(function(event) {
             listView.mouseMove.apply(listView, arguments);
@@ -388,3 +388,4 @@ Flame.ListViewDragHelper.Path = Ember.Object.extend({
         return true;
     }
 });
+

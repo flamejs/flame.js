@@ -28,8 +28,7 @@ Flame.Validator = Ember.Object.extend({
  *  You must provide a 'validations' hash, with the keys defining each property of your model to validate,
  *  and the values the validation logic.
  *
- *  The validation logic should be defined either as an SC validator class, a Flame validator singleton, an anonymous
- *  function, or a hash.
+ *  The validation logic should be defined either as a Flame validator singleton, an anonymous function, or a hash.
  *
  *  Validation is done on-demand, demand being the first call to foo.get("barIsValid") or foo.get("isValid").
  *  Thus we don't validate stuff that just goes to DataStore but only the thing we use and about whose validity we're
