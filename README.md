@@ -72,11 +72,11 @@ To ease this kind of problems, Flame.js includes the concept of a layout manager
 Flame.View.extend({
     layout: { width: 500, centerX: 0, centerY: 0 },
     layoutManager: Flame.VerticalStackLayoutManager.create({ topMargin: 5, spacing: 10, bottomMargin: 5 }),
-    childViews: ['view1', 'view2', ‘view3’],
+    childViews: ['view1', 'view2', 'view3'],
 
-    view1: Flame.LabelView.extend({value: ‘Label1’}),
-    view2: Flame.LabelView.extend({value: ‘Label2’}),
-    view3: Flame.LabelView.extend({value: ‘Label3’})
+    view1: Flame.LabelView.extend({value: 'Label1'}),
+    view2: Flame.LabelView.extend({value: 'Label2'}),
+    view3: Flame.LabelView.extend({value: 'Label3'})
 })
 ```
 
@@ -96,7 +96,7 @@ Using inline handlebars templates can be very handy in some cases. Especially fo
 ```javascript
 someView: Flame.View.extend({
     layout: { left: 20, top: 20, width: 400 },
-    handlebars: ‘Player {{player.name}} has {{player.points}} points’
+    handlebars: 'Player {{player.name}} has {{player.points}} points'
 })
 ```
 
@@ -132,7 +132,7 @@ If you want to listen for key events in general you can implement ```keyDown```,
 Flame.View.extend({
     acceptsKeyResponder: true,
     insertNewline: function(event) {
-        alert(‘Enter key was pressed’);
+        alert('Enter key was pressed');
         return true; // We handled the key event here, don’t pass it up to the parent view
     }
 })
