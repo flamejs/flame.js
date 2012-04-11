@@ -128,6 +128,16 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         },
 
         mouseUp: function(event) {
+            var owner = this.get('owner');
+            if (owner.get('type') === 'column') {
+                var resizeDelegate = owner.get('resizeDelegate');
+                if (resizeDelegate && resizeDelegate.columnResized) {
+                    var cell = owner.get('resizingCell');
+                    var width = parseInt(cell.css('width'), 10);
+                    var index = parseInt(cell.attr('data-leaf-index'), 10);
+                    resizeDelegate.columnResized(index, width);
+                }
+            }
             this.gotoState('idle');
             return true;
         }
@@ -139,11 +149,6 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         var table = this.get('childViews')[0];
         var width = parseInt(cell.css('width'), 10);
         var index = parseInt(cell.attr('data-leaf-index'), 10);
-        var resizeDelegate = this.get('resizeDelegate');
-        if (resizeDelegate && resizeDelegate.columnResized) {
-            resizeDelegate.columnResized(index, width);
-
-        }
         if (jQuery.browser.webkit || jQuery.browser.msie) { width += 4; }
         if (jQuery.browser.mozilla) { width -= 2; }
         table.updateColumnWidth(index, width);
@@ -186,7 +191,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         if (!headers) {
             return; // Nothing to render
         }
-        // HomeView panel label
+
         if (this.getPath('content.title')) {
             buffer = buffer.push('<div class="panel-title">%@</div>'.fmt(this.getPath('content.title')));
             didRenderTitle = true;
@@ -196,24 +201,23 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         var columnHeaderRows = this.getPath('contentAdapter.columnHeaderRows');
         var rowHeaderRows = this.getPath('contentAdapter.rowHeaderRows');
         var columnHeaderHeight = columnHeaderRows.maxDepth * 21 + 1 + columnHeaderRows.maxDepth;
-        // XXX What is this? Why does column WIDTH affect row HEIGHT?
-        var rowHeight = rowHeaderRows.maxDepth * defaultColumnWidth + 1 + (isSimpleTable ? 5 : 0);
+        var leftOffset = rowHeaderRows.maxDepth * defaultColumnWidth + 1 + (isSimpleTable ? 5 : 0);
         var topOffset = didRenderTitle ? 18 : 0;
 
         if (!isSimpleTable) {
             // Top left corner of the headers
-            buffer = buffer.push('<div class="table-corner" style="top: %@px; left: 0px; height: %@px; width: %@px;"></div>'.fmt(topOffset, columnHeaderHeight, defaultColumnWidth));
+            buffer = buffer.push('<div class="table-corner" style="top: %@px; left: 0px; height: %@px; width: %@px;"></div>'.fmt(topOffset, columnHeaderHeight, leftOffset));
             // Column headers
-            buffer = this._renderHeader(buffer, 'column', rowHeight, defaultColumnWidth);
+            buffer = this._renderHeader(buffer, 'column', leftOffset, defaultColumnWidth);
             topOffset += columnHeaderHeight;
         }
         // Row headers
         buffer = this._renderHeader(buffer, 'row', topOffset, defaultColumnWidth);
 
         // Scrollable div
-        buffer = buffer.begin('div').attr('style', 'overflow: auto; bottom: 0px; top: %@px; left: %@px; right: 0px;'.fmt(topOffset, rowHeight));
+        buffer = buffer.begin('div').attr('style', 'overflow: auto; bottom: 0px; top: %@px; left: %@px; right: 0px;'.fmt(topOffset, leftOffset));
         buffer = buffer.attr('class', 'scrollable');
-        // There should really only be one child view, the CubeTableDataView
+        // There should really only be one child view, the TableDataView
         this.forEachChildView(function(view) {
             view.renderToBuffer(buffer);
         });
