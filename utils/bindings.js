@@ -8,8 +8,13 @@ Ember.mixin(Ember.Binding.prototype, {
 
     // If value evaluates to true, return trueValue, otherwise falseValue
     transformTrueFalse: function(trueValue, falseValue) {
-        return this.transform(function(value, binding) {
-            return value ? trueValue : falseValue;
+        return this.transform({
+            to: function(value) {
+                return value ? trueValue : falseValue;
+            },
+            from: function(value) {
+                return !!(value === trueValue);
+            }
         });
     },
 
