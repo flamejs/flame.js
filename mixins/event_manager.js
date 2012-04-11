@@ -1,4 +1,4 @@
-Ember.View.reopen({
+var eventHandlers = {
     interpretKeyEvents: function(event) {
         var mapping = event.shiftKey ? Flame.MODIFIED_KEY_BINDINGS : Flame.KEY_BINDINGS;
         var eventName = mapping[event.keyCode];
@@ -30,7 +30,10 @@ Ember.View.reopen({
             return this.get('parentView').handleKeyEvent(event, view);
         }
     }
-});
+};
+
+Ember.View.reopen(eventHandlers);
+Ember.TextSupport.reopen(eventHandlers);
 
 Flame.KEY_BINDINGS = {
     8: 'deleteBackward',
