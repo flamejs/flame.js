@@ -7,5 +7,5 @@
 //= require ./repeater
 //= require ./validations
 
-window.Flame = Ember.Object.create({});
+window.Flame = Ember.Namespace.create({});
 
