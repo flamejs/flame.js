@@ -44,7 +44,7 @@ Flame.View = Ember.ContainerView.extend(Flame.LayoutSupport, Flame.EventManager,
     init: function() {
         this._super();
 
-        // There's a 'gotcha' in SC2 that we need to work around here: an Ember.View does not have child views in the sense
+        // There's a 'gotcha' in Ember that we need to work around here: an Ember.View does not have child views in the sense
         // that you cannot define them yourself. But when used with a handlebars template, Ember.View uses child views
         // internally to keep track of dynamic portions in the template so that they can be updated in-place in the DOM.
         // The template rendering process adds this kind of child views on the fly. The problem is that we need to extend
