@@ -62,7 +62,7 @@ Flame.View.extend({
 
 The layout can include properties ‘left’, ‘right’, ‘top’, ‘bottom’, ‘width’, ‘height’, ‘centerX’, ‘centerY’. Only some combinations of these are valid - for example, if you define left and right, you shouldn’t define width. Each of these should either be an integer, which is interpreted as a pixel value, or a string like ‘50%’. It can also be a property path, in which case a binding to that property will be used as the coordinate. (Contrary to normal practices, you should not use a ‘Binding’ suffix in this case, but just the normal coordinate name, e.g. left: ‘leftProperty’.)
 
-If you don’t define a layout for a view at all, it normally defaults to { left: 0, top: 0, bottom: 0, right: 0 }, except for ButtonViews, LabelViews and TextFieldViews. For ButtonViews the default is { left: 0, top: 0, right: 0, height: 24 }, for LabelViews and TextFieldViews it’s { left: 0, top: 0, width: 200, height: 22 }.
+If you don’t define a layout for a view at all, it defaults to { left: 0, top: 0, bottom: 0, right: 0 }. If you define a layout, but no height or bottom, a default height of 24 is used for ButtonViews, 22 for LabelViews and TextFieldViews. Similarly, a default width of 200 is used for LabelViews, TextFieldViews and TextAreaViews.
 
 ## Using Layout Managers
 
