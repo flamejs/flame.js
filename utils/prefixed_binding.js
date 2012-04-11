@@ -112,9 +112,14 @@ Flame.reopen({
         var bindingPropertyName = propertyName + 'Binding';
 
         while (!Ember.none(cur)) {
-            if (cur.hasOwnProperty(propertyName) ||
-                cur.constructor.prototype.hasOwnProperty(propertyName) ||
-                cur.get(bindingPropertyName)) {
+            // It seems that earlier (at least 0.9.4) the constructor of the view contained pleothra of properties,
+            // but nowadays (at least 0.9.6) the properties are there throughout the prototype-chain ant not in the
+            // last prototype. Thus testing whether current objects prototype has the property does not give correct
+            // results.
+            // So we check if the current object has the property (perhaps some of its prototypes has it) or it has
+            // a binding for the property and in case it has, this object is the target of our binding.
+            if (typeof Ember.get(cur, propertyName) !== "undefined"
+                    || typeof Ember.get(cur, bindingPropertyName) !== "undefined") {
                 return path.reverse().join('.');
             }
             path.push('parentView');

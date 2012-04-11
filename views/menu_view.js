@@ -142,8 +142,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
                 // Push strings to rendering buffer with one pushObjects call so we don't get one arrayWill/DidChange
                 // per menu item.
                 var tempArr = items.map(function(menuItem) { return menuItem.renderToElement(); });
-                var alreadyRenderedChildren = renderingBuffer.get('childBuffers');
-                alreadyRenderedChildren.pushObjects(tempArr);
+                renderingBuffer.push(tempArr.join(''));
             }
         });
     },
