@@ -123,7 +123,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             if (event.metaKey) { return false; }
             if (key.match(/[a-zA-Z0-9+*\-\[\/\=]/)) {
                 var owner = this.get('owner');
-                owner.set('editValue', '');
+                owner.set('editValue', key);
                 this.startEdit();
                 return true;
             }
@@ -447,15 +447,6 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
     isCellSelectable: function(cell) {
         return cell && cell[0] && cell[0].nodeName === 'TD';
-    },
-
-    keyPress: function(event) {
-        if (this.interpretKeyEvents(event)) {
-            return true;
-        } else {
-            this.invokeStateMethod('keyPress', event);
-            return false;
-        }
     },
 
     updateColumnWidth: function(index, width) {
