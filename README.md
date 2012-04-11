@@ -13,6 +13,8 @@ A [starter kit](https://github.com/flamejs/flame-starter-kit/zipball/master) is 
 
 The starter kit is a simple static application that you can start hacking with. In most real projects, you're probably going to need some build tools and a backend server, but Flame.js is agnostic to all those. The starter kit also includes all of Flame’s dependencies.
 
+You can play around with Flame in your browser with this [jsFiddle](http://jsfiddle.net/nv25J/1/).
+
 For a bit more extensive example, see the [address book application](https://github.com/flamejs/flame-address-book).
 
 
