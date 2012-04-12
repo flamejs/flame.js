@@ -23,7 +23,7 @@ Flame.FullscreenSupport = {
             layout: { right: 3, top: 3, width: 24, height: 24 },
             classNames: ['flame-fullscreen-close'],
             // XXX image support in ButtonView?
-            handlebars: "<img style='margin: 3px;' src='%@'>".fmt(Flame.image('full_screen_off.png')),
+            handlebars: "<img style='margin: 3px;' src='%@'>".fmt(Flame.image('fullscreen_off.png')),
             action: function() {
                 this.getPath('owner').exitFullscreen();
             }
