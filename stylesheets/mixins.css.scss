@@ -65,15 +65,15 @@
 }
 
 @mixin vertically-aligned() {
-  display: -webkit-box;
-  -webkit-box-pack: end;
-  -webkit-box-orient:vertical;
+    display: -webkit-box;
+    -webkit-box-pack: end;
+    -webkit-box-orient:vertical;
 
-  display: -moz-box;
-  -moz-box-pack: end;
-  -moz-box-orient:vertical;
+    display: -moz-box;
+    -moz-box-pack: end;
+    -moz-box-orient:vertical;
 
-  display: box;
-  box-pack: end;
-  box-orient:vertical;
+    display: box;
+    box-pack: end;
+    box-orient:vertical;
 }
