@@ -77,7 +77,8 @@ Flame.View = Ember.ContainerView.extend(Flame.LayoutSupport, Flame.EventManager,
         }
     },
 
-    template: function() {
+    template: function(property_name, value) {
+        if (property_name == "template" && value !== undefined) return value;
         var str = this.get('handlebars');
         return str ? this._compileTemplate(str) : null;
     }.property('templateName', 'handlebars').cacheable(),

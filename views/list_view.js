@@ -20,6 +20,15 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
     initialState: 'idle',
     reorderDelegate: null,
 
+    temViewClass: Flame.ListItemView.extend({
+        contentBinding: "*content",
+        templateContext: Ember.computed(function(key, value) {
+            return value !== undefined ? value : get(this, 'content');
+        }).cacheable(),
+        templateBinding: "parentView.template",
+        handlebars: "{{title}}"
+    }),
+
     selectIndex: function(index) {
         if (!this.get('allowSelection')) return false;
         var content = this.get('content');
