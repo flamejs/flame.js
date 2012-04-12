@@ -13,7 +13,7 @@ Ember.mixin(Ember.Binding.prototype, {
                 return value ? trueValue : falseValue;
             },
             from: function(value) {
-                return !!(value === trueValue);
+                return value === trueValue;
             }
         });
     },

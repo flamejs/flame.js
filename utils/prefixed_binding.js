@@ -118,8 +118,7 @@ Flame.reopen({
             // results.
             // So we check if the current object has the property (perhaps some of its prototypes has it) or it has
             // a binding for the property and in case it has, this object is the target of our binding.
-            if (typeof Ember.get(cur, propertyName) !== "undefined"
-                    || typeof Ember.get(cur, bindingPropertyName) !== "undefined") {
+            if (typeof Ember.get(cur, propertyName) !== "undefined" || typeof Ember.get(cur, bindingPropertyName) !== "undefined") {
                 return path.reverse().join('.');
             }
             path.push('parentView');
