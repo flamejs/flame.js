@@ -34,8 +34,10 @@ body {
 
 .flame-button-view {
     border: 1px solid #999;
+    border-bottom-color: #888;
     border-radius: 4px;
     @include gradient(#eeeeee, #cccccc);
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
 }
 
 .flame-button-view.is-hovered {
