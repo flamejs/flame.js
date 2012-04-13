@@ -20,11 +20,11 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
     initialState: 'idle',
     reorderDelegate: null,
 
-    temViewClass: Flame.ListItemView.extend({
+    itemViewClass: Flame.ListItemView.extend({
         contentBinding: "*content",
-        templateContext: Ember.computed(function(key, value) {
-            return value !== undefined ? value : get(this, 'content');
-        }).cacheable(),
+        templateContext: function(key, value) {
+            return value !== undefined ? value : Ember.get(this, 'content');
+        }.property().cacheable(),
         templateBinding: "parentView.template",
         handlebars: "{{title}}"
     }),
