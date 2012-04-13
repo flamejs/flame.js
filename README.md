@@ -25,22 +25,22 @@ For a bit more extensive example, see the [address book application](https://git
 
 All Flame.js widgets have been designed to be binding-friendly. If you’re familiar with Ember.js, using the widgets to build your application should feel very natural.
 
-The most notable widgets are:
+The most notable widgets are (we've provided jsfiddle examples for some of them to illustrate what they do and how you can use them):
 
  * Button view
  * Label view
  * Text field view
  * Checkbox view
  * Radio button view
- * Select button view
- * Menu view
+ * Select button view ([jsfiddle](http://jsfiddle.net/2UDGa/))
+ * Menu view ([jsfiddle](http://jsfiddle.net/Np9YM/))
  * Progress view
- * Tab view
- * List view
- * Tree view
- * Table view
- * Panel view (a popup panel)
- * Popover view (a popup with an arrow)
+ * Tab view ([jsfiddle](http://jsfiddle.net/ZpenK/))
+ * List view ([jsfiddle](http://jsfiddle.net/ptsDD/))
+ * Tree view ([jsfiddle](http://jsfiddle.net/u8xdC/))
+ * Table view ([jsfiddle](http://jsfiddle.net/6wLr7/))
+ * Panel ([jsfiddle](http://jsfiddle.net/qUBQg/))
+ * Popover ([jsfiddle](http://jsfiddle.net/qUBQg/))
 
 
 ## Layouting
