@@ -33,7 +33,7 @@ The most notable widgets are (we've provided jsfiddle examples for some of them 
  * Checkbox view
  * Radio button view
  * Select button view ([jsfiddle](http://jsfiddle.net/2UDGa/))
- * Menu view ([jsfiddle](http://jsfiddle.net/Np9YM/))
+ * Menu view ([jsfiddle](http://jsfiddle.net/k6AT4/))
  * Progress view
  * Tab view ([jsfiddle](http://jsfiddle.net/ZpenK/))
  * List view ([jsfiddle](http://jsfiddle.net/ptsDD/))
