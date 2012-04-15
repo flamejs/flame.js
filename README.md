@@ -16,7 +16,7 @@ The starter kit is a simple static application that you can start hacking with. 
 You can play around with Flame in your browser with this [jsFiddle](http://jsfiddle.net/nv25J/1/).
 
 We've given a presentation about Ember and Flame at frontend.fi on April
-11th 2012 which can be found [here](https://github.com/downloads/flamejs/flame.js/ember_flame_final.key).
+11th 2012, slides can be found [here](https://github.com/downloads/flamejs/flame.js/ember_flame_final.pdf).
 
 For a bit more extensive example, see the [address book application](https://github.com/flamejs/flame-address-book).
 
