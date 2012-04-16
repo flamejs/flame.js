@@ -41,6 +41,7 @@ The most notable widgets are (we've provided jsfiddle examples for some of them 
  * Table view ([jsfiddle](http://jsfiddle.net/6wLr7/))
  * Panel ([jsfiddle](http://jsfiddle.net/qUBQg/))
  * Popover ([jsfiddle](http://jsfiddle.net/qUBQg/))
+ * FormView ([jsfiddle](http://jsfiddle.net/NeqX4/))
 
 
 ## Layouting
