@@ -1,6 +1,0 @@
-Ember.mixin(Flame, {
-    image: function(imageUrl) {
-        return (typeof FlameImageUrlPrefix === 'undefined' ? <%= "'#{ ENV['image_path'] && !ENV['image_path'].empty? ? ENV['image_path'].gsub(/(\w)\/?$/, "\\1") << "/images/" : "images/"}'" %> : FlameImageUrlPrefix) + imageUrl;
-    }
-});
-
