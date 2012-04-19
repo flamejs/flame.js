@@ -108,6 +108,78 @@ someView: Flame.View.extend({
 
 The rule is that if a Flame view has handlebars property defined, then that is used as the content of the view, and possible childViews array is ignored. If there’s no handlebars property defined, then the childViews array is consulted instead.
 
+## Validations
+
+You can mix in `Flame.Validatable` into any object to enable on-the-fly
+validation. Validations are specified with the `validations`
+property. The object will then have the `isValid` property which you can
+observe or bind to.
+
+```javascript
+App.Person = Ember.Object.extend(Flame.Validatable, {
+    firstName: '',
+    lastName: '',
+    age: 0,
+
+    validations: {
+        firstName: Flame.Validator.notBlank,
+        lastName: Flame.Validator.notBlank,
+        age: Flame.Validator.number
+    }
+});
+
+App.Person.create({ firstName: 'John', lastName: '' }).get('isValid'); // => false
+```
+
+The FormView can use validations to indicate validity of form elements as shown [here](http://jsfiddle.net/NeqX4/).
+
+### Built-in validations
+
+Flame comes with a few often used validators ready for you to use:
+
+ * Flame.Validator.notBlank
+ * Flame.Validator.email
+ * Flame.Validator.number
+ * Flame.Validator.association
+
+You can also use validators to validate a single value:
+
+```javascript
+Flame.Validator.email.validateValue('john.doe@example.com');
+```
+
+### Creating your own Validator
+
+You can create your own validator by creating a new `Flame.Validator`
+instance which needs to override the `validate` method.
+The `validate` method takes two arguments, the first is an Ember Object,
+the second is the name of the property on the given Ember Object that
+needs to be validated.
+
+```javascript
+App.positiveNumberValidator = Flame.Validator.create({
+    validate: function(target, key) {
+        var number = target.get(key);
+        return number > 0;
+    }
+});
+```
+
+### Using a function as a validation
+
+Instead of creating a `Flame.Validator`, you can also provide a
+function that validates the value right in the `validations` property.
+
+```javascript
+App.Person = Ember.Object.extend(Flame.Validatable, {
+    validations: {
+        age: function(value) {
+            return value > 0;
+        }
+    }
+});
+```
+
 ## Event Manager
 
 ### Key events
