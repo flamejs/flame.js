@@ -233,14 +233,13 @@ body {
 
         &.below {
             width: 31px;
-            height: 15px;
+            height: 16px;
             top: -14px;
         }
 
         &.left {
             height: 31px;
             width: 15px;
-            left: 14px;
         }
 
         &.right {
@@ -252,7 +251,6 @@ body {
         &.above {
             width: 31px;
             height: 15px;
-            top: 14px;
         }
     }
 
@@ -260,7 +258,8 @@ body {
         background-color: #efefef;
         border: 1px solid #9f9f9f !important;
         border-radius: 4px;
-        @include box-shadow(0, 0, 10, rgba(50, 50, 50, 0.4));
+        -webkit-box-shadow: 0px 0px 10px rgba(50, 50, 50, 0.4), inset 0 1px #FFF;
+        -moz-box-shadow: 0px 0px 5px rgba(50, 50, 50, 0.4), inset 0 1px #FFF;
     }
 }
 

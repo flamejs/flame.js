@@ -108,9 +108,9 @@ Flame.Panel = Flame.RootView.extend({
             if (position & Flame.POSITION_MIDDLE) {
                 layout.left = layout.left - (layout.width / 2) + (anchorElement.outerWidth() / 2);
             }
-        } else if (position & Flame.POSITION_RIGHT) {
+        } else if (position & (Flame.POSITION_RIGHT | Flame.POSITION_LEFT)) {
             layout.top = offset.top;
-            layout.left = offset.left + anchorElement.outerWidth();
+            layout.left = offset.left + ((position & Flame.POSITION_RIGHT) ? anchorElement.outerWidth() : -layout.width);
             if (position & Flame.POSITION_MIDDLE) {
                 layout.top = layout.top - (layout.height / 2) + (anchorElement.outerHeight() / 2);
             }

@@ -13,14 +13,18 @@ Flame.Popover = Flame.Panel.extend({
     _positionArrow: function() {
         var anchor = this.get('anchor');
         var position = this.get('position');
+        var arrow = this.$('img.arrow');
         var offset = anchor.offset();
         var arrowOffset;
         if (position & (Flame.POSITION_ABOVE | Flame.POSITION_BELOW)) {
             arrowOffset = offset.left + (anchor.outerWidth() / 2) - parseInt(this.$().css('left').replace('px', ''), 10) - 15;
-            this.$('img.arrow').css({ left: arrowOffset + 'px' });
+            arrow.css({ left: arrowOffset + 'px' });
         } else {
             arrowOffset = offset.top + (anchor.outerHeight() / 2) - parseInt(this.$().css('top').replace('px', ''), 10) - 15;
-            this.$('img.arrow').css({ top: arrowOffset + 'px' });
+            arrow.css({ top: arrowOffset + 'px' });
+            if (position & Flame.POSITION_LEFT) {
+                arrow.css({ left: this.getPath('layout.width') - 1 + 'px' });
+            }
         }
     },
 
@@ -38,7 +42,7 @@ Flame.Popover = Flame.Panel.extend({
             this.set('arrowPosition', 'below');
             this.set('image', Flame.image('arrow_up.png'));
         } else if (position & Flame.POSITION_LEFT) {
-            layout.right += 15;
+            layout.left -= 15;
             this.set('arrowPosition', 'left');
             this.set('image', Flame.image('arrow_right.png'));
         } else if (position & Flame.POSITION_RIGHT) {
