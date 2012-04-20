@@ -196,7 +196,6 @@ To listen for key events, you can implement the following methods:
  * moveUp
  * moveRight
  * moveDown
- * deleteForwar
  * deleteForward
  * insertBacktab
  * moveLeftAndModifySelection
