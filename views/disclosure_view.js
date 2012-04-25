@@ -6,11 +6,11 @@ Flame.DisclosureView = Flame.LabelView.extend({
     imageExpanded: Flame.image('disclosure_triangle_down.png'),
     imageCollapsed: Flame.image('disclosure_triangle_left.png'),
 
-    button: function() {
+    image: function() {
         return this.get('visibilityTarget') ? this.get('imageExpanded') : this.get('imageCollapsed');
     }.property('visibilityTarget', 'imageExpanded', 'imageCollapsed'),
 
-    handlebars: '<img {{bindAttr src="button"}}> {{value}}',
+    handlebars: '<img {{bindAttr src="image"}}> {{value}}',
 
     action: function() {
         var value = this.getPath('visibilityTarget');
