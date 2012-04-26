@@ -10,7 +10,9 @@ Flame.CollectionView =  Ember.CollectionView.extend(Flame.LayoutSupport, Flame.E
                 // (https://github.com/emberjs/ember.js/issues/233)
                 ensureEmptyViewRemoval: function() {
                     if (!this.get('parentView')) {
-                        Ember.run.next(this, 'remove');
+                        Ember.run.next(this, function() {
+                            if (!this.get('isDestroyed')) this.remove();
+                        });
                     }
                 }.observes('parentView')
             });
