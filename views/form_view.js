@@ -28,11 +28,6 @@ Flame.FormView = Flame.View.extend({
 
     _errorViews: [],
 
-    yesNoItems: [
-        {title: 'Yes', value: true},
-        {title: 'No', value: false}
-    ],
-
     init: function() {
         this._super();
 
@@ -69,13 +64,16 @@ Flame.FormView = Flame.View.extend({
         if (Ember.none(descriptor.label)) {
             return this._createChildViewWithLayout(control, this, this.get('leftMargin') + this._focusRingMargin, this.get('rightMargin') + this._focusRingMargin);
         }
+        if (descriptor.type === 'checkbox') {
+            return this._createChildViewWithLayout(control, this, this.get('leftMargin') + this.labelWidth + this.columnSpacing - 4, this._focusRingMargin);
+        }
 
         var view = {
             layout: { left: this.get('leftMargin'), right: this.get('rightMargin') },
             layoutManager: Flame.VerticalStackLayoutManager.create({ topMargin: this._focusRingMargin, spacing: 0, bottomMargin: this._focusRingMargin }),
             childViews: ['label', 'control'],
 
-            isVisible: descriptor.get('isVisible') || true,
+            isVisible: descriptor.get('isVisible') === undefined ? true : descriptor.get('isVisible'),
 
             label: this._buildLabel(descriptor),
             control: function () {
@@ -248,6 +246,9 @@ Flame.FormView = Flame.View.extend({
                     return val === null ? '' : val;
                 }}));
             case 'checkbox':
+                settings.title = descriptor.label;
+                settings.isSelectedBinding = settings.valueBinding;
+                delete settings.valueBinding;
                 return Flame.CheckboxView.extend(settings);
             case 'select':
                 settings.itemValueKey = descriptor.itemValueKey || "value";
@@ -260,11 +261,6 @@ Flame.FormView = Flame.View.extend({
                     settings.items = descriptor.options;
                 }
                 return Flame.SelectButtonView.extend(settings);
-            case 'yesno':
-                settings.itemTitleKey = "title";
-                settings.itemValueKey = "value";
-                settings.items = this.get('yesNoItems');
-                return Flame.SelectButtonView.extend(settings);
         }
         throw 'Invalid control type %@'.fmt(type);
     },
@@ -272,5 +268,4 @@ Flame.FormView = Flame.View.extend({
     willDestroyElement: function() {
         this._errorViews.forEach(function(e) { e.remove(); });
     }
-
 });
