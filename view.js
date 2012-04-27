@@ -34,7 +34,7 @@ Flame.reopen({
     FOCUS_RING_MARGIN: 3
 });
 
-// Base class for Flame views. Can be used to hold child views or render a template. In SC2, you normally either use
+// Base class for Flame views. Can be used to hold child views or render a template. In Ember, you normally either use
 // Ember.View for rendering a template or Ember.ContainerView to render child views. But we want to support both here, so
 // that we can use e.g. Flame.ListItemView for items in list views, and the app can decide whether to use a template or not.
 Flame.View = Ember.ContainerView.extend(Flame.LayoutSupport, Flame.EventManager, {
