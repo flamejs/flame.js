@@ -6,6 +6,7 @@
 Flame.TextFieldView = Flame.View.extend(Flame.ActionSupport, {
     classNames: ['flame-text'],
     childViews: ['textField'],
+    acceptsKeyResponder: true,
 
     layout: { left: 0, top: 0 },
     defaultHeight: 22,

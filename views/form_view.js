@@ -9,7 +9,6 @@ Flame.FormView = Flame.View.extend({
 
     defaultTarget: null,
     object: null,
-    properties: [],
 
     leftMargin: 20,
     rightMargin: 20,
@@ -23,10 +22,7 @@ Flame.FormView = Flame.View.extend({
     buttonWidth: 90,
     controlWidth: null,// set this if you want to force a set control width
     defaultFocus: null,
-    buttons: [],
     _focusRingMargin: 3,
-
-    _errorViews: [],
 
     yesNoItems: [
         {title: 'Yes', value: true},
@@ -41,6 +37,9 @@ Flame.FormView = Flame.View.extend({
             spacing: this.get('rowSpacing'),
             bottomMargin: this.get('bottomMargin')
         }));
+
+        this.set('_errorViews', []);
+        this.set('controls', []);
 
         this._propertiesDidChange();
     },
@@ -184,6 +183,40 @@ Flame.FormView = Flame.View.extend({
         };
     },
 
+    _performTab: function(direction) {
+        var view = Flame.keyResponderStack.current();
+        // Text fields and text areas wrap around their Ember equivalent (which have the actual keyResponder status)
+        if (view instanceof Ember.TextField || view instanceof Ember.TextArea) {
+            view = view.get('parentView');
+        }
+        // XXX it would be better to cache this, but since it's only a temporary solution and because it's fast
+        // enough even in IE8, it's not worth the effort.
+        // Collect all controls that can have keyResponder status
+        var controls = this.get('childViews').mapProperty('childViews').flatten().filter(function(view) {
+            return view.get('acceptsKeyResponder') && view.get('isVisible');
+        });
+        // Pick out the next or previous control
+        var index = controls.indexOf(view);
+        index += direction;
+        if (index < 0) {
+            controls.objectAt(controls.get('length') - 1).becomeKeyResponder();
+        } else if (index === controls.get('length')) {
+            controls.objectAt(0).becomeKeyResponder();
+        } else {
+            controls.objectAt(index).becomeKeyResponder();
+        }
+    },
+
+    insertTab: function() {
+        this._performTab(1);
+        return true;
+    },
+
+    insertBacktab: function() {
+        this._performTab(-1);
+        return true;
+    },
+
     _buildControl: function(descriptor) {
         var property = descriptor.get('property');
         var object = this.get('object');
@@ -192,7 +225,7 @@ Flame.FormView = Flame.View.extend({
             valueBinding: '^object.%@'.fmt(property),
             // FIXME: this is required instead of just .not() because isValid properties are initially null
             isValidBinding: Ember.Binding.from('^object.%@IsValid'.fmt(property)).transform(function(v) {
-                //Allow for undefined/null values when the fooIsValid property is not defined
+                // Allow for undefined/null values when the fooIsValid property is not defined
                 return v !== false;
             })
         };
@@ -272,5 +305,4 @@ Flame.FormView = Flame.View.extend({
     willDestroyElement: function() {
         this._errorViews.forEach(function(e) { e.remove(); });
     }
-
 });
