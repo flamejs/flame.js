@@ -4,6 +4,7 @@ Flame.TextAreaView = Flame.View.extend({
     layout: { left: 0, top: 0 },
     defaultHeight: 20,
     defaultWidth: 200,
+    acceptsKeyResponder: true,
 
     value: '',
     placeholder: null,

@@ -41,6 +41,7 @@
 
 @mixin control-blur() {
     @include box-shadow(0, 0, 4, #0066cc);
+    border-color: #448CD4\9 !important; // IE only hack
 }
 
 @mixin border-radius($radius) {
