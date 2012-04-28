@@ -6,6 +6,7 @@
 //= require ./view
 //= require ./repeater
 //= require ./validations
+//= require ./version
 
 window.Flame = Ember.Namespace.create({});
 
