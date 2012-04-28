@@ -1,5 +1,5 @@
 /*
- Converts height, width, left, right,top, bottom, centerX and centerY 
+ Converts height, width, left, right,top, bottom, centerX and centerY
  to a layout hash used in Flame.View
 */
 function handleLayoutHash(hash) {
@@ -11,9 +11,8 @@ function handleLayoutHash(hash) {
 }
 
 /*
- Usage: 
+ Usage:
    {{flameView Flame.ButtonView top=10 bottom=20 title="Save"}}
-
 */
 Ember.Handlebars.registerHelper('flameView', function(path, options) {
     ember_assert("The view helper only takes a single argument", arguments.length <= 2);
@@ -23,11 +22,10 @@ Ember.Handlebars.registerHelper('flameView', function(path, options) {
         path = "Flame.View";
     }
     var hash = options.hash;
-    
+
     hash.layout = handleLayoutHash(hash);
 
     Ember.Handlebars.ViewHelper.helper(this, path, options);
-
 });
 
 /*
@@ -135,7 +133,7 @@ Ember.Handlebars.registerHelper("tableView", function(path){
     });
 
     path.data.view.appendChild(view);
-});  
+});
 
 Ember.Handlebars.registerHelper('column', function(path) {
     var columns = path.data.columns;
@@ -144,3 +142,4 @@ Ember.Handlebars.registerHelper('column', function(path) {
 
     columns.pushObject(hash);
 });
+
