@@ -11,7 +11,8 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     columnHeader: null, // the column header table element
     tableCorner: null,
 
-    isSimpleTable: false,
+    renderColumnHeader: true,
+    renderRowHeader: true,
     isRowHeaderClickable: true,
     isResizable: true,
     allowSelection: false,
@@ -184,7 +185,8 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
 
     render: function(buffer) {
         this._renderElementAttributes(buffer);
-        var isSimpleTable = this.get('isSimpleTable');
+        var renderColumnHeader = this.get('renderColumnHeader');
+        var renderRowHeader = this.get('renderRowHeader');
         var didRenderTitle = false;
 
         var headers = this.getPath('contentAdapter.headers');
@@ -201,18 +203,23 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         var columnHeaderRows = this.getPath('contentAdapter.columnHeaderRows');
         var rowHeaderRows = this.getPath('contentAdapter.rowHeaderRows');
         var columnHeaderHeight = columnHeaderRows.maxDepth * 21 + 1 + columnHeaderRows.maxDepth;
-        var leftOffset = rowHeaderRows.maxDepth * defaultColumnWidth + 1 + (isSimpleTable ? 5 : 0);
+        var leftOffset = 0;
+        if (renderRowHeader) {
+            leftOffset = rowHeaderRows.maxDepth * defaultColumnWidth + 1 + (renderColumnHeader ? 0 : 5);
+        }
         var topOffset = didRenderTitle ? 18 : 0;
 
-        if (!isSimpleTable) {
+        if (renderColumnHeader) {
             // Top left corner of the headers
             buffer = buffer.push('<div class="table-corner" style="top: %@px; left: 0px; height: %@px; width: %@px;"></div>'.fmt(topOffset, columnHeaderHeight, leftOffset));
             // Column headers
             buffer = this._renderHeader(buffer, 'column', leftOffset, defaultColumnWidth);
             topOffset += columnHeaderHeight;
         }
-        // Row headers
-        buffer = this._renderHeader(buffer, 'row', topOffset, defaultColumnWidth);
+        if (renderRowHeader) {
+            // Row headers
+            buffer = this._renderHeader(buffer, 'row', topOffset, defaultColumnWidth);
+        }
 
         // Scrollable div
         buffer = buffer.begin('div').attr('style', 'overflow: auto; bottom: 0px; top: %@px; left: %@px; right: 0px;'.fmt(topOffset, leftOffset));
@@ -290,7 +297,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                 buffer = buffer.attr('data-index', i);
                 // Mark the leafIndex, so when sorting its trivial to find the correct field to sort by
                 buffer = buffer.attr('data-leaf-index', header.leafIndex);
-                if (this.get("isResizable") && !this.get('isSimpleTable')) {
+                if (this.get('isResizable') && this.get('renderColumnHeader')) {
                     buffer = buffer.push('<div class="resize-handle">&nbsp;</div>');
                 }
 
@@ -302,7 +309,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                 label += '</div>';
             } else if (type === 'row') {
                 buffer = buffer.attr('data-index', depth % this.getPath('content.rowLeafs').length);
-                if (!this.get('isSimpleTable')) {
+                if (this.get('renderColumnHeader')) {
                     if (this.get("isResizable")) {
                         if (header.hasOwnProperty('children')) {
                             buffer = buffer.push('<div class="resize-handle" style="height: %@px"></div>'.fmt(header.children.length * 21));
