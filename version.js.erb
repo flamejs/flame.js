@@ -1,2 +1,1 @@
-Flame.VERSION = '<%= `git describe --always --dirty --tags`.gsub("\n", '') %>';
-
+Flame.VERSION = '<%= `git describe --always --dirty --tags`.gsub("\n", '').gsub(/^v/, '') %>';
