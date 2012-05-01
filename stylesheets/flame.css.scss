@@ -367,6 +367,7 @@ body {
 .flame-vertical-split-view {
   .flame-split-view-divider {
     border-style: solid none solid none;
+    @include vertical-gradient(#f7f7f7, #d8d8d8);
     cursor: ns-resize;
   }
 }
