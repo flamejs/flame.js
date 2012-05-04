@@ -12,6 +12,13 @@
     background: -moz-linear-gradient(left,  $first,  $second);
 }
 
+@mixin vertical-gradient($first, $second) {
+    background: $second;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($first)}', endColorstr='#{ie-hex-str($second)}', GradientType=0);
+    background: -webkit-linear-gradient(top, $first, $second);
+    background: -moz-linear-gradient(top,  $first,  $second);
+}
+
 @mixin no-gradient() {
     background: none;
     filter: none;
