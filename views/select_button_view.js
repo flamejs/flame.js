@@ -54,6 +54,7 @@ Flame.SelectButtonView = Flame.ButtonView.extend({
             subMenuKey: this.get('subMenuKey'),
             itemsBinding: 'selectButtonView.items',
             valueBinding: 'selectButtonView.value',
+            minWidth: this.getPath('layout.width') || this.$().width(),
             close: function() {
                 self.gotoState('idle');
                 this._super();
