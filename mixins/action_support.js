@@ -15,9 +15,8 @@ Flame.ActionSupport = {
     payload: null,
 
     fireAction: function(action, payload) {
-        var target = this.get('target') || null;
+        var target = this.get('target') || this;
 
-        if (!target) { target = this; }
         while ('string' === typeof target) {  // Use a while loop: the target can be a path gives another path
             if (target.charAt(0) === '.') {
                 target = this.getPath(target.slice(1));  // If starts with a dot, interpret relative to this view
@@ -28,7 +27,7 @@ Flame.ActionSupport = {
         if (action === undefined) { action = this.get('action'); }
 
         if (action) {
-            var actionFunction = 'function' === typeof action ? action : target[action];
+            var actionFunction = 'function' === typeof action ? action : Ember.get(target, action);
             if (!actionFunction) throw 'Target %@ does not have action %@'.fmt(target, action);
             return actionFunction.call(target, payload || this.get('payload') || this, action, this);
         }

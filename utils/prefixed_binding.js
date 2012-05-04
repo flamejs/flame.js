@@ -113,7 +113,7 @@ Flame.reopen({
 
         while (!Ember.none(cur)) {
             // It seems that earlier (at least 0.9.4) the constructor of the view contained pleothra of properties,
-            // but nowadays (at least 0.9.6) the properties are there throughout the prototype-chain ant not in the
+            // but nowadays (at least 0.9.6) the properties are there throughout the prototype-chain and not in the
             // last prototype. Thus testing whether current objects prototype has the property does not give correct
             // results.
             // So we check if the current object has the property (perhaps some of its prototypes has it) or it has
