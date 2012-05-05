@@ -32,7 +32,15 @@ Flame.Popover = Flame.Panel.extend({
         anchor = anchor instanceof jQuery ? anchor : anchor.$();
         this.set('anchor', anchor);
         this.set('position', position);
+
         var layout = this._super(anchor, position);
+        if (layout.moved) {
+            // If the popover did not fit the viewport on one side, try to position it on the other side
+            position ^= Flame.POSITION_LEFT | Flame.POSITION_RIGHT;
+            layout = this._super(anchor, position);
+            this.set('position', position);
+        }
+
         if (position & Flame.POSITION_ABOVE) {
             layout.top -= 15;
             this.set('arrowPosition', 'above');
@@ -63,4 +71,3 @@ Flame.Popover = Flame.Panel.extend({
         this._super(anchor, position | Flame.POSITION_MIDDLE);
     }
 });
-

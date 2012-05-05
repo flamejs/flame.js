@@ -261,7 +261,6 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         enterState: function() {
             var owner = this.get('owner');
             var selectedCell = owner.get('selectedCell');
-            var position = selectedCell.position();
             var dataCell = owner.get('selectedDataCell');
             var editCell = owner.get('editField');
             var scrollable = owner.getPath('parentView.scrollable');
