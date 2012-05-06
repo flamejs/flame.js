@@ -48,10 +48,8 @@ Flame.TableController = Ember.Object.extend({
             for (var i = 0; i < length; i++) {
                 cell = dataBatch[i];
                 index = mapping[cell.path.row][cell.path.column];
-                if (rowLeafs[index[0]].isTotal || columnLeafs[index[1]].isTotal) {
-                    cell.isTotal = true;
-                    cell.isDoubleTotal = rowLeafs[index[0]].isTotal && columnLeafs[index[1]].isTotal;
-                }
+                cell.rowHeaderParams = rowLeafs[index[0]].params;
+                cell.columnHeaderParams = columnLeafs[index[1]].params;
                 cell = fields[index[valuesOn === 'row' ? 0 : 1]].createCell(cell);
                 _data[index[0]][index[1]] = cell;
                 dirtyCells.push(index);
