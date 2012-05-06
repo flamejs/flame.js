@@ -197,7 +197,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             var owner = this.get('owner');
             var selection = owner.get('selection');
             var dataCell = owner.get('selectedDataCell');
-            var readOnlyValue = owner.editableValue(dataCell);
+            var readOnlyValue = owner.editableValue(dataCell, true);
             selection.html(readOnlyValue);
             selection.addClass('read-only');
         },
@@ -340,12 +340,12 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         return this.get('data')[selectedCell.parent().attr('data-index')][selectedCell.attr('data-index')];
     }.property(),
 
-    editableValue: function(dataCell) {
+    editableValue: function(dataCell, readOnly) {
         var editValue = this.get('editValue');
         if (editValue !== null) {
             return editValue;
         } else {
-            editValue = dataCell.editableValue();
+            editValue = readOnly ? dataCell.formattedValue() : dataCell.editableValue();
             return !Ember.none(editValue)? editValue : '';
         }
     },
