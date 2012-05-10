@@ -486,10 +486,11 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                 cellWidth = columnLeafs[j].get('render_width') || defaultCellWidth;
                 if (jQuery.browser.mozilla) cellWidth -= 5;
 
-                buffer.push('<td data-index="%@" class="%@" style="width: %@px;">%@</td>'.fmt(
+                buffer.push('<td data-index="%@" class="%@" style="width: %@px;" %@>%@</td>'.fmt(
                         j,
                         (cssClassesString + (j % 2 === 0 ? " even-col" : " odd-col")),
                         cellWidth,
+                        (cell ? 'title="%@"'.fmt(cell.titleValue()) : ''),
                         (cell ? cell.formattedValue() : '<span style="color: #999">...</span>')));
             }
             buffer.push("</tr>");
@@ -508,8 +509,12 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         this.manipulateCells(this.get('dirtyCells'), function(cell, element, isEvenColumn) {
             var cssClassesString = (cell ? cell.cssClassesString() : "") + (isEvenColumn ? " even-col" : " odd-col");
             var formattedValue = cell.formattedValue();
+            var titleValue = cell.titleValue();
             element.className = cssClassesString;
             element.innerHTML = Ember.none(formattedValue) ? "" : formattedValue;
+            if (titleValue) {
+                element.title = titleValue;
+            }
         }, ++this._updateCounter);
     }.observes('dirtyCells'),
 
