@@ -75,6 +75,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     itemHeight: 21,
     /* Margin between the menu and top/bottom of the viewport. */
     menuMargin: 12,
+    minWidth: null, // Defines minimum width of menu
     items: [],
     parentMenu: null,
     value: null,
@@ -91,6 +92,20 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     init: function() {
         this._super();
         this._needToRecreateItems();
+    },
+
+    _calculateMenuWidth: function() {
+        var items = this.get("items");
+        if (Ember.get(items, 'length') === 0) {
+            return;
+        }
+        var itemTitleKey = this.get("itemTitleKey");
+        var allTitles = items.reduce(function(currentTitles, item) {
+            var nextTitle = Ember.get(item, itemTitleKey);
+            return currentTitles + nextTitle + '<br/>';
+        }, '');
+        // Give the menus a 16px breathing space to account for sub menu indicator, and to give some right margin
+        return Flame.measureString(allTitles, 'ember-view flame-view flame-list-item-view flame-menu-item-view', 'title').width + 16;
     },
 
     _createMenuItems: function() {
@@ -235,6 +250,8 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
             needScrolling = true;
         }
         layout.set("height", menuOuterHeight);
+        var menuWidth = Math.max(this.get('minWidth') || 0, this._calculateMenuWidth());
+        layout.set("width", menuWidth);
         this.set("layout", layout);
         this.get("contentView").set("needScrolling", needScrolling);
     },
