@@ -271,7 +271,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                 // No special editor, use one of the defaults
                 if (options) { // Drop down menu for fields with a fixed set of options
                     var menu = Flame.MenuView.create({
-                        layout: { width: 220 },
+                        minWidth: selectedCell.outerWidth(),
                         parent: owner, // Reference to the cube table view
                         items: options.map(function(o) {
                             return {
@@ -361,7 +361,6 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         }
         var selection = this.get('selection');
         var scrollable = this.getPath('parentView.scrollable');
-        var dataCell = this.get('selectedDataCell');
 
         var position = selectedCell.position();
         var scrollTop = scrollable.scrollTop();

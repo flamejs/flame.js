@@ -59,7 +59,6 @@ Flame.MenuItem = function(opts) {
  *
  */
 Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
-    layout: { width: 200 },
     classNames: ['flame-menu'],
     childViews: ['contentView'],
     contentView: Flame.ScrollView,
@@ -244,14 +243,16 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
                 layout.set("top", wh - (menuOuterHeight + margin));
             }
         } else {
-            //Constrain menu height
+            // Constrain menu height
             menuOuterHeight = wh - 2 * margin;
             layout.set("top", margin);
             needScrolling = true;
         }
         layout.set("height", menuOuterHeight);
-        var menuWidth = Math.max(this.get('minWidth') || 0, this._calculateMenuWidth());
-        layout.set("width", menuWidth);
+        if (!layout.width) {
+            var menuWidth = Math.max(this.get('minWidth') || 0, this._calculateMenuWidth());
+            layout.set("width", menuWidth);
+        }
         this.set("layout", layout);
         this.get("contentView").set("needScrolling", needScrolling);
     },
