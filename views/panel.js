@@ -76,12 +76,10 @@ Flame.Panel = Flame.RootView.extend({
     }),
 
     resizeView: Flame.View.extend(Flame.Statechart, {
-        layout: { bottom: 0, right: 0, height: 16, width: 16 },
+        layout: { bottom: 3, right: 3, height: 16, width: 16 },
         classNames: ['flame-resize-thumb'],
         isVisibleBinding: '^isResizable',
         initialState: 'idle',
-        minHeightBinding: '$minHeight',
-        minWidthBinding: '$minWidth',
 
         idle: Flame.State.extend({
             mouseDown: function(event) {
@@ -101,11 +99,12 @@ Flame.Panel = Flame.RootView.extend({
         resizing: Flame.State.extend({
             mouseMove: function(event) {
                 var owner = this.get('owner');
+                var parentView = owner.get('parentView');
                 var newW = owner._startW + (event.pageX - owner._pageX);
                 var newH = owner._startH + (event.pageY - owner._pageY);
-                newW = Math.max(owner.get('minWidth'), newW);  // Minimum panel width
-                newH = Math.max(owner.get('minHeight'), newH);  // Minimum panel height: title bar plus this "thumb"
-                owner.get('parentView').$().css({width: newW, height: newH });
+                newW = Math.max(parentView.get('minWidth'), newW);  // Minimum panel width
+                newH = Math.max(parentView.get('minHeight'), newH);  // Minimum panel height: title bar plus this "thumb"
+                parentView.$().css({width: newW, height: newH });
                 return true;
             },
             mouseUp: Flame.State.gotoHandler('idle')
