@@ -110,7 +110,7 @@ Flame.Panel = Flame.RootView.extend({
             },
             mouseUp: Flame.State.gotoHandler('idle')
         })
-    })
+    }),
 
     // This is the pane that's used to obscure the background if isModal === true
     modalPane: function() {
