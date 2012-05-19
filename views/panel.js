@@ -9,7 +9,7 @@ Flame._zIndexCounter = 100;
 // panel instance, set destroyOnClose: false.
 Flame.Panel = Flame.RootView.extend({
     classNames: ['flame-panel'],
-    childViews: ['titleView', 'contentView'],
+    childViews: ['titleView', 'contentView', 'resizeView'],
     destroyOnClose: true,
     acceptsKeyResponder: true,
     isModal: true,
@@ -18,6 +18,11 @@ Flame.Panel = Flame.RootView.extend({
     dimBackground: true,
     title: null,
     isShown: false,
+    // make isResizable true to allow panel to be resized by the user
+    isResizable: false,
+    // Default minimum size for the resized panel
+    minHeight: 52,
+    minWidth: 100,
 
     _keyResponderOnPopup: undefined,
 
@@ -64,6 +69,43 @@ Flame.Panel = Flame.RootView.extend({
                 newX = Math.max(5, Math.min(newX, Ember.$(window).width() - element.outerWidth() - 5));  // Constrain inside window
                 newY = Math.max(5, Math.min(newY, Ember.$(window).height() - element.outerHeight() - 5));
                 element.css({left: newX, top: newY, right: '', bottom: '', marginLeft: '', marginTop: ''});
+                return true;
+            },
+            mouseUp: Flame.State.gotoHandler('idle')
+        })
+    }),
+
+    resizeView: Flame.View.extend(Flame.Statechart, {
+        layout: { bottom: 0, right: 0, height: 16, width: 16 },
+        classNames: ['flame-resize-thumb'],
+        isVisibleBinding: '^isResizable',
+        initialState: 'idle',
+        minHeightBinding: '$minHeight',
+        minWidthBinding: '$minWidth',
+
+        idle: Flame.State.extend({
+            mouseDown: function(event) {
+                var owner = this.get('owner');
+                var panelElement = owner.get('parentView').$();
+                if (!owner.getPath('parentView.isResizable')) {
+                    return true;
+                }
+                owner._pageX = event.pageX;
+                owner._pageY = event.pageY;
+                owner._startW = panelElement.outerWidth();
+                owner._startH = panelElement.outerHeight();
+                this.gotoState('resizing');
+                return true;
+            }
+        }),
+        resizing: Flame.State.extend({
+            mouseMove: function(event) {
+                var owner = this.get('owner');
+                var newW = owner._startW + (event.pageX - owner._pageX);
+                var newH = owner._startH + (event.pageY - owner._pageY);
+                newW = Math.max(owner.get('minWidth'), newW);  // Minimum panel width
+                newH = Math.max(owner.get('minHeight'), newH);  // Minimum panel height: title bar plus this "thumb"
+                owner.get('parentView').$().css({width: newW, height: newH });
                 return true;
             },
             mouseUp: Flame.State.gotoHandler('idle')

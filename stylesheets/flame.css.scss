@@ -220,6 +220,10 @@ body {
         @include gradient(#eeeeee, #cccccc);
         text-shadow: #efefef 0px 1px;
     }
+
+    .flame-resize-thumb {
+        background-image: image-url('images/resize_thumb.png');
+    }
 }
 
 .flame-popover {
