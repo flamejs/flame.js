@@ -406,7 +406,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             return true;
         } else if (dataCell.validate(newValue)) {
             var cellUpdateDelegate = this.get('cellUpdateDelegate');
-            ember_assert('No cellUpdateDelegate set!', !!cellUpdateDelegate);
+            Ember.assert('No cellUpdateDelegate set!', !!cellUpdateDelegate);
 
             var index = [rowIndex, columnIndex];
             if (cellUpdateDelegate.cellUpdated(dataCell, newValue, index)) {

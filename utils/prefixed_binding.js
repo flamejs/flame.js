@@ -83,7 +83,7 @@ Flame.reopen({
                     } else {
                         prefix = this._lookupPathToProperty(view, property);
                     }
-                    ember_assert("Property '%@' was not found!".fmt(property), !Ember.none(prefix));
+                    Ember.assert("Property '%@' was not found!".fmt(property), !Ember.none(prefix));
 
                     var finalPath = prefix + suffix;
                     var newBinding = new Ember.Binding(binding._to, finalPath);

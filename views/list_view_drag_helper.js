@@ -194,7 +194,7 @@ Flame.ListViewDragHelper = Ember.Object.extend({
         // XXX very ugly
         var currentElement = this.isTree() ? draggedElement.children(this.reorderCssClass).first() : draggedElement;
         var startIndex = itemElements.index(currentElement);
-        ember_assert('Start element not found', startIndex >= 0);
+        Ember.assert('Start element not found', startIndex >= 0);
 
         var cloneTop = this.clone.offset().top;
         var cloneBottom = cloneTop + this.clone.outerHeight();

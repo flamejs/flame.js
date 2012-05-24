@@ -58,7 +58,7 @@ Flame.LayoutSupport = {
     },
 
     _renderElementAttributes: function(buffer) {
-        ember_assert('Layout support has not yet been initialized!', !!this._layoutSupportInitialized);
+        Ember.assert('Layout support has not yet been initialized!', !!this._layoutSupportInitialized);
         if (!this.get('useAbsolutePosition')) return;
 
         var layout = this.get('layout') || {};
@@ -159,7 +159,7 @@ Flame.LayoutSupport = {
 
     // Can be used to adjust one property in the layout. Updates the DOM automatically.
     adjustLayout: function(property, value, increment) {
-        ember_assert('Layout support has not yet been initialized!', !!this._layoutSupportInitialized);
+        Ember.assert('Layout support has not yet been initialized!', !!this._layoutSupportInitialized);
 
         var layout = this.get('layout');
         var oldValue = layout[property];
@@ -178,7 +178,7 @@ Flame.LayoutSupport = {
 
     // Call this method to update the DOM to reflect the layout property, without recreating the DOM element
     updateLayout: function() {
-        ember_assert('Layout support has not yet been initialized!', !!this._layoutSupportInitialized);
+        Ember.assert('Layout support has not yet been initialized!', !!this._layoutSupportInitialized);
 
         if (this.get('useAbsolutePosition')) {
             var cssLayout = this._translateLayout(this.get('layout') || {});

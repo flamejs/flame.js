@@ -17,7 +17,7 @@ Flame.HorizontalSplitView = Flame.View.extend({
     _resizeStartRightWidth: undefined,
 
     init: function() {
-        ember_assert('Flame.HorizontalSplitView needs leftView and rightView!', !!this.get('leftView') && !!this.get('rightView'));
+        Ember.assert('Flame.HorizontalSplitView needs leftView and rightView!', !!this.get('leftView') && !!this.get('rightView'));
         this._super();
 
         if (this.get('flex') === 'right') this.rightWidth = undefined;

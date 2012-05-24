@@ -231,7 +231,7 @@ Flame.SortingArrayProxy = Ember.ArrayProxy.extend({
     // TODO might be useful to make the replacing more fine-grained?
     _sortAndReplaceContent: function(newContent) {
         var content = this.get('content');
-        ember_assert('Must pass a copy of content, sorting the real content directly bypasses array observers!', content !== newContent);
+        Ember.assert('Must pass a copy of content, sorting the real content directly bypasses array observers!', content !== newContent);
 
         this._sort(newContent);
         this._withObserversSuppressed(function() {

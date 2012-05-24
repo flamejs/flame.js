@@ -27,7 +27,7 @@ Flame.Panel = Flame.RootView.extend({
     _keyResponderOnPopup: undefined,
 
     init: function() {
-        ember_assert('Flame.Panel needs a contentView!', !!this.get('contentView'));
+        Ember.assert('Flame.Panel needs a contentView!', !!this.get('contentView'));
         this._super();
     },
 
@@ -156,7 +156,7 @@ Flame.Panel = Flame.RootView.extend({
                 layout.top = layout.top - (layout.height / 2) + (anchorElement.outerHeight() / 2);
             }
         } else {
-            ember_assert('Invalid position for panel', false);
+            Ember.assert('Invalid position for panel', false);
         }
 
         // Make sure the panel is still within the viewport horizontally ...
