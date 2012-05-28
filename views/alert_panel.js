@@ -2,6 +2,7 @@
 //= require ./panel
 //= require ./label_view
 //= require ./button_view
+//= require ./text_area_view
 
 Flame.AlertPanel = Flame.Panel.extend();
 
@@ -17,29 +18,69 @@ Flame.AlertPanel.reopen({
     allowClosingByClickingOutside: false,
     allowMoving: true,
     isCancelVisible: true,
+    isConfirmVisible: true,
+    isCloseable: true,
     title: '',
     message: '',
+    details: '',
     cancelButtonTitle: 'Cancel',
     confirmButtonTitle: 'OK',
+    detailsButtonTitle: 'Show details',
+    closeButtonTitle: 'Close',
 
     contentView: Flame.View.extend({
         layout: { left: 15, right: 15, top: 36, bottom: 15 },
-        childViews: 'iconView messageView cancelButtonView okButtonView'.w(),
+        childViews: 'iconView messageView detailsButtonView cancelButtonView okButtonView'.w(),
 
         iconView: Flame.ImageView.extend({
             layout: { left: 10, top: 10 },
-            valueBinding: 'parentView.parentView.icon'
+            valueBinding: '^icon'
         }),
 
         messageView: Flame.LabelView.extend({
             layout: { left: 75, top: 10, right: 2, bottom: 30 },
-            valueBinding: 'parentView.parentView.message'
+            valueBinding: '^message'
+        }),
+
+        detailsPanelView: Flame.Panel.extend({
+            layout: { centerX: 0, centerY: -25, width: 800, height: 500 },
+            dimBackground: false,
+            contentView: Flame.View.extend({
+                layout: { left: 15, right: 15, top: 36, bottom: 15 },
+                childViews: 'textAreaView closeButtonView'.w(),
+                textAreaView: Flame.TextAreaView.extend({
+                    layout: { left: 10, top: 10, right: 10, bottom: 30 },
+                    valueBinding: '^details'
+                    // TODO: readOnly: true
+                }),
+                closeButtonView: Flame.ButtonView.extend({
+                    layout: { width: 90, bottom: 2, right: 2 },
+                    titleBinding: '^closeButtonTitle',
+                    action: function() {
+                        this.getPath('parentView.parentView').close();
+                    }
+                })
+            })
+        }),
+
+        detailsButtonView: Flame.ButtonView.extend({
+            layout: { width: 180, bottom: 2, left: 2 },
+            titleBinding: '^detailsButtonTitle',
+            isVisibleBinding: SC.Binding.bool('^details'),
+            detailsBinding: '^details',
+            closeButtonTitleBinding: '^closeButtonTitle',
+            action: function() {
+                this.getPath('parentView.detailsPanelView').create({
+                    details: this.get('details'),
+                    closeButtonTitle: this.get('closeButtonTitle')
+                }).popup();
+            }
         }),
 
         cancelButtonView: Flame.ButtonView.extend({
             layout: { width: 90, bottom: 2, right: 110 },
-            titleBinding: 'parentView.parentView.cancelButtonTitle',
-            isVisibleBinding: 'parentView.parentView.isCancelVisible',
+            titleBinding: '^cancelButtonTitle',
+            isVisibleBinding: '^isCancelVisible',
             action: function() {
                 this.getPath('parentView.parentView').onCancel();
             }
@@ -47,11 +88,13 @@ Flame.AlertPanel.reopen({
 
         okButtonView: Flame.ButtonView.extend({
             layout: { width: 90, bottom: 2, right: 2 },
-            titleBinding: 'parentView.parentView.confirmButtonTitle',
+            titleBinding: '^confirmButtonTitle',
+            isVisibleBinding: '^isConfirmVisible',
             isDefault: true,
             action: function() {
                 this.getPath('parentView.parentView').onConfirm();
             }
+
         })
     }),
 
@@ -62,12 +105,12 @@ Flame.AlertPanel.reopen({
 
     // override this to actually do something when user clicks OK
     onConfirm: function() {
-        this.close();
+        if (this.get('isCloseable')) this.close();
     },
 
     // override this to actually do something when user clicks Cancel
     onCancel: function() {
-        this.close();
+        if (this.get('isCloseable')) this.close();
     }
 });
 
