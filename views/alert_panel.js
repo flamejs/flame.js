@@ -17,6 +17,8 @@ Flame.AlertPanel.reopen({
     allowClosingByClickingOutside: false,
     allowMoving: true,
     isCancelVisible: true,
+    isConfirmVisible: true,
+    isCloseable: true,
     title: '',
     message: '',
     cancelButtonTitle: 'Cancel',
@@ -28,18 +30,18 @@ Flame.AlertPanel.reopen({
 
         iconView: Flame.ImageView.extend({
             layout: { left: 10, top: 10 },
-            valueBinding: 'parentView.parentView.icon'
+            valueBinding: '^icon'
         }),
 
         messageView: Flame.LabelView.extend({
             layout: { left: 75, top: 10, right: 2, bottom: 30 },
-            valueBinding: 'parentView.parentView.message'
+            valueBinding: '^message'
         }),
 
         cancelButtonView: Flame.ButtonView.extend({
             layout: { width: 90, bottom: 2, right: 110 },
-            titleBinding: 'parentView.parentView.cancelButtonTitle',
-            isVisibleBinding: 'parentView.parentView.isCancelVisible',
+            titleBinding: '^cancelButtonTitle',
+            isVisibleBinding: '^isCancelVisible',
             action: function() {
                 this.getPath('parentView.parentView').onCancel();
             }
@@ -47,7 +49,8 @@ Flame.AlertPanel.reopen({
 
         okButtonView: Flame.ButtonView.extend({
             layout: { width: 90, bottom: 2, right: 2 },
-            titleBinding: 'parentView.parentView.confirmButtonTitle',
+            titleBinding: '^confirmButtonTitle',
+            isVisibleBinding: '^isConfirmVisible',
             isDefault: true,
             action: function() {
                 this.getPath('parentView.parentView').onConfirm();
@@ -62,12 +65,12 @@ Flame.AlertPanel.reopen({
 
     // override this to actually do something when user clicks OK
     onConfirm: function() {
-        this.close();
+        if (this.get('isClosable')) this.close();
     },
 
     // override this to actually do something when user clicks Cancel
     onCancel: function() {
-        this.close();
+        if (this.get('isClosable')) this.close();
     }
 });
 
