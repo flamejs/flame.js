@@ -65,12 +65,12 @@ Flame.AlertPanel.reopen({
 
     // override this to actually do something when user clicks OK
     onConfirm: function() {
-        if (this.get('isClosable')) this.close();
+        if (this.get('isCloseable')) this.close();
     },
 
     // override this to actually do something when user clicks Cancel
     onCancel: function() {
-        if (this.get('isClosable')) this.close();
+        if (this.get('isCloseable')) this.close();
     }
 });
 
