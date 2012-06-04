@@ -362,27 +362,24 @@ body {
 }
 
 .flame-horizontal-split-view {
-  .flame-split-view-divider {
-    border-style: none solid none solid;
-    @include horizontal-gradient(#f7f7f7, #d8d8d8);
-    cursor: ew-resize;
-  }
+    .flame-split-view-divider {
+        border-style: none solid none solid;
+        @include horizontal-gradient(#f7f7f7, #d8d8d8);
+        cursor: col-resize;
+    }
 }
 
 .flame-vertical-split-view {
-  .flame-split-view-divider {
-    border-style: solid none solid none;
-    @include vertical-gradient(#f7f7f7, #d8d8d8);
-    cursor: ns-resize;
-  }
+    .flame-split-view-divider {
+        border-style: solid none solid none;
+        @include vertical-gradient(#f7f7f7, #d8d8d8);
+        cursor: row-resize;
+    }
 }
 
 .flame-split-view-divider {
     border: 1px #a8a8a8;
     z-index: 10;
-}
-
-.flame-horizontal-split-view .flame-split-view-divider {
 }
 
 .flame-tab-view-tabs .flame-button-view {
