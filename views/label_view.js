@@ -1,10 +1,11 @@
 Flame.LabelView = Flame.View.extend(Flame.ActionSupport, {
     layout: { left: 0, top: 0 },
     classNames: ['flame-label-view'],
-    classNameBindings: ['textAlign', 'isSelectable'],
+    classNameBindings: ['textAlign', 'isSelectable', 'isDisabled'],
     defaultHeight: 22,
     defaultWidth: 200,
     isSelectable: false,
+    isDisabled: false,
 
     handlebars: '{{value}}',
 
