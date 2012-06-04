@@ -26,6 +26,9 @@ body {
 }
 
 .flame-label-view {
+    &.is-disabled {
+        color: #999;
+    }
 }
 
 .is-selectable {
