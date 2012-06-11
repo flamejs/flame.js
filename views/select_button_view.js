@@ -9,7 +9,8 @@ Flame.SelectButtonView = Flame.ButtonView.extend({
     subMenuKey: "subMenu",
 
     handlebars: function() {
-        return '<label>{{_selectedMenuItem.%@}}</label><div><img src="%@"></div>'.fmt(this.get("itemTitleKey"), Flame.image('select_button_arrow.png'));
+        var itemTitleKey = this.get('itemTitleKey');
+        return '<label {{bindAttr title="_selectedMenuItem.%@"}}>{{_selectedMenuItem.%@}}</label><div><img src="%@"></div>'.fmt(itemTitleKey, itemTitleKey, Flame.image('select_button_arrow.png'));
     }.property("value", "_selectedMenuItem").cacheable(),
 
     _selectedMenuItem: function() {

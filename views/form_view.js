@@ -262,9 +262,10 @@ Flame.FormView = Flame.View.extend({
     _buildControlView: function(settings, type, descriptor) {
         switch (type) {
             case 'readonly':
-                settings.isEditable = true;
                 // readonly fields are selectable by default
                 settings.isSelectable = descriptor.get('isSelectable') === false ? false : true;
+                settings.attributeBindings = ['title'];
+                settings.titleBinding = 'value';
                 return Flame.LabelView.extend(settings);
             case 'text':
                 return Flame.TextFieldView.extend(settings);

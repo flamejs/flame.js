@@ -20,39 +20,43 @@ Flame.VerticalStackLayoutManager = Flame.LayoutManager.extend({
     setupLayout: function(view) {
         var self = this;
         var top = self.get('topMargin');
-        var len = view.get('childViews').get('length');
         var fluid = false, isFirst = true;
 
-        view.get('childViews').forEach(function(childView, i) {
-            if ('string' === typeof childView) throw 'Child views have not yet been initialized!';
-            if (childView.get('ignoreLayoutManager') !== true &&
+        // Filter out views that are not affected by the layout manager
+        var views = view.get('childViews').filter(function(childView) {
+            return childView.get('ignoreLayoutManager') !== true &&
                 (childView.get('isVisible') || childView.get('isVisible') === null) && // isVisible is initially null
-                childView.get('layout')) {
-                if (!isFirst) {  // Cannot check the index because some child views may be hidden and must be ignored
-                    top += self.get('spacing');
-                } else {
-                    isFirst = false;
-                }
+                childView.get('layout');
+        });
+        var len = views.get('length');
 
-                var layout = childView.get('layout');
-                childView._resolveLayoutBindings(layout);  // XXX ugly
-                Ember.assert('All child views must define layout when using VerticalStackLayoutManager!', !Ember.none(layout));
+        views.forEach(function(childView, i) {
+            if ('string' === typeof childView) throw 'Child views have not yet been initialized!';
 
-                top += (layout.topMargin || 0);
-                childView.adjustLayout('top', top);  // Use adjustLayout, it checks if the property changes (can trigger a series of layout updates)
-                top += (layout.topPadding || 0) + (layout.bottomPadding || 0);  // if view has borders, these can be used to compensate
+            if (!isFirst) {  // Cannot check the index because some child views may be hidden and must be ignored
+                top += self.get('spacing');
+            } else {
+                isFirst = false;
+            }
 
-                var height = layout.height;
-                if ('string' === typeof height) height = parseInt(height, 10);
-                if (i < len-1) {  // XXX should not check the index, this check should only consider visible child views
-                    Ember.assert('All child views except last one must define layout.height when using VerticalStackLayoutManager!', !Ember.none(height));
-                }
+            var layout = childView.get('layout');
+            childView._resolveLayoutBindings(layout);  // XXX ugly
+            ember_assert('All child views must define layout when using VerticalStackLayoutManager!', !Ember.none(layout));
 
-                if (Ember.none(layout.height)) {
-                    fluid = true;
-                } else {
-                    top += height;
-                }
+            top += (layout.topMargin || 0);
+            childView.adjustLayout('top', top);  // Use adjustLayout, it checks if the property changes (can trigger a series of layout updates)
+            top += (layout.topPadding || 0) + (layout.bottomPadding || 0);  // if view has borders, these can be used to compensate
+
+            var height = layout.height;
+            if ('string' === typeof height) height = parseInt(height, 10);
+            if (i < len - 1) {  // XXX should not check the index, this check should only consider visible child views
+                ember_assert('All child views except last one must define layout.height when using VerticalStackLayoutManager!', !Ember.none(height));
+            }
+
+            if (Ember.none(layout.height)) {
+                fluid = true;
+            } else {
+                top += height;
             }
         });
 

@@ -1,148 +1,111 @@
-Flame.VerticalSplitView = Flame.View.extend({
-    classNames: ['flame-vertical-split-view'],
-    childViews: ['topView', 'dividerView', 'bottomView'],
-    allowResizing: true,
-    topHeight: 100,
-    bottomHeight: 100,
-    minTopHeight: 0,
-    minBottomHeight: 0,
-    dividerHeight: 7,
-    flex: 'bottom',
-    resizeInProgress: false,
+//= require ./split_view
 
-    _unCollapsedTopHeight: undefined,
-    _unCollapsedBottomHeight: undefined,
-    _resizeStartY: undefined,
-    _resizeStartTopHeight: undefined,
-    _resizeStartBottomHeight: undefined,
+Flame.VerticalSplitView = Flame.SplitView.extend({
+    classNames: 'flame-horizontal-split-view'.w(),
+    childViews: 'leftView dividerView rightView'.w(),
+    leftWidth: 100,
+    rightWidth: 100,
+    minLeftWidth: 0,
+    minRightWidth: 0,
+    flex: 'right',
+
+    _unCollapsedLeftWidth: undefined,
+    _unCollapsedRightWidth: undefined,
+    _resizeStartX: undefined,
+    _resizeStartLeftWidth: undefined,
+    _resizeStartRightWidth: undefined,
 
     init: function() {
         Ember.assert('Flame.VerticalSplitView needs topView and bottomView!', !!this.get('topView') && !!this.get('bottomView'));
         this._super();
 
-        if (this.get('flex') === 'bottom') this.bottomHeight = undefined;
-        else this.topHeight = undefined;
+        if (this.get('flex') === 'right') this.rightWidth = undefined;
+        else this.leftWidth = undefined;
 
-        this._updateLayout();  // Update layout according to the initial heights
+        this._updateLayout(); // Update layout according to the initial widths
 
-        this.addObserver('topHeight', this, this._updateLayout);
-        this.addObserver('bottomHeight', this, this._updateLayout);
-        this.addObserver('minTopHeight', this, this._updateLayout);
-        this.addObserver('minBottomHeight', this, this._updateLayout);
+        this.addObserver('leftWidth', this, this._updateLayout);
+        this.addObserver('rightWidth', this, this._updateLayout);
+        this.addObserver('minLeftWidth', this, this._updateLayout);
+        this.addObserver('minRightWidth', this, this._updateLayout);
     },
 
     _updateLayout: function() {
-        // Damn, this is starting to look complicated...
-        var topView = this.get('topView');
+        var leftView = this.get('leftView');
         var dividerView = this.get('dividerView');
-        var bottomView = this.get('bottomView');
+        var rightView = this.get('rightView');
 
-        var totalHeight = Ember.$(this.get('element')).innerHeight();
-        var dividerHeight = this.get('dividerHeight');
+        var totalWidth = this.$().innerWidth();
+        var dividerThickness = this.get('dividerThickness');
+        var leftWidth = this.get('flex') === 'right' ? this.get('leftWidth') : undefined;
+        var rightWidth = this.get('flex') === 'left' ? this.get('rightWidth') : undefined;
+        if (leftWidth === undefined && rightWidth !== undefined && totalWidth !== null) leftWidth = totalWidth - rightWidth - dividerThickness;
+        if (rightWidth === undefined && leftWidth !== undefined && totalWidth !== null) rightWidth = totalWidth - leftWidth - dividerThickness;
 
-        var topHeight = this.get('flex') === 'bottom' ? this.get('topHeight') : undefined;
-        var bottomHeight = this.get('flex') === 'top' ? this.get('bottomHeight') : undefined;
-        if (topHeight === undefined && bottomHeight !== undefined && totalHeight !== null) topHeight = totalHeight - bottomHeight - dividerHeight;
-        if (bottomHeight === undefined && topHeight !== undefined && totalHeight !== null) bottomHeight = totalHeight - topHeight - dividerHeight;
-
-        //console.log('topHeight %@, totalHeight %@, bottomHeight %@'.fmt(topHeight, totalHeight, bottomHeight));
-
-        if ('number' === typeof topHeight && topHeight < this.get('minTopHeight')) {
-            bottomHeight += topHeight - this.get('minTopHeight');
-            topHeight = this.get('minTopHeight');
+        if ('number' === typeof leftWidth && leftWidth < this.get('minLeftWidth')) {
+            rightWidth += leftWidth - this.get('minLeftWidth');
+            leftWidth = this.get('minLeftWidth');
         }
-        if ('number' === typeof bottomHeight && bottomHeight < this.get('minBottomHeight')) {
-            topHeight += bottomHeight - this.get('minBottomHeight');
-            bottomHeight = this.get('minBottomHeight');
+        if ('number' === typeof rightWidth && rightWidth < this.get('minRightWidth')) {
+            leftWidth += rightWidth - this.get('minRightWidth');
+            rightWidth = this.get('minRightWidth');
         }
-        this.set('topHeight', topHeight);
-        this.set('bottomHeight', bottomHeight);
+        this.set('leftWidth', leftWidth);
+        this.set('rightWidth', rightWidth);
 
-        if (this.get('flex') === 'bottom') {
-            this._setDimensions(topView, 0, topHeight, undefined);
-            this._setDimensions(dividerView, topHeight, dividerHeight, undefined);
-            this._setDimensions(bottomView, topHeight + dividerHeight, undefined, 0);
+        if (this.get('flex') === 'right') {
+            this._setDimensions(leftView, 0, leftWidth, undefined);
+            this._setDimensions(dividerView, leftWidth, dividerThickness, undefined);
+            this._setDimensions(rightView, leftWidth + dividerThickness, undefined, 0);
         } else {
-            this._setDimensions(topView, 0, undefined, bottomHeight + dividerHeight);
-            this._setDimensions(dividerView, undefined, dividerHeight, bottomHeight);
-            this._setDimensions(bottomView, undefined, bottomHeight, 0);
+            this._setDimensions(leftView, 0, undefined, rightWidth + dividerThickness);
+            this._setDimensions(dividerView, undefined, dividerThickness, rightWidth);
+            this._setDimensions(rightView, undefined, rightWidth, 0);
         }
     },
 
-    _setDimensions: function(view, top, height, bottom) {
+    _setDimensions: function(view, left, width, right) {
         var layout = view.get('layout');
-        layout.set('left', 0);
-        layout.set('height', height);
-        layout.set('right', 0);
-        layout.set('top', top);
-        layout.set('bottom', bottom);
+        layout.set('left', left);
+        layout.set('width', width);
+        layout.set('right', right);
+        layout.set('top', 0);
+        layout.set('bottom', 0);
 
         view.updateLayout();
     },
 
-    toggleCollapse: function(evt) {
-        if (this.get('allowResizing')) {
-            if (this.get('flex') === 'bottom') {
-                if (this.get('topHeight') === this.get('minTopHeight') && this._unCollapsedTopHeight !== undefined) {
-                    this.set('topHeight', this._unCollapsedTopHeight);
-                } else {
-                    this._unCollapsedTopHeight = this.get('topHeight');
-                    this.set('topHeight', this.get('minTopHeight'));
-                }
+    toggleCollapse: function(event) {
+        if (!this.get('allowResizing')) return;
+
+        if (this.get('flex') === 'right') {
+            if (this.get('leftWidth') === this.get('minLeftWidth') && this._unCollapsedLeftWidth !== undefined) {
+                this.set('leftWidth', this._unCollapsedLeftWidth);
             } else {
-                if (this.get('bottomHeight') === this.get('minBottomHeight') && this._unCollapsedBottomHeight !== undefined) {
-                    this.set('bottomHeight', this._unCollapsedBottomHeight);
-                } else {
-                    this._unCollapsedBottomHeight = this.get('bottomHeight');
-                    this.set('bottomHeight', this.get('minBottomHeight'));
-                }
+                this._unCollapsedLeftWidth = this.get('leftWidth');
+                this.set('leftWidth', this.get('minLeftWidth'));
             }
-            this.endResize();
-        }
-    },
-
-    startResize: function(evt) {
-        if (this.get('allowResizing')) {
-            this.set('resizeInProgress', true);
-            this._resizeStartY = evt.pageY;
-            this._resizeStartTopHeight = this.get('topHeight');
-            this._resizeStartBottomHeight = this.get('bottomHeight');
-            return true;
-        }
-        return false;
-    },
-
-    resize: function(evt) {
-        if (this.get('resizeInProgress')) {
-            if (this.get('flex') === 'bottom') {
-                this.set('topHeight', this._resizeStartTopHeight + (evt.pageY - this._resizeStartY));
+        } else {
+            if (this.get('rightWidth') === this.get('minRightWidth') && this._unCollapsedRightWidth !== undefined) {
+                this.set('rightWidth', this._unCollapsedRightWidth);
             } else {
-                this.set('bottomHeight', this._resizeStartBottomHeight - (evt.pageY - this._resizeStartY));
+                this._unCollapsedRightWidth = this.get('rightWidth');
+                this.set('rightWidth', this.get('minRightWidth'));
             }
-            return true;
         }
-        return false;
     },
 
-    endResize: function(evt) {
-        this.set('resizeInProgress', false);
-        return true;
+    startResize: function(event) {
+        this._resizeStartX = event.pageX;
+        this._resizeStartLeftWidth = this.get('leftWidth');
+        this._resizeStartRightWidth = this.get('rightWidth');
     },
 
-    dividerView: Flame.View.extend({
-        classNames: ['flame-split-view-divider'],
-
-        mouseDown: function(evt) {
-            return this.get('parentView').startResize(evt);
-        },
-        mouseMove: function(evt) {
-            return this.get('parentView').resize(evt);
-        },
-        mouseUp: function(evt) {
-            return this.get('parentView').endResize(evt);
-        },
-        doubleClick: function(evt) {
-            return this.get('parentView').toggleCollapse(evt);
+    resize: function(event) {
+        if (this.get('flex') === 'right') {
+            this.set('leftWidth', this._resizeStartLeftWidth + (event.pageX - this._resizeStartX));
+        } else {
+            this.set('rightWidth', this._resizeStartRightWidth - (event.pageX - this._resizeStartX));
         }
-    })
+    }
 });

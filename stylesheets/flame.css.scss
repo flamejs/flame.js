@@ -26,6 +26,9 @@ body {
 }
 
 .flame-label-view {
+    &.is-disabled {
+        color: #999;
+    }
 }
 
 .is-selectable {
@@ -207,8 +210,8 @@ body {
     $panel-border-radius: 4px;
     border: 1px solid #777;
     border-radius: $panel-border-radius;
+    background-color: #f2f2f2;
     @include box-shadow(3, 3, 40, #555555);
-    @include gradient(#ffffff, #eeeeee);
 
     .flame-panel-title {
         font-size: 13px;
@@ -223,6 +226,7 @@ body {
 
     .flame-resize-thumb {
         background-image: image-url('images/resize_thumb.png');
+        cursor: nwse-resize;
     }
 }
 
@@ -361,27 +365,24 @@ body {
 }
 
 .flame-horizontal-split-view {
-  .flame-split-view-divider {
-    border-style: none solid none solid;
-    @include horizontal-gradient(#f7f7f7, #d8d8d8);
-    cursor: ew-resize;
-  }
+    .flame-split-view-divider {
+        border-style: none solid none solid;
+        @include horizontal-gradient(#f7f7f7, #d8d8d8);
+        cursor: col-resize;
+    }
 }
 
 .flame-vertical-split-view {
-  .flame-split-view-divider {
-    border-style: solid none solid none;
-    @include vertical-gradient(#f7f7f7, #d8d8d8);
-    cursor: ns-resize;
-  }
+    .flame-split-view-divider {
+        border-style: solid none solid none;
+        @include vertical-gradient(#f7f7f7, #d8d8d8);
+        cursor: row-resize;
+    }
 }
 
 .flame-split-view-divider {
     border: 1px #a8a8a8;
     z-index: 10;
-}
-
-.flame-horizontal-split-view .flame-split-view-divider {
 }
 
 .flame-tab-view-tabs .flame-button-view {

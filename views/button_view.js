@@ -30,6 +30,11 @@ Flame.ButtonView = Flame.View.extend(Flame.ActionSupport, Flame.Statechart, {
             return true;
         },
 
+        touchStart: function(event) {
+            this.gotoState('mouseDownInside');
+            return true;
+        },
+
         simulateClick: function() {
             this.gotoState('hover');
             this.get('owner').simulateClick();
@@ -70,12 +75,23 @@ Flame.ButtonView = Flame.View.extend(Flame.ActionSupport, Flame.Statechart, {
     }),
 
     mouseDownInside: Flame.State.extend({
-        mouseUp: function() {
-            this.get('owner').fireAction();
-            if (this.getPath('owner.isSticky')) {
-                this.setPath('owner.isSelected', !this.getPath('owner.isSelected'));
+        _handleClick: function() {
+            var owner = this.get('owner');
+            owner.fireAction();
+            if (owner.get('isSticky')) {
+                owner.set('isSelected', !owner.get('isSelected'));
             }
+        },
+
+        mouseUp: function() {
+            this._handleClick();
             this.gotoState('hover');
+            return true;
+        },
+
+        touchEnd: function(event) {
+            this._handleClick();
+            this.gotoState('idle');
             return true;
         },
 
