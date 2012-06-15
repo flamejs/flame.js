@@ -26,6 +26,10 @@ body {
 }
 
 .flame-label-view {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
     &.is-disabled {
         color: #999;
     }
@@ -833,7 +837,6 @@ input[type="password"] {
 }
 
 .loading-indicator {
-    width : 16px;
-    height : 16px;
+    width: 16px;
+    height: 16px;
 }
-
