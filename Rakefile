@@ -8,6 +8,22 @@ task :default => [:build]
 task :build => :clean do
   ENV['image_path'] ||= ''
 
+  if defined?(Sass)
+    module Sass::Script::Functions
+      # returns an IE hex string for a color with an alpha channel
+      # suitable for passing to IE filters.
+      # from Compass (http://compass-style.org)
+      def ie_hex_str(color)
+        assert_type color, :Color
+        alpha = (color.alpha * 255).round
+        alphastr = alpha.to_s(16).rjust(2, '0')
+        Sass::Script::String.new("##{alphastr}#{color.send(:hex_str)[1..-1]}".upcase)
+      end
+
+      declare :ie_hex_str, [:color]
+    end
+  end
+
   # Used by image-url in sass
   def image_path(image, options={})
     image_path = ENV['image_path'].dup
