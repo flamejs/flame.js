@@ -26,10 +26,6 @@ body {
 }
 
 .flame-label-view {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-
     &.is-disabled {
         color: #999;
     }

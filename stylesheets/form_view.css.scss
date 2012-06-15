@@ -1,5 +1,13 @@
 @import "mixins";
 
+.form-view {
+    .flame-label-view {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
 /* This is outside the form-view element, so we can't use it as parent selector */
 .flame-form-view-validation-error {
     .error-triangle {
@@ -21,4 +29,3 @@
         @include box-shadow(1, 1, 4, #333333);
     }
 }
-
