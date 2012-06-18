@@ -30,10 +30,8 @@ Flame.TextFieldView = Flame.View.extend(Flame.ActionSupport, {
     textField: Ember.TextField.extend(Flame.EventManager, Flame.FocusSupport, {
         classNameBindings: ['isInvalid', 'isEditableLabel', 'isFocused'],
         acceptsKeyResponder: true,
-        typeBinding: Ember.Binding.from('^isPassword').transformTrueFalse('password', 'text'),
-        isInvalidBinding: Ember.Binding.from('^isValid').transform(function(v) {
-            return v === false;
-        }).oneWay(),
+        type: Flame.computed.trueFalse('parentView.isPassword', 'password', 'text'),
+        isInvalid: Flame.computed.equals('parentView.isValid', false),
         valueBinding: '^value',
         placeholderBinding: '^placeholder',
         isEditableLabelBinding: '^isEditableLabel',

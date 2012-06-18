@@ -13,16 +13,20 @@ Flame.TreeItemView = Flame.ListItemView.extend({
     useAbsolutePositionBinding: 'parentView.rootTreeView.useAbsolutePositionForItems',
     classNames: ['flame-tree-item-view'],
     classNameBindings: ['parentView.nestingLevel'],
-    isExpandedBinding: Ember.Binding.or('content.treeItemIsExpanded', 'defaultIsExpanded'),
+    isExpanded: function(key, value) {
+        if (arguments.length === 1) {
+            if (this._isExpanded !== undefined) return this._isExpanded;
+            return this.getPath('content.treeItemIsExpanded') || this.get('defaultIsExpanded');
+        } else {
+            this._isExpanded = value;
+            return value;
+        }
+    }.property('content.treeItemIsExpanded', 'defaultIsExpanded').cacheable(),
     layout: { left: 0, right: 0, top: 0, height: 0 },
 
     defaultIsExpanded: function() {
         return this.getPath('parentView.rootTreeView.defaultIsExpanded');
     }.property('parentView.rootTreeView.defaultIsExpanded').cacheable(),
-
-    init: function() {
-        this._super();
-    },
 
     // Don't use the list view isSelected highlight logic
     isSelected: function(key, value) {
@@ -127,7 +131,7 @@ Flame.TreeItemView = Flame.ListItemView.extend({
             layoutManager: Flame.VerticalStackLayoutManager.create({ topMargin: 0, spacing: 0, bottomMargin: 0 }),
             layout: { top: 0, left: 0, right: 0 },
             classNames: ['flame-tree-view-nested'],
-            isVisibleBinding: Ember.Binding.bool('parentView.isExpanded'), // Ember isVisible handling considers undefined to be visible
+            isVisible: Flame.computed.bool('parentView.isExpanded'), // Ember isVisible handling considers undefined to be visible
             allowSelection: this.getPath('parentView.rootTreeView.allowSelection'),
             allowReordering: this.getPath('parentView.rootTreeView.allowReordering'),
             content: this.getPath('content.treeItemChildren'),
@@ -135,5 +139,4 @@ Flame.TreeItemView = Flame.ListItemView.extend({
             isNested: true
         });
     }.property('content')
-
 });

@@ -1,5 +1,4 @@
 Ember.mixin(Flame, {
-    
     _setupStringMeasurement: function(parentClasses, elementClasses) {
         if (!parentClasses) {
             parentClasses = '';
@@ -20,13 +19,13 @@ Ember.mixin(Flame, {
         element.className = elementClasses;
         return element;
     },
-   
-   measureString: function(string, parentClasses, elementClasses) {
+
+    measureString: function(string, parentClasses, elementClasses) {
         var element = this._setupStringMeasurement(parentClasses, elementClasses);
         element.innerHTML = string;
         return {
             width: element.clientWidth,
             height: element.clientHeight
         };
-   }
+    }
 });
