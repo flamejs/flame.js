@@ -4,7 +4,7 @@
    - Hold down ALT and move your mouse around your app. Elements are highlighted to show their extents.
    - While holding ALT, click on an element. This will bind the element to window.e and the associated
      view (if any) to window.v (accessible in JS console as e and v), for your further inspection.
-   - While holding ALT, double click on an element. If there's a view associated with that element, 
+   - While holding ALT, double click on an element. If there's a view associated with that element,
      an inspector panel is opened, showing various information about the view. Click around to explore.
    - While the inspector is open, ALT + single click also opens the view in the inspector panel.
    - You can also launch the inspector on any object in console: FlameInspector.inspect(someObject)
@@ -787,7 +787,7 @@ FlameInspector.DebugPanel = Flame.Panel.extend({
                 layout: { right: 95, top: 0, width: 19, height: 19 },
                 classNames: ['flame-inspector-hist', 'flame-inspector-prev'],
                 handlebars: '<label>&#9664;</label>',
-                isDisabledBinding: Ember.Binding.from('^inspectorController.allowPrev').not(),
+                isDisabled: Flame.computed.not('target.allowPrev'),
                 targetBinding: '^inspectorController',
                 action: 'prev'
             }),
@@ -795,7 +795,7 @@ FlameInspector.DebugPanel = Flame.Panel.extend({
                 layout: { right: 72, top: 0, width: 19, height: 19 },
                 classNames: ['flame-inspector-hist', 'flame-inspector-next'],
                 handlebars: '<label>&#9654;</label>',
-                isDisabledBinding: Ember.Binding.from('^inspectorController.allowNext').not(),
+                isDisabled: Flame.computed.not('target.allowNext'),
                 targetBinding: '^inspectorController',
                 action: 'next'
             }),
@@ -813,4 +813,3 @@ FlameInspector.DebugPanel = Flame.Panel.extend({
 });
 
 FlameInspector.setup();
-

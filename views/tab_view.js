@@ -59,7 +59,7 @@ Flame.TabView = Flame.View.extend({
               layout: { top: 0, bottom: 0, height: tabsHeight },
               title: tab.title,
               value: tab.value,
-              isSelectedBinding: Ember.Binding.from('parentView.parentView.nowShowing').eq(tab.value),
+              isSelected: Flame.computed.equals('parentView.parentView.nowShowing', tab.value),
               action: function() {
                   self.set('nowShowing', tab.value);
               }
