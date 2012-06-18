@@ -35,7 +35,7 @@ Flame.Panel = Flame.RootView.extend({
         layout: { left: 0, right: 0, height: 26, bottomPadding: 1 },
         classNames: ['flame-panel-title'],
         childViews: ['labelView'],
-        isVisibleBinding: Ember.Binding.from('parentView.title').isNull().not(),
+        isVisible: Flame.computed.notEquals('parentView.title', null),
         initialState: 'idle',
 
         labelView: Flame.LabelView.extend({

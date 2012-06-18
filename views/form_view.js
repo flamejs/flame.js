@@ -221,11 +221,7 @@ Flame.FormView = Flame.View.extend({
         var settings = {
             layout: { topPadding: 1, bottomPadding: 1, width: this.get('controlWidth') },
             valueBinding: '^object.%@'.fmt(property),
-            // FIXME: this is required instead of just .not() because isValid properties are initially null
-            isValidBinding: Ember.Binding.from('^object.%@IsValid'.fmt(property)).transform(function(v) {
-                // Allow for undefined/null values when the fooIsValid property is not defined
-                return v !== false;
-            })
+            isValid: Flame.computed.notEquals('parentView.parentView.object.%@IsValid'.fmt(property), false)
         };
         if (this.get('defaultFocus') === property) {
             settings.isDefaultFocus = true;
