@@ -38,3 +38,9 @@ Flame.computed.bool = function(dependentKey) {
         return !!Ember.getPath(this, dependentKey);
     }).cacheable();
 };
+
+Flame.computed.or = function(dependentKey, otherKey) {
+    return Ember.computed(dependentKey, otherKey, function(key) {
+        return Ember.getPath(this, dependentKey) || Ember.getPath(this, otherKey);
+    }).cacheable();
+};
