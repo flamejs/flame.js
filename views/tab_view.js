@@ -65,7 +65,7 @@ Flame.TabView = Flame.View.extend({
               }
           })));
           var view = self.get(tab.value);
-          ember_assert('View for tab %@ not defined!'.fmt(tab.value), !!view);
+          Ember.assert('View for tab %@ not defined!'.fmt(tab.value), !!view);
           if (!self.get('initializeTabsLazily')) {
               if (!(view instanceof Ember.View)) {
                   view = contentView.createChildView(view);

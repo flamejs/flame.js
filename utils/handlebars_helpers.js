@@ -15,7 +15,7 @@ function handleLayoutHash(hash) {
    {{flameView Flame.ButtonView top=10 bottom=20 title="Save"}}
 */
 Ember.Handlebars.registerHelper('flameView', function(path, options) {
-    ember_assert("The view helper only takes a single argument", arguments.length <= 2);
+    Ember.assert("The view helper only takes a single argument", arguments.length <= 2);
     // If no path is provided, treat path param as options.
     if (path && path.data && path.data.isRenderData) {
         options = path;

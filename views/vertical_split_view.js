@@ -16,7 +16,7 @@ Flame.VerticalSplitView = Flame.SplitView.extend({
     _resizeStartRightWidth: undefined,
 
     init: function() {
-        ember_assert('Flame.VerticalSplitView needs leftView and rightView!', !!this.get('leftView') && !!this.get('rightView'));
+        Ember.assert('Flame.VerticalSplitView needs topView and bottomView!', !!this.get('topView') && !!this.get('bottomView'));
         this._super();
 
         if (this.get('flex') === 'right') this.rightWidth = undefined;
