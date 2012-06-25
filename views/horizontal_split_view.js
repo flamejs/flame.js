@@ -16,7 +16,7 @@ Flame.HorizontalSplitView = Flame.SplitView.extend({
     _resizeStartBottomHeight: undefined,
 
     init: function() {
-        ember_assert('Flame.HorizontalSplitView needs topView and bottomView!', !!this.get('topView') && !!this.get('bottomView'));
+        Ember.assert('Flame.HorizontalSplitView needs leftView and rightView!', !!this.get('leftView') && !!this.get('rightView'));
         this._super();
 
         if (this.get('flex') === 'bottom') this.bottomHeight = undefined;

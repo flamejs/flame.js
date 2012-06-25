@@ -16,7 +16,7 @@ Flame.ArrayTableController = Flame.DataTableController.extend(Flame.TableSortSup
 
     headers: function() {
         var headerProperty = this.get('headerProperty');
-        ember_assert('headerProperty not defined for ArrayTableAdapter!', !!headerProperty);
+        Ember.assert('headerProperty not defined for ArrayTableAdapter!', !!headerProperty);
         var rowHeadersClickable = this.get('rowHeadersClickable');
         var self = this;
         return {

@@ -66,8 +66,8 @@ Flame.Popover = Flame.Panel.extend({
     },
 
     popup: function(anchor, position) {
-        ember_assert('Flame.Popover.popup requires an anchor', !!anchor);
-        ember_assert('Flame.Popover.popup requires a position', !!position);
+        Ember.assert('Flame.Popover.popup requires an anchor', !!anchor);
+        Ember.assert('Flame.Popover.popup requires a position', !!position);
         this._super(anchor, position | Flame.POSITION_MIDDLE);
     }
 });
