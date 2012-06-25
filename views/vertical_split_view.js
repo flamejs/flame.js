@@ -1,7 +1,11 @@
 //= require ./split_view
 
+/*
+ * VerticalSplitView divides the current view between leftView and rightView using a vertical
+ * dividerView.
+ */
 Flame.VerticalSplitView = Flame.SplitView.extend({
-    classNames: 'flame-horizontal-split-view'.w(),
+    classNames: 'flame-horizontal-split-view'.w(), // TODO: fix legacy CSS class naming
     childViews: 'leftView dividerView rightView'.w(),
     leftWidth: 100,
     rightWidth: 100,
@@ -16,7 +20,7 @@ Flame.VerticalSplitView = Flame.SplitView.extend({
     _resizeStartRightWidth: undefined,
 
     init: function() {
-        Ember.assert('Flame.VerticalSplitView needs topView and bottomView!', !!this.get('topView') && !!this.get('bottomView'));
+        Ember.assert('Flame.VerticalSplitView needs leftView and rightView!', !!this.get('leftView') && !!this.get('rightView'));
         this._super();
 
         if (this.get('flex') === 'right') this.rightWidth = undefined;
