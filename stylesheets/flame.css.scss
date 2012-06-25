@@ -145,6 +145,7 @@ body {
     }
 
     .flame-checkbox-box {
+        @include gradient(#ffffff, #f5f5f5);
         position: absolute;
         border: 1px solid #888;
         width: 12px;
