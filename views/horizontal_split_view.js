@@ -1,7 +1,11 @@
 //= require ./split_view
 
+/*
+ * HotizontalSplitView divides the current view between topView and bottomView using a horizontal
+ * dividerView.
+ */
 Flame.HorizontalSplitView = Flame.SplitView.extend({
-    classNames: 'flame-vertical-split-view'.w(),
+    classNames: 'flame-horizontal-split-view'.w(),
     childViews: 'topView dividerView bottomView'.w(),
     topHeight: 100,
     bottomHeight: 100,
@@ -16,7 +20,7 @@ Flame.HorizontalSplitView = Flame.SplitView.extend({
     _resizeStartBottomHeight: undefined,
 
     init: function() {
-        Ember.assert('Flame.HorizontalSplitView needs leftView and rightView!', !!this.get('leftView') && !!this.get('rightView'));
+        Ember.assert('Flame.HorizontalSplitView needs topView and bottomView!', !!this.get('topView') && !!this.get('bottomView'));
         this._super();
 
         if (this.get('flex') === 'bottom') this.bottomHeight = undefined;
@@ -96,16 +100,16 @@ Flame.HorizontalSplitView = Flame.SplitView.extend({
     },
 
     startResize: function(event) {
-        this._resizeStartY = evt.pageY;
+        this._resizeStartY = event.pageY;
         this._resizeStartTopHeight = this.get('topHeight');
         this._resizeStartBottomHeight = this.get('bottomHeight');
     },
 
     resize: function(event) {
         if (this.get('flex') === 'bottom') {
-            this.set('topHeight', this._resizeStartTopHeight + (evt.pageY - this._resizeStartY));
+            this.set('topHeight', this._resizeStartTopHeight + (event.pageY - this._resizeStartY));
         } else {
-            this.set('bottomHeight', this._resizeStartBottomHeight - (evt.pageY - this._resizeStartY));
+            this.set('bottomHeight', this._resizeStartBottomHeight - (event.pageY - this._resizeStartY));
         }
     }
 });
