@@ -365,7 +365,7 @@ body {
     }
 }
 
-.flame-horizontal-split-view {
+.flame-vertical-split-view {
     .flame-split-view-divider {
         border-style: none solid none solid;
         @include horizontal-gradient(#f7f7f7, #d8d8d8);
@@ -373,7 +373,7 @@ body {
     }
 }
 
-.flame-vertical-split-view {
+.flame-horizontal-split-view {
     .flame-split-view-divider {
         border-style: solid none solid none;
         @include vertical-gradient(#f7f7f7, #d8d8d8);
