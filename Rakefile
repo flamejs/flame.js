@@ -42,7 +42,7 @@ task :build => :clean do
   assets.write_to('build/flame.js')
 
   flame = File.open('build/flame.min.js', 'w')
-  flame.write(Uglifier.compile(File.read('build/flame.js').gsub(%r{^(\s)+(?:ember|sc)_assert\((.*)\).*$}, '')))
+  flame.write(Uglifier.compile(File.read('build/flame.js').gsub(%r{^(\s)+Ember\.assert\((.*)\).*$}, '')))
   flame.close
 
   html5 = environment.find_asset('html5.js')
