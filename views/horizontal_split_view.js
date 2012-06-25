@@ -5,7 +5,7 @@
  * dividerView.
  */
 Flame.HorizontalSplitView = Flame.SplitView.extend({
-    classNames: 'flame-vertical-split-view'.w(), // TODO: Legacy CSS class name
+    classNames: 'flame-horizontal-split-view'.w(),
     childViews: 'topView dividerView bottomView'.w(),
     topHeight: 100,
     bottomHeight: 100,
