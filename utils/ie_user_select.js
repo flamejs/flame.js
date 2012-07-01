@@ -2,12 +2,10 @@
 if (Ember.$.browser.msie && Ember.$.browser.version < 10) {
     Ember.$(function() {
         Ember.$('body').on('selectstart', function(e) {
-            if (['INPUT', 'TEXTAREA'].contains(e.target.tagName) || $(e.target).parents().andSelf().is('.is-selectable')) {
-                return true;
-            } else {
-                return false;
-            }
+            var target = Ember.$(e.target);
+            return ['INPUT', 'TEXTAREA'].contains(e.target.tagName) ||
+                target.parents().andSelf().is('.is-selectable') ||
+                target.attr('contenteditable') === 'true';
         });
     });
 }
-
