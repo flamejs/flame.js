@@ -199,13 +199,13 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             var dataCell = owner.get('selectedDataCell');
             var readOnlyValue = owner.editableValue(dataCell, true);
             selection.html(readOnlyValue);
-            selection.addClass('read-only');
+            selection.addClass('read-only is-selectable');
         },
 
         exitState: function() {
             var selection = this.getPath('owner.selection');
             selection.html('');
-            selection.removeClass('read-only');
+            selection.removeClass('read-only is-selectable');
         },
 
         _invokeInSelected: function(action) {
