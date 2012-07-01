@@ -37,17 +37,11 @@ Flame.TableViewContentAdapter = Ember.Object.extend({
         var headers = this.get('headers');
         var rowHeaders = headers.rowHeaders;
         var rowHeadersLength = rowHeaders.length;
+        var i;
         for (i = 0; i < rowHeadersLength; i++) {
             this._processHeader(rowHeaderRows, rowHeaders[i], 'rows', 0, i === 0);
         }
 
-        var maxDepth = 0;
-        for (i = 0; i < this.get('rowLeafs').length; i++) {
-            var depth = this.get('rowLeafs')[i].depth;
-            if (depth > maxDepth) {
-                maxDepth = depth;
-            }
-        }
         rowHeaderRows.maxDepth = this.get('rowLeafs').map(function (x) { return x.depth; }).max();
         for (i = 0; i < this.get('rowLeafs').length; i++) {
             var rowLeaf = this.get('rowLeafs')[i];
@@ -63,19 +57,10 @@ Flame.TableViewContentAdapter = Ember.Object.extend({
     },
 
     /**
-      This function does three things:
-
-        1. If the header has a 'ref' property, look up the Field and set the
-           the label so that .get('label') works like other header fields.
-           We need the Field instance itself so it can be referenced by Cells
-           at a later point.
-
-        2. Calculate the colspan (rowspan) attribute to be used when rendering.
-           Rowspan (colspan) will be calculated later on.
-
-
-        3. Store the headers in a structure similar to the way they will be rendered,
-           i.e. (for column headers) an array of rows where each row is an array of cells.
+      Calculate the colspan (rowspan) attribute to be used when rendering.
+      Rowspan (colspan) will be calculated later on.
+      Store the headers in a structure similar to the way they will be rendered,
+      i.e. (for column headers) an array of rows where each row is an array of cells.
     */
     _processHeader: function(headerRows, header, type, depth, isFirst) {
         header.depth = depth + 1;
@@ -107,5 +92,4 @@ Flame.TableViewContentAdapter = Ember.Object.extend({
 
         return count;
     }
-
 });

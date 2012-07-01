@@ -1,6 +1,7 @@
 Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
     classNames: ['flame-table-data-view'],
     acceptsKeyResponder: true,
+    batchUpdates: true,
     updateBatchSize: 500,
     _updateCounter: 0,
     selectedCell: null,
@@ -116,7 +117,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         // We need to use the keyPress event, as some browsers don't report the character pressed correctly with keyDown
         keyPress: function(event) {
             var dataCell = this.getPath('owner.selectedDataCell');
-            if (!dataCell.isEditable()) {
+            if (Ember.none(dataCell) || (dataCell && !dataCell.isEditable())) {
                 return false;
             }
             var key = String.fromCharCode(event.which);
@@ -534,7 +535,8 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         // Everyone expects that the cellRefs array is empty when we return from this function. We still need the
         // content so save it elsewhere.
         var content = cellRefs.splice(0, cellRefs.length);
-        this._batchUpdate(this.get("updateBatchSize"), 0, updateCounter, content, data, allCells, callback);
+        var updateBatchSize = this.get('batchUpdates') ? this.get('updateBatchSize') : -1;
+        this._batchUpdate(updateBatchSize, 0, updateCounter, content, data, allCells, callback);
     },
 
     _batchUpdate: function(maxUpdates, startIx, updateCounter, cellRefs, data, allCells, callback) {
@@ -544,8 +546,10 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         var len = cellRefs.length;
         var element, index, cell;
         var columnLength = data[0].length;
+        // If maxUpdates is -1, we fetch everything in one batch
+        var upTo = maxUpdates === -1 ? len : maxUpdates;
 
-        for (var i = startIx; i < len && (i - startIx) < maxUpdates; i++) {
+        for (var i = startIx; i < len && (i - startIx) < upTo; i++) {
             index = cellRefs[i];
             var x = index[0], y = index[1];
             cell = data[x][y];
@@ -563,5 +567,4 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             });
         }
     }
-
 });
