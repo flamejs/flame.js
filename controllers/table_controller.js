@@ -1,13 +1,12 @@
-
-/*
+/**
   A controller that you need to use when displaying an Flame.TableView. You need to
   define _headers property and call pushDataBatch to render data (can be called
   several times to render data in batches). The headers should be Flame.TableHeader
   objects.
 
-  There's two refined subclasses of this controller, DataTableController and
+  There are two refined subclasses of this controller, DataTableController and
   ArrayTableController, which you may find easier to use for simple tables.
- */
+*/
 Flame.TableController = Ember.Object.extend({
     dirtyCells: [],
     valuesOn: 'column',
@@ -68,7 +67,7 @@ Flame.TableController = Ember.Object.extend({
         var columnLeafs = this.get('columnLeafs');
         var columnLeafsLen = columnLeafs.length;
 
-        var i,j;
+        var i, j;
         var rowCell, colCell;
         var rowMapping;
         for (i = 0; i < rowLeafsLen; i++) {
@@ -76,10 +75,9 @@ Flame.TableController = Ember.Object.extend({
             rowMapping = mapping[rowCell.path] = {};
             for (j = 0; j < columnLeafsLen; j++) {
                 colCell = columnLeafs[j];
-                rowMapping[colCell.path] = [i,j];
+                rowMapping[colCell.path] = [i, j];
             }
         }
-
         return mapping;
     }.property("rowLeafs", "columnLeafs").cacheable(),
 
@@ -112,7 +110,8 @@ Flame.TableController = Ember.Object.extend({
     _getLeafs: function(nodes, path) {
         var node, length = nodes.length;
         var leafs = [];
-        for (var i = 0; i < length; i++) {
+        var i;
+        for (i = 0; i < length; i++) {
             node = nodes[i];
             if (node.hasOwnProperty('children')) {
                 var newPath = node.hasOwnProperty('id') ? path.concat(node.id) : path;
@@ -123,9 +122,8 @@ Flame.TableController = Ember.Object.extend({
             }
         }
         // Mark the leaf index
-        for(i = 0; i < leafs.length; i++) {
-            node = leafs[i];
-            node.leafIndex = i;
+        for (i = 0; i < leafs.length; i++) {
+            leafs[i].leafIndex = i;
         }
         return leafs;
     },
@@ -149,5 +147,4 @@ Flame.TableController = Ember.Object.extend({
             this.set('_data', data);
         }
     }.observes('_headers')
-
 });

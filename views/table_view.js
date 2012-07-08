@@ -25,6 +25,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     resizeDelegate: null,
     content: null,  // Set to a Flame.TableController
     allowRefresh: true,
+    batchUpdates: true,
 
     contentAdapter: function() {
         return Flame.TableViewContentAdapter.create({
@@ -39,7 +40,8 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         totalRowIdsBinding: '^content.totalRowIds',
         totalColumnIdsBinding: '^content.totalColumnIds',
         cellUpdateDelegateBinding: '^cellUpdateDelegate',
-        cellsMarkedForUpdateBinding: '^content.cellsMarkedForUpdate'
+        cellsMarkedForUpdateBinding: '^content.cellsMarkedForUpdate',
+        batchUpdatesBinding: '^batchUpdates'
     }),
 
     rowDepth: function() {
