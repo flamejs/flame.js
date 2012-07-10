@@ -138,10 +138,6 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
     // Used to allow users to select text from read-only cells
     selectingReadOnly: Flame.State.extend({
-        keyPress: function(event) {
-            return true;
-        },
-
         cancel: function(event) {
             this.get('owner')._cancelEditingOrSelecting();
             return true;
