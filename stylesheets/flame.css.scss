@@ -221,7 +221,7 @@ body {
     border: 1px solid #777;
     border-radius: $panel-border-radius;
     background-color: #f2f2f2;
-    @include box-shadow(3, 3, 40, #555555);
+    @include box-shadow(3, 3, 30, #555555);
 
     .flame-panel-title {
         font-size: 13px;
@@ -231,6 +231,7 @@ body {
         border: 1px #aaaaaa;
         border-bottom-style: solid;
         @include gradient(#eeeeee, #cccccc);
+        @include inner-shadow(1px, #f4f4f4);
         text-shadow: #efefef 0px 1px;
     }
 
