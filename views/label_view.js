@@ -7,7 +7,18 @@ Flame.LabelView = Flame.View.extend(Flame.ActionSupport, {
     isSelectable: false,
     isDisabled: false,
 
-    handlebars: '{{value}}',
+    handlebars: '{{{formattedValue}}}',
+
+    formattedValue: function() {
+        var value = this.get('value');
+        if (Ember.typeOf(value) !== 'string') return value;
+        // Preserve line breaks
+        return Ember.String.htmlSafe(
+            Ember.Handlebars.Utils.escapeExpression(
+                value.replace(/\n\r?/g, '<br>')
+            ).replace(/&lt;br&gt;/g, '<br>')
+        );
+    }.property('value').cacheable(),
 
     render: function(buffer) {
         var height = this.getPath('layout.height');
