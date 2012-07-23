@@ -19,6 +19,10 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
     selection: undefined,
     initialState: 'idle',
     reorderDelegate: null,
+    init: function() {
+        this._super();
+        this._selectionDidChange();
+    },
 
     itemViewClass: Flame.ListItemView.extend({
         templateContext: function(key, value) {
