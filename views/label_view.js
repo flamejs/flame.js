@@ -10,7 +10,7 @@ Flame.LabelView = Flame.View.extend(Flame.ActionSupport, {
     handlebars: '{{value}}',
 
     render: function(buffer) {
-        var height = this.getPath('layout.height');
+        var height = this.get('layout.height');
         if (this.get('useAbsolutePosition') && !Ember.none(height)) buffer.style('line-height', height+'px');
         this._super(buffer);
     },

@@ -121,7 +121,7 @@ Ember.Handlebars.registerHelper("tableView", function(path){
         hash.columns = data.columns;
     }
 
-    hash.content = Ember.getPath(hash.controller).create({
+    hash.content = Ember.get(hash.controller).create({
         headerProperty: hash.headerProperty,
         columns: hash.columns,
         contentBinding: hash.contentBinding

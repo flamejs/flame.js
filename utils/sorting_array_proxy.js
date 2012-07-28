@@ -77,7 +77,7 @@ Flame.SortingArrayProxy = Ember.ArrayProxy.extend({
         var sortKey = this.get('sortKey');
         this._withObserversSuppressed(function() {
             content.forEach(function(item, i) {
-                Ember.setPath(item, sortKey, i);
+                Ember.set(item, sortKey, i);
             });
         });
     },
@@ -124,7 +124,7 @@ Flame.SortingArrayProxy = Ember.ArrayProxy.extend({
         // situations (reloading, and setting child values), so we check if the sort key really changed, so
         // we don't do unnecessary work
         item.lastPosition = item.get(sortKey);
-        var observer = function() { 
+        var observer = function() {
             this._indexChanged(item);
         };
         Ember.addObserver(item, sortKey, this, observer);
@@ -216,7 +216,7 @@ Flame.SortingArrayProxy = Ember.ArrayProxy.extend({
             var self = this;
             this._withObserversSuppressed(function() {
                 content.forEach(function(item, i) {
-                    Ember.setPath(item, sortKey, i);
+                    Ember.set(item, sortKey, i);
                 });
 
                 for (var i = start; i < start + addCount; i++) {
@@ -242,7 +242,7 @@ Flame.SortingArrayProxy = Ember.ArrayProxy.extend({
     _sort: function(array) {
         var sortKey = this.get('sortKey');
         array.sort(function(o1, o2) {
-            return Ember.compare(Ember.getPath(o1, sortKey), Ember.getPath(o2, sortKey));
+            return Ember.compare(Ember.get(o1, sortKey), Ember.get(o2, sortKey));
         });
     },
 

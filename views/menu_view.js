@@ -139,7 +139,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
                 if (item.isSelected) { this.set("highlightIndex", i); }
             }, this);
         }
-        this.getPath("contentView").setScrolledView(this._createMenuView());
+        this.get("contentView").setScrolledView(this._createMenuView());
         if (this.get("_anchorElement")) {
             this._updateMenuSize();
         }
@@ -368,7 +368,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     // Propagate internal selection to possible parent
     _internalSelectionDidChange: function() {
         var selected = this.get('internalSelection');
-        Ember.trySetPath(this, "parentMenu.internalSelection", selected);
+        Ember.trySet(this, "parentMenu.internalSelection", selected);
     }.observes('internalSelection'),
 
     _findIndex: function(identityFunc) {
