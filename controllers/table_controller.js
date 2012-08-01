@@ -44,12 +44,20 @@ Flame.TableController = Ember.Object.extend({
             var length = dataBatch.length;
             var mapping = this.get("_indexFromPathMapping");
             var cell, index;
+            var existing;
             for (var i = 0; i < length; i++) {
                 cell = dataBatch[i];
                 index = mapping[cell.path.row][cell.path.column];
                 cell.rowHeaderParams = rowLeafs[index[0]].params;
                 cell.columnHeaderParams = columnLeafs[index[1]].params;
                 cell = fields[index[valuesOn === 'row' ? 0 : 1]].createCell(cell);
+                // Handle pending attributes
+                existing = _data[index[0]][index[1]];
+                if (existing && existing.pending) {
+                    for (var x in existing.pending) {
+                        cell[x] = existing.pending[x]
+                    }
+                }
                 _data[index[0]][index[1]] = cell;
                 dirtyCells.push(index);
             }
