@@ -148,11 +148,6 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
         return true;
     },
 
-    // Override to disallow certain reordering
-    isValidReorderOperation: function(fromIndex, toIndex) {
-        return true;
-    },
-
     idle: Flame.State.extend({
         moveUp: function() { return this.get('owner').changeSelection(-1); },
         moveDown: function() { return this.get('owner').changeSelection(1); },
