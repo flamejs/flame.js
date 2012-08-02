@@ -100,10 +100,10 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
         }
     },
 
-    isValidDrop: function(itemDragged, newParent) {
+    isValidDrop: function(itemDragged, newParent, dropTarget) {
         var delegate = this.get('reorderDelegate');
         if (delegate && delegate.isValidDrop) {
-            return delegate.isValidDrop(itemDragged, newParent);
+            return delegate.isValidDrop(itemDragged, newParent, dropTarget);
         } else {
             return true;
         }
@@ -145,11 +145,6 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
 
     // Override if needed, return false to disallow reordering that particular item
     allowReorderingItem: function(itemIndex) {
-        return true;
-    },
-
-    // Override to disallow certain reordering
-    isValidReorderOperation: function(fromIndex, toIndex) {
         return true;
     },
 
