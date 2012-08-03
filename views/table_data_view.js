@@ -518,7 +518,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         this.manipulateCells(this.get('cellsMarkedForUpdate'), function(cell, element, isEvenColumn) {
             if (cell.pending) {
                 // Cell isn't loaded yet, insert a placeholder value
-                cell.pending.isUpdatin = true;
+                cell.pending.isUpdating = true;
                 element.className += (isEvenColumn ? " even-col" : " odd-col");
             } else {
                 cell.isUpdating = true;
