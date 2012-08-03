@@ -517,10 +517,11 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
     _updatingCellsDidChange: function() {
         this.manipulateCells(this.get('cellsMarkedForUpdate'), function(cell, element, isEvenColumn) {
             if (cell.pending) {
-                cell.pending["isUpdating"] = true;
-                element.className +=  (isEvenColumn ? " even-col" : " odd-col");
+                // Cell isn't loaded yet, insert a placeholder value
+                cell.pending.isUpdatin = true;
+                element.className += (isEvenColumn ? " even-col" : " odd-col");
             } else {
-                cell.isUpdating = true
+                cell.isUpdating = true;
                 var cssClassesString = cell.cssClassesString() + (isEvenColumn ? " even-col" : " odd-col");
                 element.className = cssClassesString;
             }
@@ -554,7 +555,8 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             index = cellRefs[i];
             var x = index[0], y = index[1];
             if (!data[x][y]) {
-                data[x][y]={pending: {}};
+                // Possibly updating a cell that's still being batch loaded, insert a placeholder for update attributes
+                data[x][y] = {pending: {}};
             }
             cell = data[x][y];
             element = allCells[x * columnLength + y];
