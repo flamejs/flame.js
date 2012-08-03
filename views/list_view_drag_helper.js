@@ -281,7 +281,7 @@ Flame.ListViewDragHelper = Ember.Object.extend({
                 newParent = newParentItemView.get('content');
             }
         }
-        var isValid = this.get('listView').isValidDrop(itemDragged, newParent);
+        var isValid = this.get('listView').isValidDrop(itemDragged, newParent, dropTarget);
         return !isValid;
     },
 
