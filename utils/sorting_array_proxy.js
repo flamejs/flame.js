@@ -226,7 +226,7 @@ Flame.SortingArrayProxy = Ember.ArrayProxy.extend({
                 }
             });
         }
-     },
+    },
 
     // TODO might be useful to make the replacing more fine-grained?
     _sortAndReplaceContent: function(newContent) {
