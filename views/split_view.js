@@ -8,7 +8,7 @@ Flame.SplitView = Flame.View.extend({
 
         idle: Flame.State.extend({
             mouseDown: function(event) {
-                var parentView = this.getPath('owner.parentView');
+                var parentView = this.get('owner.parentView');
                 if (!parentView.get('allowResizing')) return false;
                 parentView.startResize(event);
                 this.gotoState('resizing');
@@ -16,7 +16,7 @@ Flame.SplitView = Flame.View.extend({
             },
 
             doubleClick: function(event) {
-                var parentView = this.getPath('owner.parentView');
+                var parentView = this.get('owner.parentView');
                 if (!parentView.get('allowResizing')) return false;
                 parentView.toggleCollapse(event);
                 return true;
@@ -25,7 +25,7 @@ Flame.SplitView = Flame.View.extend({
 
         resizing: Flame.State.extend({
             mouseMove: function(event) {
-                this.getPath('owner.parentView').resize(event);
+                this.get('owner.parentView').resize(event);
                 return true;
             },
 

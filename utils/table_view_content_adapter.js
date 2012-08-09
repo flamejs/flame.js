@@ -2,15 +2,15 @@ Flame.TableViewContentAdapter = Ember.Object.extend({
     content: null,
 
     headers: function() {
-        return this.getPath('content._headers');
+        return this.get('content._headers');
     }.property('content._headers').cacheable(),
 
     columnLeafs: function() {
-        return this.getPath('content.columnLeafs');
+        return this.get('content.columnLeafs');
     }.property('content.columnLeafs').cacheable(),
 
     rowLeafs: function() {
-        return this.getPath('content.rowLeafs');
+        return this.get('content.rowLeafs');
     }.property('content.rowLeafs').cacheable(),
 
     columnHeaderRows: function() {

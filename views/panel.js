@@ -47,7 +47,7 @@ Flame.Panel = Flame.RootView.extend({
         idle: Flame.State.extend({
             mouseDown: function(event) {
                 var owner = this.get('owner');
-                if (!owner.getPath('parentView.allowMoving')) {
+                if (!owner.get('parentView.allowMoving')) {
                     return true;
                 }
                 owner._pageX = event.pageX;
@@ -86,7 +86,7 @@ Flame.Panel = Flame.RootView.extend({
             mouseDown: function(event) {
                 var owner = this.get('owner');
                 var panelElement = owner.get('parentView').$();
-                if (!owner.getPath('parentView.isResizable')) {
+                if (!owner.get('parentView.isResizable')) {
                     return true;
                 }
                 owner._pageX = event.pageX;
@@ -121,7 +121,7 @@ Flame.Panel = Flame.RootView.extend({
 
             parentPanel: null,
             mouseDown: function() {
-                if (this.getPath('parentPanel.allowClosingByClickingOutside')) {
+                if (this.get('parentPanel.allowClosingByClickingOutside')) {
                     this.get('parentPanel').close();
                 }
                 return true;

@@ -39,7 +39,7 @@ Flame.ArrayTableController = Flame.DataTableController.extend(Flame.TableSortSup
                 };
             }),
             columnHeaders: this.get('columns').map(function(column, i) {
-                return {label: Ember.getPath(column, 'label'), property: Ember.getPath(column, 'property')};
+                return {label: Ember.get(column, 'label'), property: Ember.get(column, 'property')};
             })
         };
     }.property('content.@each', 'columns', 'headerProperty', 'rowHeadersClickable').cacheable(),
@@ -50,7 +50,7 @@ Flame.ArrayTableController = Flame.DataTableController.extend(Flame.TableSortSup
         return this.get('content').map(function(object, i) {
             return columns.map(function(column, j) {
                 // add observer for in-place cell refreshing
-                var propertyName = Ember.getPath(column, 'property');
+                var propertyName = Ember.get(column, 'property');
                 var observerMethod = function() {
                     return function(sender, key, value) {
                         self.pushDataBatch([{path: {row: [i], column: [j]}, value: value}]);
@@ -58,7 +58,7 @@ Flame.ArrayTableController = Flame.DataTableController.extend(Flame.TableSortSup
                 }();
                 self._setPropertyObserver(object, propertyName, observerMethod);
 
-                return Ember.get(object, Ember.getPath(column, 'property'));
+                return Ember.get(object, Ember.get(column, 'property'));
             });
         });
     }.property('headers').cacheable(),

@@ -13,8 +13,8 @@ Flame.DisclosureView = Flame.LabelView.extend({
     handlebars: '<img {{bindAttr src="image"}}> {{value}}',
 
     action: function() {
-        var value = this.getPath('visibilityTarget');
-        this.setPath('visibilityTarget', !value);
+        var value = this.get('visibilityTarget');
+        this.set('visibilityTarget', !value);
         return true;
     }
 });
