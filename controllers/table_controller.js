@@ -34,6 +34,9 @@ Flame.TableController = Ember.Object.extend({
             if (!headers) {
                 throw "Can't push data without first setting headers!";
             }
+
+            if (!this._dataBatchIsForCurrentTable(dataBatch)) return;
+
             var dirtyCells = this.get('dirtyCells').slice(); // clone array
             var valuesOn = this.get('valuesOn');
             var fields = this.get(valuesOn + 'Leafs');
@@ -55,6 +58,17 @@ Flame.TableController = Ember.Object.extend({
             }
             this.set('dirtyCells', dirtyCells);
         }
+    },
+
+    // If the table is changed (e.g. by loading another data set into it) during batching,
+    // it can get out of sync - i.e. callbacks receive batches for now obsolete cells, which in turn would
+    // crash the UI as it would try to access missing cells.
+    // Here we'll ensure that the batch belongs actually to current table by checking if first AND last
+    // item in the batch are accessible.
+    _dataBatchIsForCurrentTable : function(dataBatch) {
+        var length = dataBatch.length;
+        var mapping = this.get("_indexFromPathMapping");
+        return length > 0 ? mapping[dataBatch[0].path.row] && mapping[dataBatch[length-1].path.row] : false;
     },
 
     _indexFromPathMapping: function() {
