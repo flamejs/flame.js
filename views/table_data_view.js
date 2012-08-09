@@ -28,8 +28,9 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
     selected: Flame.State.extend({
         mouseDown: function(event) {
             var target = jQuery(event.target);
+            var selectedDataCell = this.getPath('owner.selectedDataCell');
             // If a cell is clicked that was already selected, start editing it
-            if (target.hasClass('table-selection') && this.getPath('owner.selectedDataCell.options')) {
+            if (target.hasClass('table-selection') && selectedDataCell.options && selectedDataCell.options()) {
                 this.startEdit();
                 return true;
             } else return !!this.get('owner').selectCell(target);
