@@ -44,12 +44,21 @@ Flame.TableController = Ember.Object.extend({
             var length = dataBatch.length;
             var mapping = this.get("_indexFromPathMapping");
             var cell, index;
+            var existingObject;
             for (var i = 0; i < length; i++) {
                 cell = dataBatch[i];
                 index = mapping[cell.path.row][cell.path.column];
                 cell.rowHeaderParams = rowLeafs[index[0]].params;
                 cell.columnHeaderParams = columnLeafs[index[1]].params;
                 cell = fields[index[valuesOn === 'row' ? 0 : 1]].createCell(cell);
+                // Cell attributes might have been updated before it's loaded (for example isUpdating might be set while data is still being batched),
+                // in this case pending attributes are recorded in a placeholder object with "pending" attribute.
+                existingObject = _data[index[0]][index[1]];
+                if (existingObject && existingObject.pending) {
+                    for (var pendingAttributeName in existingObject.pending) {
+                        cell[pendingAttributeName] = existingObject.pending[pendingAttributeName];
+                    }
+                }
                 _data[index[0]][index[1]] = cell;
                 dirtyCells.push(index);
             }
