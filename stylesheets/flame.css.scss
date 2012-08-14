@@ -285,6 +285,12 @@ body {
 }
 
 .flame-modal-pane {
+    background-color: black;
+    @include opacity(0.001);
+
+    &.dim-background {
+        @include opacity(0.15);
+    }
 }
 
 .flame-alert-panel {
@@ -295,11 +301,6 @@ body {
     .flame-label-view {
         line-height: 18px;
     }
-}
-
-.dim-background {
-     background-color: black;
-     @include opacity(0.15);
 }
 
 .flame-list-view {
