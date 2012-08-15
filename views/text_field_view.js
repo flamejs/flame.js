@@ -49,6 +49,7 @@ Flame.TextFieldView = Flame.View.extend(Flame.ActionSupport, {
         // before the changed value is propagated to this.value property.
         insertNewline: function() {
             this._elementValueDidChange();
+            Ember.run.sync();
             return false;
         },
 
