@@ -45,7 +45,14 @@ Flame.TextFieldView = Flame.View.extend(Flame.ActionSupport, {
             return false;
         },
 
-        insertNewline: function() { return false; },
+        // Trigger a value change notification also when inserting a new line. Otherwise the action could be fired
+        // before the changed value is propagated to this.value property.
+        insertNewline: function() {
+            this._elementValueDidChange();
+            Ember.run.sync();
+            return false;
+        },
+
         cancel: function() { return false; },
 
         // The problem here is that we need browser's default handling for these events to make the input field
