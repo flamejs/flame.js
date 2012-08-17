@@ -300,8 +300,8 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                         backgroundColor: backgroundColor
                     });
                     var editValue = owner.editableValue(dataCell);
-
                     editCell.val(editValue);
+                    editCell.attr('placeholder', dataCell.placeholder());
                     owner.set('editValue', null);
                     editCell.show();
                     // Put cursor at end of value
