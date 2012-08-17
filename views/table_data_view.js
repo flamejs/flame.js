@@ -249,11 +249,17 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         mouseDown: function(event) {
             var owner = this.get('owner');
             var cell = jQuery(event.target);
+            var editField = owner.get('editField');
             if (owner.isCellSelectable(cell) && owner._confirmEdit()) {
                 this.gotoState('selected');
                 owner.selectCell(cell);
                 return true;
-            } else { return false; }
+            } else if (cell && editField && cell[0] !== editField[0] && !owner._confirmEdit()) {
+                editField.focus();
+                return true;
+            } else {
+                return false;
+            }
         },
 
         enterState: function() {
