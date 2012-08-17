@@ -166,11 +166,16 @@ Flame.FormView = Flame.View.extend({
                     if (Ember.none(offset)) return;
 
                     var zIndex = Flame._zIndexCounter;
+                    var errorMessage = validationMessage;
+                    if (jQuery.isFunction(validationMessage)) {
+                        // XXX This will only work with controls with the value in the 'value' property
+                        errorMessage = validationMessage(this.get('value'));
+                    }
                     var errorView = Flame.LabelView.extend({
                         classNames: 'flame-form-view-validation-error'.w(),
                         textAlign: Flame.ALIGN_LEFT,
                         layout: { top: offset.top - 7, left: offset.left + element.outerWidth() - 4, width: null, height: null, zIndex: zIndex },
-                        value: validationMessage,
+                        value: errorMessage,
                         handlebars: '<div class="error-triangle"></div><div class="error-box">{{value}}</div>'
                     }).create().append();
 
