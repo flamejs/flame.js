@@ -775,6 +775,17 @@ input[type="password"] {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            &.sort-asc, &.sort-desc {
+                background-repeat: no-repeat;
+                padding-left: 15px;
+                background-position: 0px 3px;
+            }
+            &.sort-asc {
+               background-image: image-url('images/sort_asc.png');
+            }
+            &.sort-desc {
+               background-image: image-url('images/sort_desc.png');
+            }
         }
 
         td {

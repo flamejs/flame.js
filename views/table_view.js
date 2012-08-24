@@ -23,6 +23,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     cellUpdateDelegate: null,
     clickDelegate: null,
     resizeDelegate: null,
+    headerSortDelegate: null,
     content: null,  // Set to a Flame.TableController
     allowRefresh: true,
     batchUpdates: true,
@@ -278,7 +279,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
 
     _renderRow: function(buffer, row, type, depth) {
         var length = row.length;
-        var label, arrow, headerLabel;
+        var label, sortDirection, headerLabel;
         for (var i = 0; i < length; i++) {
             var header = row[i];
             buffer = buffer.begin('td');
@@ -303,12 +304,12 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                     buffer = buffer.push('<div class="resize-handle">&nbsp;</div>');
                 }
 
-                label = '<div class="label">%@';
-
-                if (arrow) {
-                    label += '<img src="%@" style="vertical-align: middle" />'.fmt(arrow);
+                var headerSortDelegate = this.get('headerSortDelegate');
+                if (headerSortDelegate && headerSortDelegate.getSortForHeader) {
+                    sortDirection = headerSortDelegate.getSortForHeader(header);
                 }
-                label += '</div>';
+                var sortClass = sortDirection ? 'sort-%@'.fmt(sortDirection) : '';
+                label = '<div class="label ' + sortClass +'">%@</div>';
             } else if (type === 'row') {
                 buffer = buffer.attr('data-index', depth % this.getPath('content.rowLeafs').length);
                 if (this.get('renderColumnHeader')) {
