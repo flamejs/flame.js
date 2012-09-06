@@ -29,7 +29,9 @@ Flame.ActionSupport = {
         if (action) {
             var actionFunction = 'function' === typeof action ? action : Ember.get(target, action);
             if (!actionFunction) throw 'Target %@ does not have action %@'.fmt(target, action);
-            return actionFunction.call(target, payload || this.get('payload') || this, action, this);
+            var actualPayload = !Ember.none(payload) ? payload : this.get('payload');
+            if (Ember.none(actualPayload)) { actualPayload = this; }
+            return actionFunction.call(target, actualPayload, action, this);
         }
 
         return false;
