@@ -46,9 +46,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     }),
 
     rowDepth: function() {
-        return this.getPath('contentAdapter.rowHeaderRows').map(function(a) {
-            return a.length;
-        }).max();
+        return this.getPath('contentAdapter.rowHeaderRows.maxDepth');
     }.property('contentAdapter.rowHeaderRows').cacheable(),
 
     idle: Flame.State.extend({
@@ -125,9 +123,23 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                 this.getPath('owner.columnHeader').parent().css('left', '%@px'.fmt(width));
                 this.getPath('owner.tableCorner').css('width', '%@px'.fmt(width));
                 // Update column width
-                var depth = this.getPath('owner.rowDepth');
-                leafIndex = depth - cell.nextAll().length;
-                cell.parents('table').find('colgroup :nth-child(%@)'.fmt(leafIndex)).css('width', '%@px'.fmt(cellWidth));
+                var totalDepth = this.getPath('owner.rowDepth');
+                var remainingDepth = 0;
+                // must account for row headers spanning multiple columns to get the right leafIndex and width
+                cell.nextAll().each(function() {
+                    var colspan = $(this).attr('colspan');
+                    remainingDepth += colspan ? parseInt(colspan) : 1;
+                });
+                leafIndex = totalDepth - remainingDepth;
+
+                var colWidth = cellWidth;
+                if ($(cell).attr('colspan')) {
+                    var colStart = leafIndex - parseInt($(cell).attr('colspan'), 10) + 1; // the first column included in the span
+                    for(colStart; colStart < leafIndex; colStart++) {
+                        colWidth -= parseInt(cell.parents('table').find('colgroup :nth-child(%@)'.fmt(colStart)).css('width'), 10);
+                    }
+                }
+                cell.parents('table').find('colgroup :nth-child(%@)'.fmt(leafIndex)).css('width', '%@px'.fmt(colWidth));
             }
         },
 
@@ -315,7 +327,21 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                 if (this.get('renderColumnHeader')) {
                     if (this.get("isResizable")) {
                         if (header.hasOwnProperty('children')) {
-                            buffer = buffer.push('<div class="resize-handle" style="height: %@px"></div>'.fmt(header.children.length * 21));
+                            // Ensure that resize-handle covers the whole height of the cell border. Mere child count
+                            // does not suffice with multi-level row headers.
+                            var leafCount = function countLeaves(headerNode) {
+                                if (headerNode.hasOwnProperty('children')) {
+                                    var count = 0;
+                                    for (var idx = 0; idx < headerNode.children.length; idx++) {
+                                        count += countLeaves(headerNode.children[idx]);
+                                    }
+                                    return count;
+                                } else {
+                                    return 1;
+                                }
+                            }(header);
+
+                            buffer = buffer.push('<div class="resize-handle" style="height: %@px"></div>'.fmt(leafCount * 21));
                         } else {
                             buffer = buffer.push('<div class="resize-handle"></div>');
                         }
