@@ -128,7 +128,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                 // must account for row headers spanning multiple columns to get the right leafIndex and width
                 cell.nextAll().each(function() {
                     var colspan = $(this).attr('colspan');
-                    remainingDepth += colspan ? parseInt(colspan) : 1;
+                    remainingDepth += colspan ? parseInt(colspan, 10) : 1;
                 });
                 leafIndex = totalDepth - remainingDepth;
 
