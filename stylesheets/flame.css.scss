@@ -5,8 +5,10 @@
 
 @import "mixins";
 
+$default-font-size: 12px;
+
 body {
-    font-size: 12px;
+    font-size: $default-font-size;
     @include user-select(none);
 }
 
@@ -195,13 +197,13 @@ body {
 }
 
 .flame-select-button-view {
-    & label {
+    label {
         padding-left: 7px;
         text-align: left;
-        font-size: 12px;
+        font-size: $default-font-size;
     }
 
-    & div {
+    div {
         position: absolute;
         top: 1px;
         right: 1px;
@@ -213,6 +215,35 @@ body {
         padding: 0px 5px;
         border-radius: 0px 3px 3px 0px;
         @include gradient(#dddddd, #bbbbbb);
+    }
+}
+
+.flame-combo-box-view {
+    background: none;
+    border: none;
+    border-radius: none;
+    overflow: visible;
+
+    div.flame-text {
+        right: 0;
+        left: 0;
+        bottom: 0;
+        top: 0;
+        padding: 0;
+        border: none;
+        font-size: $default-font-size;
+        @include no-gradient();
+    }
+
+    div.flame-button-view {
+        border-radius: 0px 1px 1px 0px;
+        @include gradient(#eeeeee, #cccccc);
+
+        img {
+            position: relative;
+            top: -1px;
+            left: 1px;
+        }
     }
 }
 
