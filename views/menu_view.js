@@ -464,6 +464,9 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     _tryOpenSubmenu: function (selectItem) {
         var index = this.get("highlightIndex");
         var item = this.get("_menuItems").objectAt(index);
+        if (!item) {
+            return false;
+        }
         var subMenuItems = item.subMenuItems;
         if (!Ember.none(subMenuItems) && item.isEnabled() && subMenuItems.get("length") > 0) {
             this._clearKeySearch();

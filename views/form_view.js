@@ -269,10 +269,9 @@ Flame.FormView = Flame.View.extend({
                 settings.titleBinding = 'value';
                 return Flame.LabelView.extend(settings);
             case 'text':
-                if (descriptor.autocomplete) {
+                if (descriptor.isAutocomplete) {
                     settings.isAutocomplete = true;
-                    settings.autocompleteClass = descriptor.autocompleteClass;
-                    settings.autocompleteField = descriptor.autocompleteField;
+                    settings.autocompleteDelegate = descriptor.autocompleteDelegate;
                 }
                 return Flame.TextFieldView.extend(settings);
             case 'textarea':

@@ -19,9 +19,7 @@ Flame.TextFieldView = Flame.View.extend(Flame.ActionSupport, {
     isEditableLabel: false,
     isVisible: true,
     isAutocomplete: false,
-    autocompleteClass: null,
-    autocompleteField: null,
-    autocompleteOptions: [],
+    autocompleteDelegate: null,
 
     becomeKeyResponder: function() {
         this.get('textField').becomeKeyResponder();
@@ -48,7 +46,7 @@ Flame.TextFieldView = Flame.View.extend(Flame.ActionSupport, {
         keyUp: function() {
             this._elementValueDidChange();
             if ((event.which === 8 || event.which > 31) && this.get('isAutocomplete')) {
-                this.get('parentView')._fetchAutocompleteOptions();
+                this.get('parentView')._fetchAutocompleteResults();
                 return true;
             }
             return false;
@@ -77,28 +75,17 @@ Flame.TextFieldView = Flame.View.extend(Flame.ActionSupport, {
 
     _autocompleteView: null,
 
-    _fetchAutocompleteOptions: function() {
+    _fetchAutocompleteResults: function() {
         // Don't want to wait until the value has synced, so just grab the raw val from input
         var newValue = this.$('input').val();
         if (newValue) {
-            Rui.Ajax.get('/autocomplete', { model: this.autocompleteClass, field: this.autocompleteField, query: newValue},
-                { object: this, success: function(data) {
-                    this._updateAutocompleteOptions(data);
-                }
-            });
+            this.get('autocompleteDelegate').fetchAutocompleteResults(newValue, this);
         } else {
             this._closeAutocompleteMenu();
         }
     },
 
-    _closeAutocompleteMenu: function() {
-        if (this._autocompleteMenu){
-            this._autocompleteMenu.close();
-            this._autocompleteMenu = null;
-        }
-    },
-
-    _updateAutocompleteOptions: function(options) {
+    didFetchAutocompleteResults: function(options) {
         if (options.length === 0) {
             this._closeAutocompleteMenu();
             return;
@@ -114,6 +101,13 @@ Flame.TextFieldView = Flame.View.extend(Flame.ActionSupport, {
                 this._autocompleteMenu.popup(this);
         } else if (!this._autocompleteMenu.isDestroyed){
             this._autocompleteMenu.set('items', options);
+        }
+    },
+
+    _closeAutocompleteMenu: function() {
+        if (this._autocompleteMenu){
+            this._autocompleteMenu.close();
+            this._autocompleteMenu = null;
         }
     },
 
