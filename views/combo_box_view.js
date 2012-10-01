@@ -8,7 +8,7 @@ Flame.ComboBoxView = Flame.SelectButtonView.extend({
     acceptsKeyResponder: false,
 
     textView: Flame.TextFieldView.extend({
-        layout: { left: 0, right: 0 },
+        layout: { left: 0, right: 3 },
         valueBinding: 'parentView.value'
     }),
 
@@ -17,7 +17,7 @@ Flame.ComboBoxView = Flame.SelectButtonView.extend({
     buttonView: Flame.ButtonView.extend({
         acceptsKeyResponder: false,
         handlebars: '<img src="%@">'.fmt(Flame.image('select_button_arrow.png')),
-        layout: { right: -5, width: 22, height: 22 },
+        layout: { right: -2, width: 22, height: 22 },
 
         action: function() {
             this.get('parentView')._openMenu();

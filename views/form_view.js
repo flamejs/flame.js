@@ -226,7 +226,8 @@ Flame.FormView = Flame.View.extend({
         var settings = {
             layout: { topPadding: 1, bottomPadding: 1, width: this.get('controlWidth') },
             valueBinding: '^object.%@'.fmt(property),
-            isValid: Flame.computed.notEquals('parentView.parentView.object.%@IsValid'.fmt(property), false)
+            isValid: Flame.computed.notEquals('parentView.parentView.object.%@IsValid'.fmt(property), false),
+            isDisabled: Flame.computed.equals('parentView.parentView.object.%@IsDisabled'.fmt(property), true)
         };
         if (this.get('defaultFocus') === property) {
             settings.isDefaultFocus = true;
@@ -295,7 +296,11 @@ Flame.FormView = Flame.View.extend({
                     settings.itemTitleKey = descriptor.itemTitleKey || "title";
                     settings.items = descriptor.options;
                 }
-                return Flame.SelectButtonView.extend(settings);
+                if (!descriptor.get('allowNew')) {
+                    return Flame.SelectButtonView.extend(settings);
+                } else {
+                    return Flame.ComboBoxView.extend(settings);
+                }
         }
         throw 'Invalid control type %@'.fmt(type);
     },
