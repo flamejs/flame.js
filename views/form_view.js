@@ -270,6 +270,10 @@ Flame.FormView = Flame.View.extend({
                 settings.titleBinding = 'value';
                 return Flame.LabelView.extend(settings);
             case 'text':
+                if (descriptor.isAutocomplete) {
+                    settings.isAutocomplete = true;
+                    settings.autocompleteDelegate = descriptor.autocompleteDelegate;
+                }
                 return Flame.TextFieldView.extend(settings);
             case 'textarea':
                 settings.layout.height = descriptor.height || 70;
