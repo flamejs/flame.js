@@ -99,7 +99,7 @@ Flame.TextFieldView = Flame.View.extend(Flame.ActionSupport, {
                     items: options
                 });
                 this._autocompleteMenu.popup(this);
-        } else if (!this._autocompleteMenu.isDestroyed){
+        } else if (!this._autocompleteMenu.isDestroyed) {
             this._autocompleteMenu.set('items', options);
         }
     },
