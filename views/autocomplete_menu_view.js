@@ -24,5 +24,5 @@ Flame.AutocompleteMenuView = Flame.MenuView.extend({
         this._super();
         // See above
         this.get('textField').didBecomeKeyResponder();
-    },
+    }
 });
