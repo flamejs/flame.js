@@ -149,6 +149,10 @@ body {
         @include no-gradient();
         border: none;
 
+        .flame-checkbox-label {
+          color: #999
+        }
+
         .flame-checkbox-box {
             @include no-gradient();
             background: #EEE;
