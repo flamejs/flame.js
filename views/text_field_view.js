@@ -43,7 +43,7 @@ Flame.TextFieldView = Flame.View.extend(Flame.ActionSupport, {
         // Ember.TextSupport (which is mixed in by Ember.TextField) calls interpretKeyEvents on keyUp.
         // Since the event manager already calls interpretKeyEvents on keyDown, the action would be fired
         // twice, both on keyDown and keyUp. So we override the keyUp method and only record the value change.
-        keyUp: function() {
+        keyUp: function(event) {
             this._elementValueDidChange();
             if ((event.which === 8 || event.which > 31) && this.get('isAutocomplete')) {
                 this.get('parentView')._fetchAutocompleteResults();
