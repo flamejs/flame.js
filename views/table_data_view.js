@@ -10,9 +10,79 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
     initialState: 'loaded',
 
+    showQuickDrill: function() {
+        var selectedCell = this.get('selectedCell');
+        var dataCell = this.get('selectedDataCell');
+        var field = dataCell.field;
+        var columnIndex = parseInt(selectedCell.attr('data-index'), 10);
+        var rowIndex = parseInt(selectedCell.parent().attr('data-index'), 10);
+        var path = this.get('content').pathFromIndex([rowIndex, columnIndex]);
+        var quickDrillDelegate = this.get('quickDrillDelegate');
+
+        quickDrillDelegate.quickDrillDataFor(field, path);
+
+        var cv = Flame.View.extend({
+                layoutManager: Flame.VerticalStackLayoutManager.create({
+                        topMargin: 2,
+                        spacing: 1,
+                        bottomMargin: 4}),
+                        childViews: field.options.quickDrill
+                    });
+
+        for (var i=0; i<field.options.quickDrill.length; i++) {
+            var key = field.options.quickDrill[i];
+            var val = Flame.LabelView.extend({
+                layout: { top: 13, left: 70, right: 40 },
+                myIdx: i,
+                value: Ember.computed(function(key) {
+                    var results = quickDrillDelegate.get('quickDrillResults');
+                    var fieldName = Rui.Field.find(field.options.quickDrill[this.myIdx]).get('label');
+                    results = results == null || results[this.myIdx] == null ? '...' : results[this.myIdx].value;
+                    try {
+                        results = jQuery.parseJSON(results); // Might be json
+                    } catch (err) {;}
+                    if (results instanceof Object) { // Dump object types
+                        this.adjustLayout('height', 300); // And they need more room
+                        this.adjustLayout('height', 301); // ... seems this must really change for some reason?
+                        var results_string = "";
+                        for (var key in results) {
+                            results_string += key + ":" + results[key] + "\n";
+                        }
+                        results = results_string;
+                    }
+                    return fieldName + ': ' + results;
+                }).property('parentView.parentView.owner.quickDrillDelegate.quickDrillResults').cacheable(),
+            });
+
+            var opts = {};
+            opts[key] = val;
+            cv = cv.extend(opts);
+        }
+
+        cv.create();
+
+        var quickDrill = Flame.Popover.create({
+            layout: { width: 360 },
+            owner: this,
+            contentView: cv,
+        }).popup(selectedCell, Flame.POSITION_BELOW);
+
+    },
+
+    moveQuickDrillSymbol: function (quickDrillSymbol, target) {
+        var offset = target.offset();
+        offset.left -= target.offsetParent().offsetParent().offset().left; // the symbol is two nodes up in the hierarchy
+        offset.top -= target.offsetParent().offsetParent().offset().top;
+        quickDrillSymbol.adjustLayout('left', offset.left - 15);
+        quickDrillSymbol.adjustLayout('top', offset.top - 15);
+        quickDrillSymbol.$().css({position: 'absolute'});
+    },
+
     loaded: Flame.State.extend({
         mouseDown: function(event) {
             if (this.get('owner').selectCell(jQuery(event.target))) {
+                var quickDrillSymbol = this.getPath('owner.parentView.quickDrillSymbolView');
+                this.get('owner').moveQuickDrillSymbol(quickDrillSymbol, jQuery(event.target));
                 this.gotoState('selected');
                 return true;
             } else { return false; }
@@ -33,7 +103,14 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             if (target.hasClass('table-selection') && selectedDataCell.options && selectedDataCell.options()) {
                 this.startEdit();
                 return true;
-            } else return !!this.get('owner').selectCell(target);
+            } else {
+                var quickDrillSymbol = this.getPath('owner.parentView.quickDrillSymbolView');
+                var res = !!this.get('owner').selectCell(target);
+                if (res) {
+                    this.get('owner').moveQuickDrillSymbol(quickDrillSymbol, target)
+                }
+                return res;
+            }
         },
 
         insertNewline: function(event) {
@@ -336,6 +413,10 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         this.set('selectedCell', null);
         this.gotoState('loaded');
     },
+
+    selectedCellSupportsQuickDrill: function() {
+        return (this.get('selectedCell') && this.getPath('selectedDataCell.field.options.quickDrill')) != null;
+    }.property('selectedDataCell', 'selectedCell').cacheable(),
 
     // Get the Cell instance that corresponds to the selected cell in the view
     selectedDataCell: function() {
