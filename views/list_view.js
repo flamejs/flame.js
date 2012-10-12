@@ -1,15 +1,15 @@
 //= require ./collection_view
+//= require ./list_item_view
 //= require ./list_view_drag_helper
 
-/*
+/**
   Displays a list of items. Allows reordering if allowReordering is true.
 
   The reordering support is probably the most complicated part of this. It turns out that when reordering items,
   we cannot allow any of the observers on the content or childViews to fire, as that causes childViews to be
   updated, which causes flickering. Thus we update the DOM directly, and sneakily update the content and childViews
   arrays while suppressing the observers.
-
- */
+*/
 Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
     classNames: ['flame-list-view'],
     classNameBindings: ['isFocused'],
@@ -36,7 +36,7 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
         if (!this.get('allowSelection')) return false;
         var content = this.get('content');
         if (content) {
-            var childView = this.get('childViews').objectAt(index);
+            var childView = this.childViewForIndex(index);
             if (childView && childView.get('isVisible') && childView.get('allowSelection') !== false) {
                 var selection = content.objectAt(index);
                 this.set('selection', selection);
@@ -72,7 +72,7 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
         if (contentItem) {
             var index = (this.get('content') || []).indexOf(contentItem);
             if (index >= 0) {
-                var child = this.get('childViews').objectAt(index);
+                var child = this.childViewForIndex(index);
                 if (child) child.set('isSelected', status);
             }
         }
@@ -83,7 +83,7 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
         var childViews = this.get('childViews');
         var len = childViews.get('length');
         for (var i = 0; i < len; i++) {
-            var childView = childViews.objectAt(i);
+            var childView = this.childViewForIndex(i);
             if (childView) childView.set('contentIndex', i);
         }
         // In case the child views are using absolute positioning, also their positions need to be updated,
@@ -140,9 +140,6 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
         }
     },
 
-    normalize: function(startItem) {
-    },
-
     // Override if needed, return false to disallow reordering that particular item
     allowReorderingItem: function(itemIndex) {
         return true;
@@ -161,7 +158,7 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
             if (owner.get('allowReordering') && itemIndex !== undefined) {
                 if (owner.allowReorderingItem(itemIndex)) {
                     //console.log('Drag started on %s, dragging %s items', itemIndex, itemCount);
-                    var childView = owner.get('childViews').objectAt(itemIndex);
+                    var childView = owner.childViewForIndex(itemIndex);
                     owner.set('dragHelper', Flame.ListViewDragHelper.create({
                         listView: owner,
                         lastPageX: evt.pageX,
@@ -226,6 +223,9 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
             owner.set('dragHelper', undefined);
             owner.set('isDragging', false);
         }
-    })
+    }),
 
+    childViewForIndex: function(index) {
+        return this.get('childViews').findProperty('contentIndex', index);
+    }
 });
