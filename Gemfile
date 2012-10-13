@@ -1,6 +1,7 @@
 source 'http://rubygems.org'
 
-gem 'sprockets'
+gem 'rake'
+gem 'sprockets', '~> 2.4.5'
 gem 'sprockets-sass'
 gem 'sass'
 gem 'uglifier'
