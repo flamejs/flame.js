@@ -15,6 +15,12 @@ Flame.SplitView = Flame.View.extend({
                 return true;
             },
 
+            touchStart: function(event) {
+                // Normalize the event and send it to mouseDown
+                this.mouseDown(this.normalizeTouchEvents(event));
+                return true;
+            },
+
             doubleClick: function(event) {
                 var parentView = this.getPath('owner.parentView');
                 if (!parentView.get('allowResizing')) return false;
@@ -29,7 +35,16 @@ Flame.SplitView = Flame.View.extend({
                 return true;
             },
 
-            mouseUp: Flame.State.gotoHandler('idle')
+            touchMove: function(event) {
+                // Don't scroll the page while we're doing this
+                event.preventDefault();
+                // Normalize the event and send it to mouseDown
+                this.mouseMove(this.normalizeTouchEvents(event));
+                return true;
+            }
+
+            mouseUp: Flame.State.gotoHandler('idle'),
+            touchEnd: Flame.State.gotoHandler('idle')
         })
     })
 });
