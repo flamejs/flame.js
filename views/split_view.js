@@ -41,7 +41,7 @@ Flame.SplitView = Flame.View.extend({
                 // Normalize the event and send it to mouseDown
                 this.mouseMove(this.normalizeTouchEvents(event));
                 return true;
-            }
+            },
 
             mouseUp: Flame.State.gotoHandler('idle'),
             touchEnd: Flame.State.gotoHandler('idle')
