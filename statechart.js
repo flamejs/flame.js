@@ -5,6 +5,32 @@ Flame.State = Ember.Object.extend({
         this.get('owner').gotoState(stateName);
     },
 
+    // Touch events sometimes hide useful data in an originalEvent sub-hash.
+    normalizeTouchEvents: function(event) {
+        if (!event.touches) {
+            event.touches = event.originalEvent.touches;
+        }
+        if (!event.pageX) {
+            event.pageX = event.originalEvent.pageX;
+        }
+        if (!event.pageY) {
+            event.pageY = event.originalEvent.pageY;
+        }
+        if (!event.screenX) {
+            event.screenX = event.originalEvent.screenX;
+        }
+        if (!event.screenY) {
+            event.screenY = event.originalEvent.screenY;
+        }
+        if (!event.clientX) {
+            event.clientX = event.originalEvent.clientX;
+        }
+        if (!event.clientY) {
+            event.clientY = event.originalEvent.clientY;
+        }
+        return event;
+    },
+
     $: function(args) {
         args = Array.prototype.slice.call(arguments);
         var owner = this.get('owner');
