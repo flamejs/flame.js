@@ -31,5 +31,21 @@ Flame.ListItemView = Flame.View.extend({
         } else {
             return false;
         }
+    },
+
+    // Handle touch events by normalizing events and handing to mouse events
+    touchMove: function(evt) {
+        this.mouseMove(Flame.State.normalizeTouchEvents(evt));
+        return true;
+    },
+
+    touchStart: function(evt) {
+        this.mouseDown(Flame.State.normalizeTouchEvents(evt));
+        return true;
+    },
+
+    touchEng: function(evt) {
+        this.mouseUp(Flame.State.normalizeTouchEvents(evt));
+        return true;
     }
 });
