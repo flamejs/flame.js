@@ -24,6 +24,14 @@ Flame.LabelView = Flame.View.extend(Flame.ActionSupport, {
     // and the mouse responder logic will relay mouseUp directly to the view that handler mouseDown.
     mouseUp: function(evt) {
         return true;
+    },
+
+    // Apply the same logic to touchStart and touchEnd
+    touchStart: function(evt) {
+        return this.fireAction();
+    },
+    touchEnd: function(evt) {
+        return true;
     }
 });
 
