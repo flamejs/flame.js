@@ -279,9 +279,9 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                         parent: owner, // Reference to the cube table view
                         items: options.map(function(o) {
                             return {
-                                title: o[0],
-                                value: o[1],
-                                isChecked: o[1] === dataCell.value,
+                                title: o.title,
+                                value: o.value,
+                                isChecked: o.value === dataCell.value,
                                 action: function() { owner.didSelectMenuItem(this.get('value')); }
                             };
                         }),
