@@ -57,6 +57,11 @@ Flame.Panel = Flame.RootView.extend({
                 owner._panelY = offset.top;
                 this.gotoState('moving');
                 return true;
+            },
+            touchStart: function(event) {
+                // Normalize the event and send it to mouseDown()
+                this.mouseDown(this.normalizeTouchEvents(event));
+                return true;
             }
         }),
 
@@ -71,7 +76,15 @@ Flame.Panel = Flame.RootView.extend({
                 element.css({left: newX, top: newY, right: '', bottom: '', marginLeft: '', marginTop: ''});
                 return true;
             },
-            mouseUp: Flame.State.gotoHandler('idle')
+            touchMove: function(event) {
+                // Don't scroll the page while doing this
+                event.preventDefault();
+                // Normalize the event and send it to mouseMove()
+                this.mouseMove(this.normalizeTouchEvents(event));
+                return true;
+            },
+            mouseUp: Flame.State.gotoHandler('idle'),
+            touchEnd: Flame.State.gotoHandler('idle')
         })
     }),
 
@@ -95,6 +108,11 @@ Flame.Panel = Flame.RootView.extend({
                 owner._startH = panelElement.outerHeight();
                 this.gotoState('resizing');
                 return true;
+            },
+            touchStart: function(event) {
+                // Normalize the event and send it to mouseDown()
+                this.mouseDown(this.normalizeTouchEvents(event));
+                return true;
             }
         }),
         resizing: Flame.State.extend({
@@ -108,7 +126,15 @@ Flame.Panel = Flame.RootView.extend({
                 parentView.$().css({width: newW, height: newH });
                 return true;
             },
-            mouseUp: Flame.State.gotoHandler('idle')
+            touchMove: function(event) {
+                // Don't scroll the page while resizing
+                event.preventDefault();
+                // Normalize the event and send it to mouseMove()
+                this.mouseMove(this.normalizeTouchEvents(event));
+                return true;
+            },
+            mouseUp: Flame.State.gotoHandler('idle'),
+            touchEnd: Flame.State.gotoHandler('idle')
         })
     }),
 
@@ -121,6 +147,12 @@ Flame.Panel = Flame.RootView.extend({
 
             parentPanel: null,
             mouseDown: function() {
+                if (this.getPath('parentPanel.allowClosingByClickingOutside')) {
+                    this.get('parentPanel').close();
+                }
+                return true;
+            },
+            touchStart: function() {
                 if (this.getPath('parentPanel.allowClosingByClickingOutside')) {
                     this.get('parentPanel').close();
                 }
