@@ -297,7 +297,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
             buffer = buffer.begin('td');
 
             headerLabel = header.get ? header.get('headerLabel') : header.label;
-            buffer = buffer.attr('title', headerLabel);
+            buffer = buffer.attr('title', headerLabel.replace(/<br>/g, '\n'));
 
             if (header.rowspan > 1) {
                 buffer = buffer.attr('rowspan', header.rowspan);
@@ -310,7 +310,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
             buffer.attr('class', (i % 2 === 0 ? "even-col" : "odd-col"));
             if (type === 'column' && !header.hasOwnProperty('children')) { // Leaf node
                 buffer = buffer.attr('data-index', i);
-                // Mark the leafIndex, so when sorting its trivial to find the correct field to sort by
+                // Mark the leafIndex, so when sorting it's trivial to find the correct field to sort by
                 buffer = buffer.attr('data-leaf-index', header.leafIndex);
                 if (this.get('isResizable') && this.get('renderColumnHeader')) {
                     buffer = buffer.push('<div class="resize-handle">&nbsp;</div>');
