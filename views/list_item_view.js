@@ -31,5 +31,31 @@ Flame.ListItemView = Flame.View.extend({
         } else {
             return false;
         }
+    },
+
+    // We don't have the normalize function available, so we'll pass
+    // these events to the relevant parent view handlers.
+    touchMove: function(evt) {
+        if (this._parentViewOnMouseDown !== undefined) {
+            return this._parentViewOnMouseDown.touchMove(evt);
+        } else {
+            return false;
+        }
+    },
+
+    touchStart: function(evt) {
+        // The same caveats apply as in mouseDown: store the parentView and hand the event up to it
+        this._parentViewOnMouseDown = this.get('parentView');
+        return this._parentViewOnMouseDown.mouseDownOnItem(this.get('contentIndex'), evt);
+    },
+
+    touchEnd: function(evt) {
+        if (this._parentViewOnMouseDown !== undefined) {
+            var parentView = this._parentViewOnMouseDown;
+            this._parentViewOnMouseDown = undefined;
+            return parentView.mouseUpOnItem(evt);
+        } else {
+            return false;
+        }
     }
 });

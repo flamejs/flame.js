@@ -202,6 +202,13 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
                 owner.startReordering(dragHelper, event);
             }
             return true;
+        },
+
+        touchEnd: Flame.State.gotoHandler('idle'),
+
+        touchMove: function(event) {
+            this.mouseMove(this.normalizeTouchEvents(event));
+            return true;
         }
     }),
 
@@ -211,6 +218,13 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
         },
 
         mouseUp: Flame.State.gotoHandler('idle'),
+
+        touchMove: function(event) {
+            this.mouseMove(this.normalizeTouchEvents(event));
+            return true;
+        },
+
+        touchEnd: Flame.State.gotoHandler('idle'),
 
         // Start reorder drag operation
         enterState: function() {
