@@ -292,6 +292,19 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     _renderRow: function(buffer, row, type, depth) {
         var length = row.length;
         var label, sortDirection, headerLabel;
+
+        function countLeaves(headerNode) {
+            if (headerNode.hasOwnProperty('children')) {
+                var count = 0;
+                for (var idx = 0; idx < headerNode.children.length; idx++) {
+                    count += countLeaves(headerNode.children[idx]);
+                }
+                return count;
+            } else {
+                return 1;
+            }
+        }
+
         for (var i = 0; i < length; i++) {
             var header = row[i];
             buffer = buffer.begin('td');
@@ -329,17 +342,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                         if (header.hasOwnProperty('children')) {
                             // Ensure that resize-handle covers the whole height of the cell border. Mere child count
                             // does not suffice with multi-level row headers.
-                            var leafCount = function countLeaves(headerNode) {
-                                if (headerNode.hasOwnProperty('children')) {
-                                    var count = 0;
-                                    for (var idx = 0; idx < headerNode.children.length; idx++) {
-                                        count += countLeaves(headerNode.children[idx]);
-                                    }
-                                    return count;
-                                } else {
-                                    return 1;
-                                }
-                            }(header);
+                            var leafCount = countLeaves(header);
 
                             buffer = buffer.push('<div class="resize-handle" style="height: %@px"></div>'.fmt(leafCount * 21));
                         } else {
