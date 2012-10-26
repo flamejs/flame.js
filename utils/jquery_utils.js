@@ -21,3 +21,27 @@ jQuery.fn.replaceClasses = function(newClasses) {
     return this;
 };
 
+/** Clone an element, removing metamorph binding tags and ember metadata */
+jQuery.fn.safeClone = function() {
+    var clone = jQuery(this).clone();
+    // Remove content bindings
+    clone.find('script[id^=metamorph]').remove();
+
+    // Remove attr bindings
+    clone.find('*').each(function() {
+        var $this = jQuery(this);
+        var i, attribute;
+        var length = $this[0].attributes.length;
+        for (i = 0; i < length; i++) {
+            attribute = $this[0].attributes[i];
+            if (attribute && attribute.name.match(/^data-(bindattr|ember)/)) {
+                $this.removeAttr(attr.name);
+            }
+        }
+    });
+
+    // Remove ember ids
+    clone.find('[id^=ember]').removeAttr('id');
+
+    return clone;
+};
