@@ -21,6 +21,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
 
     defaultColumnWidth: 88,
     cellUpdateDelegate: null,
+    mouseUpDelegate: null,
     clickDelegate: null,
     resizeDelegate: null,
     headerSortDelegate: null,
@@ -41,6 +42,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         totalRowIdsBinding: '^content.totalRowIds',
         totalColumnIdsBinding: '^content.totalColumnIds',
         cellUpdateDelegateBinding: '^cellUpdateDelegate',
+        mouseUpDalegateBinding: '^mouseUpDelegate',
         cellsMarkedForUpdateBinding: '^content.cellsMarkedForUpdate',
         batchUpdatesBinding: '^batchUpdates'
     }),

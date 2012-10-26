@@ -18,6 +18,19 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             } else { return false; }
         },
 
+        mouseUp: function(event) {
+            if (this.getPath('owner.parentView.mouseUpDelegate')) {
+                try {
+                    var target = jQuery(event.target);
+                    var rowIndex = target.parent().parent().attr('data-index');
+                    var columnIndex = target.parent().attr('data-index');
+                    var targetDataCell = this.getPath('owner.data')[rowIndex][columnIndex];
+                    var index = [rowIndex, columnIndex];
+                    this.getPath('owner.parentView.mouseUpDelegate').mouseUp(event, target, targetDataCell, index, this.get('owner'));
+                } catch (e) {;}
+            }
+        },
+
         enterState: function() {
             if (this.getPath('owner.state') === "inDOM") {
                 this.getPath('owner.selection').hide();
@@ -34,6 +47,19 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                 this.startEdit();
                 return true;
             } else return !!this.get('owner').selectCell(target);
+        },
+
+        mouseUp: function(event) {
+            if (this.getPath('owner.parentView.mouseUpDelegate')) {
+                try {
+                    var target = jQuery(event.target);
+                    var targetDataCell = this.getPath('owner.data')[target.parent().parent().attr('data-index')][target.parent().attr('data-index')];
+                    var rowIndex = target.parent().parent().attr('data-index');
+                    var columnIndex = target.parent().attr('data-index');
+                    var index = [rowIndex, columnIndex];
+                    this.getPath('owner.parentView.mouseUpDelegate').mouseUp(event, target, targetDataCell, index, this.get('owner'));
+                } catch(e) {;}
+            }
         },
 
         insertNewline: function(event) {
@@ -493,7 +519,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                         (cssClassesString + (j % 2 === 0 ? " even-col" : " odd-col")),
                         cellWidth,
                         (cell && cell.titleValue ? 'title="%@"'.fmt(cell.titleValue()) : ''),
-                        (cell ? cell.formattedValue() : '<span style="color: #999">...</span>')));
+                        (cell ? cell.content() : '<span style="color: #999">...</span>')));
             }
             buffer.push("</tr>");
         }
@@ -510,10 +536,10 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
     _cellsDidChange: function() {
         this.manipulateCells(this.get('dirtyCells'), function(cell, element, isEvenColumn) {
             var cssClassesString = (cell ? cell.cssClassesString() : "") + (isEvenColumn ? " even-col" : " odd-col");
-            var formattedValue = cell.formattedValue();
+            var content = cell.content();
             var titleValue = cell.titleValue && cell.titleValue();
             element.className = cssClassesString;
-            element.innerHTML = Ember.none(formattedValue) ? "" : formattedValue;
+            element.innerHTML = Ember.none(content) ? "" : content;
             if (titleValue) {
                 element.title = titleValue;
             }
