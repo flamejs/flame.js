@@ -7,6 +7,10 @@ Flame.TableCell = function(opts) {
     }
 };
 
+Flame.TableCell.prototype.content = function() {
+    return this.formattedValue();
+}
+
 Flame.TableCell.prototype.formattedValue = function() {
     return this.value === null ? '' : this.value;
 };
