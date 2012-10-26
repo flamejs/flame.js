@@ -1,4 +1,3 @@
-
 // In IE7, Range is not defined, which Metamorph handles with a fallback
 if (typeof Range !== "undefined") {
   // In IE9, Range is defined but createContextualFragment is not, which Metamorph doesn't handle
@@ -44,4 +43,3 @@ function selectText(element) {
         }
     }
 }
-

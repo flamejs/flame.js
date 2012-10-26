@@ -1,7 +1,7 @@
 //= require ./panel
 //= require ./collection_view
 //= require ../mixins/action_support
-//= require ./scroll_view
+//= require ./menu_scroll_view
 
 /* Only to be used in Flame.MenuView. Represent menu items with normal JS objects as creation of one Ember object took
  * 3.5 ms on fast IE8 machine.
@@ -61,7 +61,7 @@ Flame.MenuItem = function(opts) {
 Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     classNames: ['flame-menu'],
     childViews: ['contentView'],
-    contentView: Flame.ScrollView,
+    contentView: Flame.MenuScrollView,
     dimBackground: false,
     subMenuKey: 'subMenu',
     itemTitleKey: "title",

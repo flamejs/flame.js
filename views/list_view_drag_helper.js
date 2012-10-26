@@ -1,4 +1,4 @@
-/*
+/**
   This helper class hides the ugly details of doing dragging in list views and tree views.
 
   One challenge in the implementation is how to designate a specific potential drop position.
@@ -12,15 +12,15 @@
   doing the insertion, positions potentially have a different meaning. It can be taken into
   account but it results into convoluted code.
 
-  Better approach is to use unambiguous drop position designators. Such a designator can be
+  A better approach is to use unambiguous drop position designators. Such a designator can be
   constructed by naming an existing item in the tree (identified with a path *before* the
   item being moved is removed), and stating the insertion position relative to that. We need
   three insertion position indicators: before, after and inside (= as the first child, needed
-  when there's currently no children at all). We can represent those as letters 'b', 'a' and
+  when there are currently no children at all). We can represent those as letters 'b', 'a' and
   'i'. This is handled in the nested Path class.
 
   In order to support dragging, items on all levels must provide a property 'childListView'
-  thar returns the view that has as its children all the items on the next level. If the
+  that returns the view that has as its children all the items on the next level. If the
   object has nothing underneath it, it must return null.
   This is useful when the item views are complex and do not directly contain their child
   items as their only child views.
@@ -38,7 +38,7 @@
 
   Here V is not ItemView but others are. Then A and Y should return itself, X should return V, and
   1 to 4 and Z should return null.
- */
+*/
 Flame.ListViewDragHelper = Ember.Object.extend({
     listView: undefined,
     lastPageX: undefined,
@@ -170,7 +170,7 @@ Flame.ListViewDragHelper = Ember.Object.extend({
             targetElement.find('.flame-list-view').first().prepend(element);
             targetChildViews.insertAt(0, view);
             targetContent.insertAt(0, contentItem);
-        } else throw 'Invalid insert position '+targetPath.position;
+        } else throw 'Invalid insert position ' + targetPath.position;
 
         if (sourceContent === targetContent && sourceContent.endMoving) sourceContent.endMoving();
         // We need to do this manually because ListView suppresses the childViews observers while dragging,
@@ -286,7 +286,10 @@ Flame.ListViewDragHelper = Ember.Object.extend({
     },
 
     _getPrecedingView: function(view) {
-        return view.get('contentIndex') > 0 ? view.getPath('parentView.childViews').objectAt(view.get('contentIndex') - 1) : undefined;
+        var contentIndex = view.get('contentIndex');
+        if (contentIndex > 0) {
+            return view.get('parentView').childViewForIndex(contentIndex - 1);
+        }
     },
 
     _resolvePath: function(view) {
@@ -332,7 +335,6 @@ Flame.ListViewDragHelper = Ember.Object.extend({
             }
         }
     }
-
 });
 
 /*
@@ -348,7 +350,7 @@ Flame.ListViewDragHelper.Path = Ember.Object.extend({
         var view, i, len = this.array.length, listView = this.root;
         for (i = 0; i < len; i++) {
             var index = this.array[i];
-            view = listView.get("childViews").objectAt(index);
+            view = listView.childViewForIndex(index);
             if (i < len - 1) {
                 listView = view.get('childListView');
             }
@@ -388,4 +390,3 @@ Flame.ListViewDragHelper.Path = Ember.Object.extend({
         return true;
     }
 });
-

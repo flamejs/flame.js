@@ -5,6 +5,7 @@ require 'uglifier'
 
 task :default => [:build]
 
+desc "Concatenate and minify javascript files, compile scss files"
 task :build => :clean do
   ENV['image_path'] ||= ''
 
@@ -62,10 +63,12 @@ task :build => :clean do
   FileUtils.copy_entry('images', 'build/images')
 end
 
+desc "Remove the build directory created by the 'build' task"
 task :clean do
   FileUtils.rm_rf('build')
 end
 
+desc "Run JSHint on Flame.js"
 task :jshint do
   files = Rake::FileList.new('**/*.js').
       exclude('build/**/*.js').
