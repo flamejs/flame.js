@@ -20,6 +20,7 @@ Flame.TextFieldView = Flame.View.extend(Flame.ActionSupport, {
     isVisible: true,
     isAutocomplete: false,
     autocompleteDelegate: null,
+    name: null,
 
     becomeKeyResponder: function() {
         this.get('textField').becomeKeyResponder();
@@ -39,6 +40,8 @@ Flame.TextFieldView = Flame.View.extend(Flame.ActionSupport, {
         isEditableLabelBinding: '^isEditableLabel',
         isVisibleBinding: '^isVisible',
         isAutocompleteBinding: '^isAutocomplete',
+        attributeBindings: ['type', 'value', 'size', 'name'],
+        nameBinding: "^name",
 
         // Ember.TextSupport (which is mixed in by Ember.TextField) calls interpretKeyEvents on keyUp.
         // Since the event manager already calls interpretKeyEvents on keyDown, the action would be fired

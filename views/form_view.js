@@ -265,7 +265,7 @@ Flame.FormView = Flame.View.extend({
         switch (type) {
             case 'readonly':
                 // readonly fields are selectable by default
-                settings.isSelectable = descriptor.get('isSelectable') === false ? false : true;
+                settings.isSelectable = descriptor.get('isSelectable') !== false;
                 settings.attributeBindings = ['title'];
                 settings.titleBinding = 'value';
                 return Flame.LabelView.extend(settings);
@@ -274,12 +274,18 @@ Flame.FormView = Flame.View.extend({
                     settings.isAutocomplete = true;
                     settings.autocompleteDelegate = descriptor.autocompleteDelegate;
                 }
+                if (!settings.name) {
+                    settings.name = descriptor.property;
+                }
                 return Flame.TextFieldView.extend(settings);
             case 'textarea':
                 settings.layout.height = descriptor.height || 70;
                 return Flame.TextAreaView.extend(settings);
             case 'password':
                 settings.isPassword = true;
+                if (!settings.name) {
+                    settings.name = descriptor.property;
+                }
                 return Flame.TextFieldView.extend(settings);
             case 'html':
                 return Flame.LabelView.extend(jQuery.extend(settings, {escapeHTML: false, formatter: function(val) {
