@@ -36,7 +36,7 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
         if (!this.get('allowSelection')) return false;
         var content = this.get('content');
         if (content) {
-            var childView = this.childViewForIndex(index);
+            var childView = this.get('childViews').objectAt(index);
             if (childView && childView.get('isVisible') && childView.get('allowSelection') !== false) {
                 var selection = content.objectAt(index);
                 this.set('selection', selection);
@@ -72,7 +72,7 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
         if (contentItem) {
             var index = (this.get('content') || []).indexOf(contentItem);
             if (index >= 0) {
-                var child = this.childViewForIndex(index);
+                var child = this.get('childViews').objectAt(index);
                 if (child) child.set('isSelected', status);
             }
         }
@@ -83,7 +83,7 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
         var childViews = this.get('childViews');
         var len = childViews.get('length');
         for (var i = 0; i < len; i++) {
-            var childView = this.childViewForIndex(i);
+            var childView = childViews.objectAt(i);
             if (childView) childView.set('contentIndex', i);
         }
         // In case the child views are using absolute positioning, also their positions need to be updated,
@@ -158,7 +158,7 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
             if (owner.get('allowReordering') && itemIndex !== undefined) {
                 if (owner.allowReorderingItem(itemIndex)) {
                     //console.log('Drag started on %s, dragging %s items', itemIndex, itemCount);
-                    var childView = owner.childViewForIndex(itemIndex);
+                    var childView = owner.get('childViews').objectAt(itemIndex);
                     owner.set('dragHelper', Flame.ListViewDragHelper.create({
                         listView: owner,
                         lastPageX: evt.pageX,
@@ -237,9 +237,5 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
             owner.set('dragHelper', undefined);
             owner.set('isDragging', false);
         }
-    }),
-
-    childViewForIndex: function(index) {
-        return this.get('childViews').findProperty('contentIndex', index);
-    }
+    })
 });

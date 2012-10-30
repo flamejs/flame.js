@@ -286,10 +286,7 @@ Flame.ListViewDragHelper = Ember.Object.extend({
     },
 
     _getPrecedingView: function(view) {
-        var contentIndex = view.get('contentIndex');
-        if (contentIndex > 0) {
-            return view.get('parentView').childViewForIndex(contentIndex - 1);
-        }
+        return view.get('contentIndex') > 0 ? view.getPath('parentView.childViews').objectAt(view.get('contentIndex') - 1) : undefined;
     },
 
     _resolvePath: function(view) {
@@ -350,7 +347,7 @@ Flame.ListViewDragHelper.Path = Ember.Object.extend({
         var view, i, len = this.array.length, listView = this.root;
         for (i = 0; i < len; i++) {
             var index = this.array[i];
-            view = listView.childViewForIndex(index);
+            view = listView.get('childViews').objectAt(index);
             if (i < len - 1) {
                 listView = view.get('childListView');
             }

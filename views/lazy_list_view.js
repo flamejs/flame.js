@@ -245,5 +245,9 @@ Flame.LazyListView = Flame.ListView.extend({
 
     moveItem: function(from, draggingInfo) {
         throw 'Not implemented yet!';
+    },
+
+    childViewForIndex: function(index) {
+        return this.get('childViews').findProperty('contentIndex', index);
     }
 });
