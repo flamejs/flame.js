@@ -274,18 +274,14 @@ Flame.FormView = Flame.View.extend({
                     settings.isAutocomplete = true;
                     settings.autocompleteDelegate = descriptor.autocompleteDelegate;
                 }
-                if (!settings.name) {
-                    settings.name = descriptor.property;
-                }
+                settings.name = Ember.none(descriptor.name) ? descriptor.property : descriptor.name;
                 return Flame.TextFieldView.extend(settings);
             case 'textarea':
                 settings.layout.height = descriptor.height || 70;
                 return Flame.TextAreaView.extend(settings);
             case 'password':
                 settings.isPassword = true;
-                if (!settings.name) {
-                    settings.name = descriptor.property;
-                }
+                settings.name = Ember.none(descriptor.name) ? descriptor.property : descriptor.name;
                 return Flame.TextFieldView.extend(settings);
             case 'html':
                 return Flame.LabelView.extend(jQuery.extend(settings, {escapeHTML: false, formatter: function(val) {

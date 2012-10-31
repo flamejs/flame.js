@@ -40,7 +40,7 @@ Flame.TextFieldView = Flame.View.extend(Flame.ActionSupport, {
         isEditableLabelBinding: '^isEditableLabel',
         isVisibleBinding: '^isVisible',
         isAutocompleteBinding: '^isAutocomplete',
-        attributeBindings: ['type', 'value', 'size', 'name'],
+        attributeBindings: ['name'],
         nameBinding: "^name",
 
         // Ember.TextSupport (which is mixed in by Ember.TextField) calls interpretKeyEvents on keyUp.
