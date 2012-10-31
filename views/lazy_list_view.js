@@ -66,7 +66,7 @@ Flame.LazyListView = Flame.ListView.extend({
     // changed without firing a scroll event.
     becameVisible: function() {
         var scrollView = this.nearestInstanceOf(Flame.ScrollView);
-        if (scrollView) {
+        if (scrollView && scrollView.get('element')) {
             var element = scrollView.get('element');
             this._lastScrollHeight = element.offsetHeight;
             this._lastScrollTop = element.scrollTop;
