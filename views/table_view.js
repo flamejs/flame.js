@@ -42,7 +42,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         totalRowIdsBinding: '^content.totalRowIds',
         totalColumnIdsBinding: '^content.totalColumnIds',
         cellUpdateDelegateBinding: '^cellUpdateDelegate',
-        mouseUpDalegateBinding: '^mouseUpDelegate',
+        mouseUpDelegateBinding: '^mouseUpDelegate',
         cellsMarkedForUpdateBinding: '^content.cellsMarkedForUpdate',
         batchUpdatesBinding: '^batchUpdates'
     }),

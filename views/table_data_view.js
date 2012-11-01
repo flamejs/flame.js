@@ -26,7 +26,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                     var columnIndex = target.parent().attr('data-index');
                     var targetDataCell = this.getPath('owner.data')[rowIndex][columnIndex];
                     var index = [rowIndex, columnIndex];
-                    this.getPath('owner.parentView.mouseUpDelegate').mouseUp(event, target, targetDataCell, index, this.get('owner'));
+                    this.getPath('owner.mouseUpDelegate').mouseUp(event, target, targetDataCell, index, this.get('owner'));
                 } catch (e) {;}
             }
         },
@@ -51,14 +51,32 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
         mouseUp: function(event) {
             if (this.getPath('owner.parentView.mouseUpDelegate')) {
-                try {
-                    var target = jQuery(event.target);
-                    var targetDataCell = this.getPath('owner.data')[target.parent().parent().attr('data-index')][target.parent().attr('data-index')];
-                    var rowIndex = target.parent().parent().attr('data-index');
-                    var columnIndex = target.parent().attr('data-index');
-                    var index = [rowIndex, columnIndex];
-                    this.getPath('owner.parentView.mouseUpDelegate').mouseUp(event, target, targetDataCell, index, this.get('owner'));
-                } catch(e) {;}
+                var target = jQuery(event.target);
+                var containingCell = target.closest("[data-index]");
+                var rowIndex = null;
+                var columnIndex = null;
+                var targetDataCell = null;
+                var index = null;
+
+                if (containingCell[0]) {
+                    rowIndex = containingCell.parent().attr('data-index');
+                    columnIndex = containingCell.attr('data-index');
+                    try {
+                        targetDataCell = this.getPath('owner.data')[rowIndex][columnIndex];
+                        index = [rowIndex, columnIndex];
+                    } catch(e) {;};
+                } else if (target.closest('.table-selection')[0]) { // An event from a selected cell doesn't originate from that cell but a dummy outside the table hierarchy. Pass the logical cell.
+                    targetDataCell = this.getPath('owner.selectedDataCell');
+                    var selectedCell = this.getPath('owner.selectedCell');
+                    rowIndex = selectedCell.parent().attr('data-index');
+                    columnIndex = selectedCell.attr('data-index');
+                    index = [rowIndex, columnIndex];
+                }
+
+                var mouseUpDelegate = this.getPath('owner.mouseUpDelegate');
+                if (mouseUpDelegate) {
+                    mouseUpDelegate.mouseUp(event, target, targetDataCell, index, this.get('owner'));
+                }
             }
         },
 
