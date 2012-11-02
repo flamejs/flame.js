@@ -5,6 +5,15 @@
     background: -moz-linear-gradient(top,  $first,  $second);
 }
 
+@mixin gradient-unless-old-ie($first, $second) {
+    background: $second;
+    @if $new-ie {
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($first)}', endColorstr='#{ie-hex-str($second)}');
+    }
+    background: -webkit-gradient(linear, left top, left bottom, from($first), to($second));
+    background: -moz-linear-gradient(top,  $first,  $second);
+}
+
 @mixin horizontal-gradient($first, $second) {
     background: $second;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($first)}', endColorstr='#{ie-hex-str($second)}', GradientType=1);
