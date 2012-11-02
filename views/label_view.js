@@ -6,12 +6,17 @@ Flame.LabelView = Flame.View.extend(Flame.ActionSupport, {
     defaultWidth: 200,
     isSelectable: false,
     isDisabled: false,
+    allowWrapping: false,
 
     handlebars: '{{value}}',
 
     render: function(buffer) {
         var height = this.getPath('layout.height');
-        if (this.get('useAbsolutePosition') && !Ember.none(height)) buffer.style('line-height', height+'px');
+        if (this.get('useAbsolutePosition') &&
+            !Ember.none(height) &&
+            !this.get('allowWrapping')) {
+            buffer.style('line-height', height+'px');
+        }
         this._super(buffer);
     },
 
