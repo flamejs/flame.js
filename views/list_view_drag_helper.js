@@ -67,6 +67,9 @@ Flame.ListViewDragHelper = Ember.Object.extend({
 
         clone.attr('id', element.attr('id')+"_drag");
         clone.addClass('is-dragged-clone');
+        clone.find("*").each(function() {
+            this.id = this.id + "_drag";
+        });
         clone.appendTo(this.get('listView').$());
 
         clone.css('opacity', 0.8);
