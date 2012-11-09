@@ -5,7 +5,7 @@
     background: -moz-linear-gradient(top,  $first,  $second);
 }
 /** Only includes gradient with IE versions 9 and above **/
-@mixin gradient-unless-old-ie($first, $second) {
+@mixin gradient-unless-ie9-or-newer($first, $second) {
     background: $second;
     @if $ie9-or-newer {
         filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($first)}', endColorstr='#{ie-hex-str($second)}');
