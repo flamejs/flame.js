@@ -4,10 +4,10 @@
     background: -webkit-gradient(linear, left top, left bottom, from($first), to($second));
     background: -moz-linear-gradient(top,  $first,  $second);
 }
-
+/** Only includes gradient with IE versions 9 and above **/
 @mixin gradient-unless-old-ie($first, $second) {
     background: $second;
-    @if $new-ie {
+    @if $ie9-or-newer {
         filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($first)}', endColorstr='#{ie-hex-str($second)}');
     }
     background: -webkit-gradient(linear, left top, left bottom, from($first), to($second));

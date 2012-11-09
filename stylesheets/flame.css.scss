@@ -3,7 +3,7 @@
 //= require_self
 //= require ./form_view
 
-$new-ie: false !default;
+$ie9-or-newer: false !default;
 @import "mixins";
 
 $default-font-size: 12px;
