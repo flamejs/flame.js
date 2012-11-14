@@ -139,13 +139,18 @@ Flame.Panel = Flame.RootView.extend({
 
     _layoutRelativeTo: function(anchor, position) {
         position = position || Flame.POSITION_BELOW;
-        var layout = this.get('layout');
 
+        var layout = this.get('layout');
         var anchorElement = anchor instanceof jQuery ? anchor : anchor.$();
         var offset = anchorElement.offset();
 
-        if (position & Flame.POSITION_BELOW) {
-            layout.top = offset.top + anchorElement.outerHeight();
+        var contentView = this.get('childViews')[0];
+        if (contentView && contentView.get('layout') && contentView.get('layout').height && (!layout || !layout.height)) {
+            layout.height = contentView.get('layout').height;
+        }
+
+        if (position & (Flame.POSITION_BELOW | Flame.POSITION_ABOVE)) {
+            layout.top = offset.top + ((position & Flame.POSITION_BELOW) ? anchorElement.outerHeight() : -layout.height);
             layout.left = offset.left;
             if (position & Flame.POSITION_MIDDLE) {
                 layout.left = layout.left - (layout.width / 2) + (anchorElement.outerWidth() / 2);
@@ -164,12 +169,15 @@ Flame.Panel = Flame.RootView.extend({
         var _window = Ember.$(window);
         if (layout.left + layout.width > _window.width() - 10) {
             layout.left = _window.width() - layout.width - 10;
-            layout.moved = true;
+            layout.moved_x = true;
         }
         // ... and vertically
-        if (layout.top + layout.height > _window.height() - 10) {
-            layout.top = _window.height() - layout.height - 10;
-        } else if (layout.top < 0) { layout.top = 10; }
+        if ((position & Flame.POSITION_BELOW && (layout.top + layout.height > _window.height() - 10) && offset.top - layout.height >= 0) ||
+            (position & Flame.POSITION_ABOVE && (layout.top < 0))) {
+            layout.moved_y = true;
+        } else if (layout.top < 0) {
+            layout.top = 10;
+        }
         return layout;
     },
 
