@@ -83,9 +83,18 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                     return true;
                 } else if (!!target.closest('.row-header').length) {
                     if (clickDelegate.rowHeaderClicked) {
-                        var cell = target.closest('td');
-                        index = parseInt(cell.attr('data-index'), 10) / parseInt(cell.attr('rowspan') || 1, 10);
-                        header = this.getPath('owner.content._headers.rowHeaders')[index];
+                        var cell = target.closest('td'),
+                            rowHeaders = this.getPath('owner.content._headers.rowHeaders'),
+                            rowspan = parseInt(cell.attr('rowspan') || 1, 10),
+                            totalRowspan = rowHeaders[0].rowspan;
+                        index = parseInt(cell.attr('data-index'), 10) / rowspan;
+
+                        // data-index also counts rowspanned subheaders while the headers array doesn't.
+                        // So if the total row has more children than the value rows, the header index will
+                        // be off by difference in the amount of rowspans
+                        if (totalRowspan > rowspan) index -= (totalRowspan - rowspan);
+
+                        header = rowHeaders[index];
                         if (!header) { return false; }
                         clickDelegate.rowHeaderClicked(header, target, index);
                     }
