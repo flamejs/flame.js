@@ -25,7 +25,7 @@ Flame.MenuScrollViewButton = Flame.View.extend({
         return false;
     },
 
-    //Eat the clicks and don't pass them to the elements beneath.
+    // Eat the clicks and don't pass them to the elements beneath.
     mouseDown: function() { return true; },
     mouseUp: function() { return true; }
 });
@@ -38,9 +38,9 @@ Flame.MenuScrollView = Flame.View.extend({
     scrollPosition: "top", //"top", "middle", "bottom"
 
     childViews: "upArrow viewPort downArrow".w(),
-    scrollSize: 30, //How many pixels to scroll per scroll
+    scrollSize: 10, //How many pixels to scroll per scroll
 
-    viewPort:Flame.View.extend({
+    viewPort: Flame.View.extend({
         useAbsolutePosition: true,
         classNames: "scroll-view-viewport".w()
     }),
@@ -96,12 +96,12 @@ Flame.MenuScrollView = Flame.View.extend({
 
     _scrollTo: function(position, scrollTime) {
         var viewPort = this.get("viewPort").$();
-        viewPort.scrollTo(position, {duration: scrollTime});
+        viewPort.scrollTop(position);
     },
 
     scroll: function() {
         var scrollDirection = this.get("scrollDirection");
-        var scrollTime = 200;
+        var scrollTime = 20;
         var scrollSize = this.get("scrollSize");
         var viewPort = this.get("viewPort").$();
         var oldTop = viewPort.scrollTop();
@@ -124,9 +124,6 @@ Flame.MenuScrollView = Flame.View.extend({
             }
         }
         delta *= scrollDirection;
-        // Animation is jaggy as there's acceleration and deceleration between each call to scroll. Optimally we
-        // would only want to accelerate when the scrolling is first started and stop it only after the whole
-        // scrolling has stopped.
         this._scrollTo(oldTop + delta, 0.9 * scrollTime * Math.abs(delta / scrollSize));
 
         if (!continueScrolling) {
@@ -142,6 +139,4 @@ Flame.MenuScrollView = Flame.View.extend({
         }
         this.set("scrollPosition", scrollPosition);
     }
-
 });
-
