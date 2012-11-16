@@ -3,9 +3,8 @@
 //= require ../mixins/action_support
 //= require ./menu_scroll_view
 
-/* Only to be used in Flame.MenuView. Represent menu items with normal JS objects as creation of one Ember object took
- * 3.5 ms on fast IE8 machine.
- */
+// Only to be used in Flame.MenuView. Represent menu items with normal JS objects as creation of one Ember object took
+// 3.5 ms on fast IE8 machine.
 Flame.MenuItem = function(opts) {
     var key;
     for (key in opts) {
@@ -47,17 +46,15 @@ Flame.MenuItem = function(opts) {
             this.subMenuView = null;
         }
     };
-
 };
 
 /**
- * A menu. Can be shown as a "stand-alone" menu or in cooperation with a SelectButtonView.
- *
- * MenuView has a property 'subMenuKey'. Should objects based on which the menu is created return null/undefined for
- * that property, the item itself will be selectable. Otherwise if the property has more than zero values, a submenu
- * will be shown.
- *
- */
+  A menu. Can be shown as a "stand-alone" menu or in cooperation with a SelectButtonView.
+
+  MenuView has a property 'subMenuKey'. Should objects based on which the menu is created return null/undefined for
+  that property, the item itself will be selectable. Otherwise if the property has more than zero values, a submenu
+  will be shown.
+*/
 Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     classNames: ['flame-menu'],
     childViews: ['contentView'],
@@ -75,12 +72,12 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     /* Margin between the menu and top/bottom of the viewport. */
     menuMargin: 12,
     minWidth: null, // Defines minimum width of menu
-    items: [],
+    items: null,
     parentMenu: null,
     value: null,
     _allItemsDoNotFit: true,
     _anchorElement: null,
-    _menuItems: [],
+    _menuItems: null,
     highlightIndex: -1, // Currently highlighted index.
     userHighlightIndex: -1, // User selected highlighted index
     // Reflects the content item in this menu or the deepest currently open submenu that is currently highlighted,
@@ -94,7 +91,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     },
 
     _calculateMenuWidth: function() {
-        var items = this.get("items");
+        var items = this.get("items") || [];
         if (Ember.get(items, 'length') === 0) {
             return;
         }
@@ -116,7 +113,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
             subMenuKey = this.get("subMenuKey"),
             selectedValue = this.get("value"),
             menuItems;
-        menuItems = items.map(function(item, i) {
+        menuItems = (items || []).map(function(item, i) {
             //Only show the selection on the main menu, not in the submenus.
             return new Flame.MenuItem({
                 item: item,
@@ -304,9 +301,8 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     handleMouseEvents: function (event) {
         // This should probably be combined with our event handling in event_manager.
         var itemIndex = this._idToIndex(event.currentTarget.id);
-        //JQuery event handling: false bubbles the stuff up.
+        // jQuery event handling: false bubbles the stuff up.
         var retVal = false;
-//        if (itemIndex === -1) { return false; }
 
         if (event.type === "mouseenter") {
             retVal = this.mouseEntered(itemIndex);
@@ -420,13 +416,14 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
 
     }.observes("highlightIndex"),
 
-    /** We only want to allow selecting menu items after the user has moved the mouse. We update
-        userHighlightIndex when user highlights something, and internally we use highlightIndex to keep
-        track of which item is highlighted, only allowing selection if user has highlighted something.
-        If we don't ensure the user has highlighted something before allowing selection, this means that when
-        a user clicks a SelectViewButton to open a menu, the mouseUp event (following the mouseDown on the select)
-        would be triggered on a menu item, and this would cause the menu to close immediately.
-         **/
+    /**
+      We only want to allow selecting menu items after the user has moved the mouse. We update
+      userHighlightIndex when user highlights something, and internally we use highlightIndex to keep
+      track of which item is highlighted, only allowing selection if user has highlighted something.
+      If we don't ensure the user has highlighted something before allowing selection, this means that when
+      a user clicks a SelectViewButton to open a menu, the mouseUp event (following the mouseDown on the select)
+      would be triggered on a menu item, and this would cause the menu to close immediately.
+    */
     _userHighlightIndexDidChange: function() {
         this.set('highlightIndex', this.get('userHighlightIndex'));
     }.observes("userHighlightIndex"),
@@ -491,5 +488,4 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
             return self.handleMouseEvents(event);
         });
     }
-
 });

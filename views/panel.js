@@ -233,6 +233,7 @@ Flame.Panel = Flame.RootView.extend({
         if (this.get('isShown')) {
             if (this.get('isModal')) {
                 this.get('_modalPane').remove();
+                this.get('_modalPane').destroy();
             }
             this.remove();
             this.set('isShown', false);
@@ -251,4 +252,3 @@ Flame.Panel = Flame.RootView.extend({
         });
     }
 });
-
