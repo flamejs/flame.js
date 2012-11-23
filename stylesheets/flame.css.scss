@@ -182,7 +182,7 @@ body {
         text-align: left;
         margin-left: 25px;
         color: black;
-        padding-top: 1px;
+        padding-top: 0;
     }
 
     &.flame-radio-button-view {
@@ -666,6 +666,10 @@ input[type="password"] {
 
     & > textarea {
         line-height: 16px;
+        padding-top: 2px;
+    }
+
+    & > input::-webkit-input-placeholder {
         padding-top: 2px;
     }
 
