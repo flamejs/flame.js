@@ -254,10 +254,10 @@ body {
 
 .flame-panel {
     $panel-border-radius: 4px;
-    border: 1px solid #777;
+    border: 1px solid #888;
     border-radius: $panel-border-radius;
     background-color: #f2f2f2;
-    @include box-shadow(0, 3, 30, #555555);
+    @include box-shadow(0, 8, 20, rgba(0, 0, 0, 0.4));
 
     .flame-panel-title {
         font-size: 13px;
