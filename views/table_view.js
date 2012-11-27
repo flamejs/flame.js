@@ -2,7 +2,8 @@
 
 Flame.TableView = Flame.View.extend(Flame.Statechart, {
     classNames: 'flame-table-view'.w(),
-    childViews: 'tableDataView'.w(),
+    childViews: 'tableDataView quickDrillSymbolView'.w(),
+    //childViews: 'tableDataView'.w(),
     acceptsKeyResponder: false,
 
     // References to DOM elements
@@ -24,15 +25,38 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     clickDelegate: null,
     resizeDelegate: null,
     headerSortDelegate: null,
+    quickDrillDelegate: null,
     content: null,  // Set to a Flame.TableController
     allowRefresh: true,
     batchUpdates: true,
+
+    scrollable_x0: 0,
+    scrollable_y0: 0,
 
     contentAdapter: function() {
         return Flame.TableViewContentAdapter.create({
             content: this.get('content')
         });
     }.property('content').cacheable(),
+
+    quickDrillSymbolView: Flame.ImageView.extend({
+        layout: { width: 40, height: 60, top: 0, left: 0, zIndex: 1000 },
+        value: '/assets/images/question_mark_lo.png',
+        useAbsolutePosition: true,
+        isVisible: Flame.computed.bool('parentView.tableDataView.selectedCellSupportsQuickDrill'),
+
+        mouseEnter: function() {
+            this.$('img')[0].src='/assets/images/question_mark_hi.png';
+        },
+
+        mouseLeave: function() {
+            this.$('img')[0].src='/assets/images/question_mark_lo.png';
+        },
+
+        mouseDown: function() {
+            this.getPath('parentView.tableDataView').showQuickDrill();
+        }
+    }),
 
     tableDataView: Flame.TableDataView.extend({
         dataBinding: '^content._data',
@@ -42,6 +66,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         totalColumnIdsBinding: '^content.totalColumnIds',
         cellUpdateDelegateBinding: '^cellUpdateDelegate',
         cellsMarkedForUpdateBinding: '^content.cellsMarkedForUpdate',
+        quickDrillDelegateBinding: '^quickDrillDelegate',
         batchUpdatesBinding: '^batchUpdates'
     }),
 
@@ -120,6 +145,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                 }
                 // Move data table and column header
                 this.getPath('owner.scrollable').css('left', '%@px'.fmt(width));
+                this.getPath('owner.quickDrillSymbolView').adjustLayout('left', width - 15);
                 this.getPath('owner.columnHeader').parent().css('left', '%@px'.fmt(width));
                 this.getPath('owner.tableCorner').css('width', '%@px'.fmt(width));
                 // Update column width
@@ -183,6 +209,8 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         this.set('columnHeader', this.$('.column-header table'));
         this.set('tableCorner', this.$('.table-corner'));
         this.get('scrollable').scroll({self: this}, this.didScroll);
+        this.get('tableCorner').css('zIndex', 1001);
+        this.get('columnHeader').css('zIndex', 1001);
     },
 
     didScroll: function(event) {
@@ -191,6 +219,13 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         // Scroll fixed headers
         self.get('rowHeader').css('top', '-%@px'.fmt(scrollable.scrollTop()));
         self.get('columnHeader').css('left', '-%@px'.fmt(scrollable.scrollLeft()));
+        // Keep quick drill symbol in sync
+        var scroll_delta_x = scrollable.scrollLeft() - self.get('scrollable_x0');
+        var scroll_delta_y = scrollable.scrollTop() - self.get('scrollable_y0');
+        self.set('scrollable_x0', scrollable.scrollLeft());
+        self.set('scrollable_y0', scrollable.scrollTop());
+        self.get('quickDrillSymbolView').adjustLayout('top', undefined, -scroll_delta_y);
+        self.get('quickDrillSymbolView').adjustLayout('left', undefined, -scroll_delta_x);
     },
 
     _headersDidChange: function() {
@@ -236,13 +271,12 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
             buffer = this._renderHeader(buffer, 'row', topOffset, defaultColumnWidth);
         }
 
+        this.get('childViews')[1].renderToBuffer(buffer); // [1] is quickDrillSymbolView. Too bad just using this.get('quickDrillSymbolView') wont work here :-/
         // Scrollable div
         buffer = buffer.begin('div').attr('style', 'overflow: auto; bottom: 0px; top: %@px; left: %@px; right: 0px;'.fmt(topOffset, leftOffset));
         buffer = buffer.attr('class', 'scrollable');
-        // There should really only be one child view, the TableDataView
-        this.forEachChildView(function(view) {
-            view.renderToBuffer(buffer);
-        });
+
+        this.get('childViews')[0].renderToBuffer(buffer);
         buffer = buffer.end(); // div
     },
 
