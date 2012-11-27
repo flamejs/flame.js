@@ -655,9 +655,13 @@ input[type="password"] {
     padding-right: 6px;
     padding-bottom: 2px;
 
+    & > input {
+        line-height: 21px\9;
+    }
+
     & > input[disabled="disabled"] {
-      color: #777;
-      background-color: #ddd;
+        color: #777;
+        background-color: #ddd;
     }
 
     & > textarea {
