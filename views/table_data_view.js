@@ -12,10 +12,26 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
     loaded: Flame.State.extend({
         mouseDown: function(event) {
-            if (this.get('owner').selectCell(jQuery(event.target))) {
+            if (this.get('owner').selectCell(jQuery(event.target).parent())) {
                 this.gotoState('selected');
                 return true;
             } else { return false; }
+        },
+
+        mouseUp: function(event) {
+            if (this.getPath('owner.tableViewDelegate') && this.getPath('owner.tableViewDelegate').mouseUp) {
+                var target = jQuery(event.target);
+                var columnIndexCell = target.closest("[data-index]");
+                var columnIndex = columnIndexCell.attr('data-index');
+                var rowIndex = columnIndexCell.parent().attr('data-index');
+                var targetDataCell;
+                var index;
+                if (rowIndex && columnIndex) {
+                    targetDataCell = this.getPath('owner.data')[rowIndex][columnIndex];
+                    index = [rowIndex, columnIndex];
+                }
+                this.getPath('owner.tableViewDelegate').mouseUp(event, target, targetDataCell, index, this.get('owner'));
+            }
         },
 
         enterState: function() {
@@ -27,13 +43,34 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
     selected: Flame.State.extend({
         mouseDown: function(event) {
-            var target = jQuery(event.target);
+            var target = jQuery(event.target).parent();
             var selectedDataCell = this.getPath('owner.selectedDataCell');
             // If a cell is clicked that was already selected, start editing it
             if (target.hasClass('table-selection') && selectedDataCell.options && selectedDataCell.options()) {
                 this.startEdit();
                 return true;
             } else return !!this.get('owner').selectCell(target);
+        },
+
+        mouseUp: function(event) {
+            if (this.getPath('owner.tableViewDelegate') && this.getPath('owner.tableViewDelegate').mouseUp) {
+                var target = jQuery(event.target);
+                var targetDataCell;
+                var index;
+                var columnIndexCell = target.closest("[data-index]");
+                var columnIndex = columnIndexCell.attr('data-index');
+                var rowIndex = columnIndexCell.parent().attr('data-index');
+
+                if (columnIndex && rowIndex) {
+                    targetDataCell = this.getPath('owner.data')[rowIndex][columnIndex];
+                    index = [rowIndex, columnIndex];
+
+                    var mouseUpDelegate = this.getPath('owner.tableViewDelegate');
+                    if (mouseUpDelegate) {
+                        mouseUpDelegate.mouseUp(event, target, targetDataCell, index, this.get('owner'));
+                    }
+                }
+            }
         },
 
         insertNewline: function(event) {
@@ -248,7 +285,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
         mouseDown: function(event) {
             var owner = this.get('owner');
-            var cell = jQuery(event.target);
+            var cell = jQuery(event.target).parent();
             var editField = owner.get('editField');
             if (owner.isCellSelectable(cell) && owner._confirmEdit()) {
                 this.gotoState('selected');
@@ -270,6 +307,8 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             var scrollable = owner.getPath('parentView.scrollable');
             var selection = owner.get('selection');
             var options = dataCell.options();
+
+            selectedCell.addClass('editing');
 
             if (!dataCell.showEditor(selectedCell, owner, owner.get('content'))) {
                 // No special editor, use one of the defaults
@@ -319,6 +358,9 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         exitState: function() {
             var owner = this.get('owner');
             var editField = owner.get('editField');
+
+            var selectedCell = owner.get('selectedCell');
+            selectedCell.removeClass('editing');
 
             editField.hide();
             editField.removeClass('invalid');
@@ -390,7 +432,15 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             var left = position.left + selectedCell.outerWidth() - scrollable.outerWidth();
             scrollable.scrollLeft(left + scrollLeft + 17);
         }
+        selectedCell.addClass('active-cell');
     }.observes('selectedCell'),
+
+    _selectionWillChange: function() {
+        var selectedCell = this.get('selectedCell');
+        if (selectedCell) {
+            selectedCell.removeClass('active-cell');
+        }
+    }.observesBefore('selectedCell'),
 
     _confirmEdit: function() {
         var newValue = this.get('editField').val();
@@ -409,8 +459,8 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         if (Ember.compare(dataCell.editableValue(), newValue) === 0) {
             return true;
         } else if (dataCell.validate(newValue)) {
-            var cellUpdateDelegate = this.get('cellUpdateDelegate');
-            Ember.assert('No cellUpdateDelegate set!', !!cellUpdateDelegate);
+            var cellUpdateDelegate = this.get('tableViewDelegate');
+            Ember.assert('No tableViewDelegate set!', !!cellUpdateDelegate || !!cellUpdateDelegate.cellUpdated);
 
             var index = [rowIndex, columnIndex];
             if (cellUpdateDelegate.cellUpdated(dataCell, newValue, index)) {
@@ -487,13 +537,13 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                 var cssClassesString = cell ? cell.cssClassesString() : "";
                 cellWidth = columnLeafs[j].get('render_width') || defaultCellWidth;
                 if (jQuery.browser.mozilla) cellWidth -= 5;
-
-                buffer.push('<td data-index="%@" class="%@" style="width: %@px;" %@>%@</td>'.fmt(
+                // Surround the content with a relatively positioned div to make absolute positioning of content work with Firefox
+                buffer.push('<td data-index="%@" class="%@" style="width: %@px;" %@><div style="position: relative">%@</div></td>'.fmt(
                         j,
                         (cssClassesString + (j % 2 === 0 ? " even-col" : " odd-col")),
                         cellWidth,
                         (cell && cell.titleValue ? 'title="%@"'.fmt(cell.titleValue()) : ''),
-                        (cell ? cell.formattedValue() : '<span style="color: #999">...</span>')));
+                        (cell ? cell.content() : '<span style="color: #999">...</span>')));
             }
             buffer.push("</tr>");
         }
@@ -510,10 +560,10 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
     _cellsDidChange: function() {
         this.manipulateCells(this.get('dirtyCells'), function(cell, element, isEvenColumn) {
             var cssClassesString = (cell ? cell.cssClassesString() : "") + (isEvenColumn ? " even-col" : " odd-col");
-            var formattedValue = cell.formattedValue();
+            var content = cell.content();
             var titleValue = cell.titleValue && cell.titleValue();
             element.className = cssClassesString;
-            element.innerHTML = Ember.none(formattedValue) ? "" : formattedValue;
+            element.innerHTML = Ember.none(content) ? "" : '<div style="position: relative">' + content + '</div>';
             if (titleValue) {
                 element.title = titleValue;
             }
