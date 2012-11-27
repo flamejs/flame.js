@@ -1,8 +1,6 @@
-//
 // You must set on object to 'object' that the form manipulates (or use a binding)
 // Optionally you can set a defaultTarget, that will be used to set the default target for any actions
 // triggered from the form (button clicks and default submit via hitting enter)
-//
 Flame.FormView = Flame.View.extend({
     classNames: ['form-view'],
     tagName: 'form',
@@ -97,7 +95,9 @@ Flame.FormView = Flame.View.extend({
             layout: { left: 0, width: this.get('labelWidth'), top: this._focusRingMargin },
             ignoreLayoutManager: true,
             textAlign: this.get('labelAlign'),
-            value: descriptor.get('label') + ':'
+            value: descriptor.get('label') + ':',
+            attributeBindings: ['title'],
+            title: descriptor.get('label')
         });
     },
 
