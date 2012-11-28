@@ -83,18 +83,9 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                     return true;
                 } else if (!!target.closest('.row-header').length) {
                     if (clickDelegate.rowHeaderClicked) {
-                        var cell = target.closest('td'),
-                            rowHeaders = this.getPath('owner.content._headers.rowHeaders'),
-                            rowspan = parseInt(cell.attr('rowspan') || 1, 10),
-                            totalRowspan = rowHeaders[0].rowspan;
-                        index = parseInt(cell.attr('data-index'), 10) / rowspan;
-
-                        // data-index also counts rowspanned subheaders while the headers array doesn't.
-                        // So if the total row has more children than the value rows, the header index will
-                        // be off by difference in the amount of rowspans
-                        if (totalRowspan > rowspan) index -= (totalRowspan - rowspan);
-
-                        header = rowHeaders[index];
+                        var cell = target.closest('td');
+                        index = parseInt(cell.attr('data-index'), 10);
+                        header = this.getPath('owner.content._headers.rowHeaders')[index];
                         if (!header) { return false; }
                         clickDelegate.rowHeaderClicked(header, target, index);
                     }
@@ -298,7 +289,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         return buffer;
     },
 
-    _renderRow: function(buffer, row, type, depth) {
+    _renderRow: function(buffer, row, type, rowIndex) {
         var length = row.length;
         var label, sortDirection, headerLabel;
 
@@ -345,7 +336,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                 var sortClass = sortDirection ? 'sort-%@'.fmt(sortDirection) : '';
                 label = '<div class="label ' + sortClass +'">%@</div>';
             } else if (type === 'row') {
-                buffer = buffer.attr('data-index', depth % this.getPath('content.rowLeafs').length);
+                buffer = buffer.attr('data-index', header.dataIndex);
                 if (this.get('renderColumnHeader')) {
                     if (this.get("isResizable")) {
                         if (header.hasOwnProperty('children')) {
