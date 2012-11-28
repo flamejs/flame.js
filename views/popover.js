@@ -23,7 +23,7 @@ Flame.Popover = Flame.Panel.extend({
             arrow.css({ left: arrowOffset + 'px' });
             if (position & Flame.POSITION_ABOVE) {
                 var layout = this.get('layout');
-                arrow.css({ top: layout.height});
+                arrow.css({ top: layout.height - 1});
             }
         } else {
             arrowOffset = offset.top + (anchor.outerHeight() / 2) - parseInt(this.$().css('top').replace('px', ''), 10) - 15;
