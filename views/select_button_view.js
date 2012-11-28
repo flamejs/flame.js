@@ -65,7 +65,7 @@ Flame.SelectButtonView = Flame.ButtonView.extend({
 
     mouseDown: function() {
         if (!this.get('isDisabled')) this._openMenu();
-        return false;
+        return true;
     },
 
     insertSpace: function() {
