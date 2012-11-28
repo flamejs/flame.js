@@ -3,7 +3,6 @@
 //= require_self
 //= require ./form_view
 
-$ie9-or-newer: false !default;
 @import "mixins";
 
 $default-font-size: 12px;
@@ -877,11 +876,11 @@ input[type="password"] {
         tr {
             &.level-1 td {
                 font-weight: bold;
-                @include gradient-unless-ie8-or-older(#8BCFCA, #73C5C0);
+                @include gradient-except-ie(#8BCFCA, #73C5C0);
             }
 
             &.level-2 td {
-                @include gradient-unless-ie8-or-older(#ADE6E6, #98E0E0);
+                @include gradient-except-ie(#ADE6E6, #98E0E0);
             }
 
             &.level-3 td {
