@@ -21,25 +21,3 @@ if (String.prototype.trim === undefined) {
         return jQuery.trim(this);
     };
 }
-
-//nicked from stack overflow http://stackoverflow.com/questions/985272/jquery-selecting-text-in-an-element-akin-to-highlighting-with-your-mouse
-function selectText(element) {
-    var doc = document;
-    var text = doc.getElementById(element);
-    var range = null;
-    if (doc.body.createTextRange) {
-        range = document.body.createTextRange();
-        range.moveToElementText(text);
-        range.select();
-    } else if (window.getSelection) {
-        var selection = window.getSelection();
-        if (selection.setBaseAndExtent) {
-            selection.setBaseAndExtent(text, 0, text, 1);
-        } else {
-            range = document.createRange();
-            range.selectNodeContents(text);
-            selection.removeAllRanges();
-            selection.addRange(range);
-        }
-    }
-}
