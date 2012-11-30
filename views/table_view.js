@@ -20,10 +20,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     initialState: 'idle',
 
     defaultColumnWidth: 88,
-    cellUpdateDelegate: null,
-    clickDelegate: null,
-    resizeDelegate: null,
-    headerSortDelegate: null,
+    tableDelegate: null,
     content: null,  // Set to a Flame.TableController
     allowRefresh: true,
     batchUpdates: true,
@@ -40,7 +37,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         areValuesOnRowsBinding: '^content.areValuesOnRows',
         totalRowIdsBinding: '^content.totalRowIds',
         totalColumnIdsBinding: '^content.totalColumnIds',
-        cellUpdateDelegateBinding: '^cellUpdateDelegate',
+        tableViewDelegateBinding: '^tableViewDelegate',
         cellsMarkedForUpdateBinding: '^content.cellsMarkedForUpdate',
         batchUpdatesBinding: '^batchUpdates'
     }),
@@ -72,8 +69,8 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         },
 
         mouseUp: function(event) {
-            var clickDelegate = this.getPath('owner.clickDelegate');
-            if (clickDelegate) {
+            var clickDelegate = this.getPath('owner.tableViewDelegate');
+            if (clickDelegate && clickDelegate.columnHeaderClicked) {
                 var target = jQuery(event.target), index, header;
                 if (!!target.closest('.column-header').length && (index = target.closest('td').attr('data-leaf-index'))) {
                     if (clickDelegate.columnHeaderClicked) {
@@ -146,7 +143,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         mouseUp: function(event) {
             var owner = this.get('owner');
             if (owner.get('type') === 'column') {
-                var resizeDelegate = owner.get('resizeDelegate');
+                var resizeDelegate = owner.get('tableViewDelegate');
                 if (resizeDelegate && resizeDelegate.columnResized) {
                     var cell = owner.get('resizingCell');
                     var width = parseInt(cell.css('width'), 10);
@@ -329,7 +326,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                     buffer = buffer.push('<div class="resize-handle">&nbsp;</div>');
                 }
 
-                var headerSortDelegate = this.get('headerSortDelegate');
+                var headerSortDelegate = this.get('tableViewDelegate');
                 if (headerSortDelegate && headerSortDelegate.getSortForHeader) {
                     sortDirection = headerSortDelegate.getSortForHeader(header);
                 }
