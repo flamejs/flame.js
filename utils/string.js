@@ -1,3 +1,9 @@
+if (String.prototype.trim === undefined) {
+    String.prototype.trim = function() {
+        return jQuery.trim(this);
+    };
+}
+
 Ember.mixin(String.prototype, {
     truncate: function(maxLength) {
         var length = Ember.none(maxLength) ? 30 : maxLength;
@@ -12,4 +18,3 @@ Ember.mixin(String.prototype, {
         return this.trim().length === 0;
     }
 });
-

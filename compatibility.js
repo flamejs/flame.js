@@ -15,9 +15,3 @@ if (typeof Range !== "undefined") {
       };
   }
 }
-
-if (String.prototype.trim === undefined) {
-    String.prototype.trim = function() {
-        return jQuery.trim(this);
-    };
-}
