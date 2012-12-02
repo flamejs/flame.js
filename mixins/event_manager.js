@@ -1,39 +1,41 @@
-var eventHandlers = {
-    interpretKeyEvents: function(event) {
-        var mapping = event.shiftKey ? Flame.MODIFIED_KEY_BINDINGS : Flame.KEY_BINDINGS;
-        var eventName = mapping[event.keyCode];
-        if (eventName && this[eventName]) {
-            var handler = this[eventName];
-            if (handler && Ember.typeOf(handler) === "function") {
-                return handler.call(this, event, this);
+(function() {
+    var eventHandlers = {
+	interpretKeyEvents: function(event) {
+            var mapping = event.shiftKey ? Flame.MODIFIED_KEY_BINDINGS : Flame.KEY_BINDINGS;
+            var eventName = mapping[event.keyCode];
+            if (eventName && this[eventName]) {
+		var handler = this[eventName];
+		if (Ember.typeOf(handler) === "function") {
+                    return handler.call(this, event, this);
+		}
             }
-        }
-        return false;
-    },
-
-    handleKeyEvent: function(event, view) {
-        var emberEvent = null;
-        switch (event.type) {
-            case "keydown": emberEvent = 'keyDown'; break;
-            case "keypress": emberEvent = 'keyPress'; break;
-        }
-        var handler = emberEvent ? this.get(emberEvent) : null;
-        if (window.FlameInspector && emberEvent) FlameInspector.logEvent(event, emberEvent, this);
-        if (handler) {
-            // Note that in jQuery, the contract is that event handler should return
-            // true to allow default handling, false to prevent it. But in Ember, event handlers return true if they handled the event,
-            // false if they didn't, so we want to invert that return value here.
-            return !handler.call(Flame.keyResponderStack.current(), event, Flame.keyResponderStack.current());
-        } else if (emberEvent === "keyDown" && this.interpretKeyEvents(event)) { // Try to hand down the event to a more specific key event handler
             return false;
-        } else if (this.get('parentView')) {
-            return this.get('parentView').handleKeyEvent(event, view);
-        }
-    }
-};
+	},
 
-Ember.View.reopen(eventHandlers);
-Ember.TextSupport.reopen(eventHandlers);
+	handleKeyEvent: function(event, view) {
+            var emberEvent = null;
+            switch (event.type) {
+                case "keydown": emberEvent = 'keyDown'; break;
+                case "keypress": emberEvent = 'keyPress'; break;
+            }
+            var handler = emberEvent ? this.get(emberEvent) : null;
+            if (window.FlameInspector && emberEvent) FlameInspector.logEvent(event, emberEvent, this);
+            if (handler) {
+		// Note that in jQuery, the contract is that event handler should return
+		// true to allow default handling, false to prevent it. But in Ember, event handlers return true if they handled the event,
+		// false if they didn't, so we want to invert that return value here.
+		return !handler.call(Flame.keyResponderStack.current(), event, Flame.keyResponderStack.current());
+            } else if (emberEvent === "keyDown" && this.interpretKeyEvents(event)) { // Try to hand down the event to a more specific key event handler
+		return false;
+            } else if (this.get('parentView')) {
+		return this.get('parentView').handleKeyEvent(event, view);
+            }
+	}
+    };
+
+    Ember.View.reopen(eventHandlers);
+    Ember.TextSupport.reopen(eventHandlers);
+}());
 
 Flame.KEY_BINDINGS = {
     8: 'deleteBackward',
@@ -125,7 +127,7 @@ Ember.mixin(Flame, {
 });
 
 // Set up a handler on the document for key events.
-Ember.$(document).on('keydown.sproutcore keypress.sproutcore', null, function(event, triggeringManager) {
+Ember.$(document).on('keydown keypress', null, function(event, triggeringManager) {
     if (Flame.keyResponderStack.current() !== undefined && Flame.keyResponderStack.current().get('isVisible')) {
         return Flame.keyResponderStack.current().handleKeyEvent(event, Flame.keyResponderStack.current());
     }
@@ -134,8 +136,8 @@ Ember.$(document).on('keydown.sproutcore keypress.sproutcore', null, function(ev
 
 // This logic is needed so that the view that handled mouseDown will receive mouseMoves and the eventual mouseUp, even if the
 // pointer no longer is on top of that view. Without this, you get inconsistencies with buttons and all controls that handle
-// mouse click events. The sproutcore event dispatcher always first looks up 'eventManager' property on the view that's
-// receiving an event, and let's that handle the event, if defined. So this should be mixed in to all the Flame views.
+// mouse click events. The ember event dispatcher always first looks up 'eventManager' property on the view that's
+// receiving an event, and lets that handle the event, if defined. So this should be mixed in to all the Flame views.
 Flame.EventManager = {
     // Set to true in your view if you want to accept key responder status (which is needed for handling key events)
     acceptsKeyResponder: false,
@@ -227,4 +229,3 @@ Flame.EventManager = {
         }
     }
 };
-
