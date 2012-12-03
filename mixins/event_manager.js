@@ -127,7 +127,7 @@ Ember.mixin(Flame, {
 });
 
 // Set up a handler on the document for key events.
-Ember.$(document).on('keydown keypress', null, function(event, triggeringManager) {
+Ember.$(document).on('keydown.flame keypress.flame', null, function(event, triggeringManager) {
     if (Flame.keyResponderStack.current() !== undefined && Flame.keyResponderStack.current().get('isVisible')) {
         return Flame.keyResponderStack.current().handleKeyEvent(event, Flame.keyResponderStack.current());
     }
