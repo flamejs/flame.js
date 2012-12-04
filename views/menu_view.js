@@ -209,6 +209,9 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     },
 
     popup: function(anchorElementOrJQ, position) {
+        if (Ember.none(this.get('parentMenu'))) {
+            this._openedAt = new Date().getTime();
+        }
         var anchorElement = anchorElementOrJQ instanceof jQuery ? anchorElementOrJQ : anchorElementOrJQ.$();
         this._super(anchorElement, position);
         this.set("_anchorElement", anchorElement);
@@ -317,6 +320,12 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     /* Event handling ends */
 
     mouseClicked: function(index) {
+        // If we're just handling a mouseUp that is part of the click that opened this menu, do nothing.
+        // When the mouseUp follows within 100ms of opening the menu, we know that's the case.
+        if (Ember.none(this.get('parentMenu')) && new Date().getTime() - this._openedAt < 100) {
+            return;
+        }
+
         this.set("highlightIndex", index);
         // This will currently select the item even if we're not on the the current menu. Will need to figure out how
         // to deselect an item when cursor leaves the menu totally (that is, does not move to a sub-menu).
