@@ -12,7 +12,8 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
     loaded: Flame.State.extend({
         mouseDown: function(event) {
-            if (this.get('owner').selectCell(jQuery(event.target).parent())) {
+            var owner = this.get('owner');
+            if (owner.selectCell(owner.cellForTarget(event.target))) {
                 this.gotoState('selected');
                 return true;
             } else { return false; }
@@ -43,7 +44,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
     selected: Flame.State.extend({
         mouseDown: function(event) {
-            var target = jQuery(event.target).parent();
+            var target = this.get('owner').cellForTarget(event.target);
             var selectedDataCell = this.getPath('owner.selectedDataCell');
             // If a cell is clicked that was already selected, start editing it
             if (target.hasClass('table-selection') && selectedDataCell.options && selectedDataCell.options()) {
@@ -285,7 +286,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
         mouseDown: function(event) {
             var owner = this.get('owner');
-            var cell = jQuery(event.target).parent();
+            var cell = owner.cellForTarget(event.target);
             var editField = owner.get('editField');
             if (owner.isCellSelectable(cell) && owner._confirmEdit()) {
                 this.gotoState('selected');
@@ -489,7 +490,6 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
     },
 
     selectCell: function(newSelection) {
-        // TODO click can also come from element in a table cell
         if (this.getPath('parentView.allowSelection') && this.isCellSelectable(newSelection)) {
             this.set('selectedCell', newSelection);
             return true;
@@ -498,7 +498,11 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
     },
 
     isCellSelectable: function(cell) {
-        return cell && cell[0] && cell[0].nodeName === 'TD';
+        return cell && cell.closest('td', this.$()).length > 0;
+    },
+
+    cellForTarget: function(target) {
+        return jQuery(target).closest('td', this.$());
     },
 
     updateColumnWidth: function(index, width) {
