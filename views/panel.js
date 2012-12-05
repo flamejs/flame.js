@@ -201,12 +201,12 @@ Flame.Panel = Flame.RootView.extend({
         var _window = Ember.$(window);
         if (layout.left + layout.width > _window.width() - 10) {
             layout.left = _window.width() - layout.width - 10;
-            layout.moved_x = true;
+            layout.movedX = true;
         }
         // ... and vertically
         if ((position & Flame.POSITION_BELOW && (layout.top + layout.height > _window.height() - 10) && offset.top - layout.height >= 0) ||
             (position & Flame.POSITION_ABOVE && (layout.top < 0))) {
-            layout.moved_y = true;
+            layout.movedY = true;
         } else if (layout.top < 0) {
             layout.top = 10;
         }
