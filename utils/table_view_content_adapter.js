@@ -20,7 +20,7 @@ Flame.TableViewContentAdapter = Ember.Object.extend({
         var columnHeadersLength = columnHeaders.length;
         var i;
         for (i = 0; i < columnHeadersLength; i++) {
-            this._processHeader(columnHeaderRows, columnHeaders[i], 'columns', 0);
+            this._processHeader(columnHeaderRows, columnHeaders[i], 'columns', 0, false, i);
         }
 
         columnHeaderRows.maxDepth = this.get('columnLeafs').map(function (x) { return x.depth; }).max();
@@ -39,7 +39,7 @@ Flame.TableViewContentAdapter = Ember.Object.extend({
         var rowHeadersLength = rowHeaders.length;
         var i;
         for (i = 0; i < rowHeadersLength; i++) {
-            this._processHeader(rowHeaderRows, rowHeaders[i], 'rows', 0, i === 0);
+            this._processHeader(rowHeaderRows, rowHeaders[i], 'rows', 0, i === 0, i);
         }
 
         rowHeaderRows.maxDepth = this.get('rowLeafs').map(function (x) { return x.depth; }).max();
@@ -62,8 +62,9 @@ Flame.TableViewContentAdapter = Ember.Object.extend({
       Store the headers in a structure similar to the way they will be rendered,
       i.e. (for column headers) an array of rows where each row is an array of cells.
     */
-    _processHeader: function(headerRows, header, type, depth, isFirst) {
+    _processHeader: function(headerRows, header, type, depth, isFirst, index) {
         header.depth = depth + 1;
+        header.dataIndex = index;
 
         // This representation is much easier to render
         if (type === 'columns') {
@@ -80,7 +81,7 @@ Flame.TableViewContentAdapter = Ember.Object.extend({
             var length = children.length;
             for (var i = 0; i < length; i++) {
                 var child = children[i];
-                count += this._processHeader(headerRows, child, type, depth + 1, i === 0);
+                count += this._processHeader(headerRows, child, type, depth + 1, i === 0, index);
             }
         } else { count = 1; }
 
