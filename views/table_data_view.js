@@ -13,30 +13,14 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
     loaded: Flame.State.extend({
         mouseDown: function(event) {
             var owner = this.get('owner');
-            if (owner.selectCell(owner.cellForTarget(event.target))) {
+            if (owner.selectCell(owner._cellForTarget(event.target))) {
                 this.gotoState('selected');
                 return true;
             } else { return false; }
         },
 
-        mouseUp: function(event) {
-            if (this.getPath('owner.tableViewDelegate') && this.getPath('owner.tableViewDelegate').mouseUp) {
-                var target = jQuery(event.target);
-                var columnIndexCell = target.closest("[data-index]");
-                var columnIndex = columnIndexCell.attr('data-index');
-                var rowIndex = columnIndexCell.parent().attr('data-index');
-                var targetDataCell;
-                var index;
-                if (rowIndex && columnIndex) {
-                    targetDataCell = this.getPath('owner.data')[rowIndex][columnIndex];
-                    index = [rowIndex, columnIndex];
-                }
-                this.getPath('owner.tableViewDelegate').mouseUp(event, target, targetDataCell, index, this.get('owner'));
-            }
-        },
-
         enterState: function() {
-            if (this.getPath('owner.state') === "inDOM") {
+            if (this.getPath('owner.state') === 'inDOM') {
                 this.getPath('owner.selection').hide();
             }
         }
@@ -44,32 +28,33 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
     selected: Flame.State.extend({
         mouseDown: function(event) {
-            var target = this.get('owner').cellForTarget(event.target);
-            var selectedDataCell = this.getPath('owner.selectedDataCell');
-            // If a cell is clicked that was already selected, start editing it
-            if (target.hasClass('table-selection') && selectedDataCell.options && selectedDataCell.options()) {
+            var owner = this.get('owner');
+            // If a cell is clicked that was already selected and it's a cell
+            // with fixed options, start editing it.
+            var selectedDataCell = owner.get('selectedDataCell');
+            if (jQuery(event.target).hasClass('table-selection-background')) {
                 this.startEdit();
                 return true;
-            } else return !!this.get('owner').selectCell(target);
+            }
+
+            var target = owner._cellForTarget(event.target);
+            return !!owner.selectCell(target);
         },
 
         mouseUp: function(event) {
-            if (this.getPath('owner.tableViewDelegate') && this.getPath('owner.tableViewDelegate').mouseUp) {
+            var tableViewDelegate = this.getPath('owner.tableViewDelegate');
+            if (tableViewDelegate && tableViewDelegate.mouseUp) {
                 var target = jQuery(event.target);
                 var targetDataCell;
                 var index;
-                var columnIndexCell = target.closest("[data-index]");
+                var columnIndexCell = target.closest('[data-index]');
                 var columnIndex = columnIndexCell.attr('data-index');
                 var rowIndex = columnIndexCell.parent().attr('data-index');
 
                 if (columnIndex && rowIndex) {
                     targetDataCell = this.getPath('owner.data')[rowIndex][columnIndex];
                     index = [rowIndex, columnIndex];
-
-                    var mouseUpDelegate = this.getPath('owner.tableViewDelegate');
-                    if (mouseUpDelegate) {
-                        mouseUpDelegate.mouseUp(event, target, targetDataCell, index, this.get('owner'));
-                    }
+                    tableViewDelegate.mouseUp(event, target, targetDataCell, index, this.get('owner'));
                 }
             }
         },
@@ -94,7 +79,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             }
 
             if (dataCell.isEditable()) {
-                this.get('owner')._validateAndSet("");
+                this.get('owner')._validateAndSet('');
             }
         },
 
@@ -219,7 +204,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
         mouseDown: function(event) {
             var owner = this.get('owner');
-            var cell = jQuery(event.target);
+            var cell = owner._cellForTarget(event.target);
             if (owner.isCellSelectable(cell)) {
                 this.gotoState('selected');
                 owner.selectCell(cell);
@@ -240,7 +225,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
         exitState: function() {
             var selection = this.getPath('owner.selection');
-            selection.html('');
+            selection.html('<div class="table-selection-background"></div>');
             selection.removeClass('read-only is-selectable');
         },
 
@@ -286,7 +271,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
         mouseDown: function(event) {
             var owner = this.get('owner');
-            var cell = owner.cellForTarget(event.target);
+            var cell = owner._cellForTarget(event.target);
             var editField = owner.get('editField');
             if (owner.isCellSelectable(cell) && owner._confirmEdit()) {
                 this.gotoState('selected');
@@ -351,7 +336,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                     owner.set('editValue', null);
                     editCell.show();
                     // Put cursor at end of value
-                    editCell.selectRange(1024, 1024);
+                    editCell.selectRange(editValue.length, editValue.length);
                 }
             }
         },
@@ -501,7 +486,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         return cell && cell.closest('td', this.$()).length > 0;
     },
 
-    cellForTarget: function(target) {
+    _cellForTarget: function(target) {
         return jQuery(target).closest('td', this.$());
     },
 
@@ -520,11 +505,9 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
     _renderTable: function(buffer) {
         var data = this.get('data');
-        if (!data) { return buffer; }
+        if (!(data && data[0])) return buffer;
+
         var rowCount = data.length;
-        if (!data[0]) {
-            return buffer;
-        }
         var columnCount = data[0].length;
         var defaultCellWidth = this.getPath('parentView.defaultColumnWidth');
         var columnLeafs = this.getPath('parentView.content.columnLeafs');
@@ -546,7 +529,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                         j,
                         (cssClassesString + (j % 2 === 0 ? " even-col" : " odd-col")),
                         cellWidth,
-                        (cell && cell.titleValue ? 'title="%@"'.fmt(cell.titleValue()) : ''),
+                        (cell && cell.titleValue && cell.titleValue() ? 'title="%@"'.fmt(cell.titleValue()) : ''),
                         (cell ? cell.content() : '<span style="color: #999">...</span>')));
             }
             buffer.push("</tr>");
@@ -554,7 +537,13 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         buffer = buffer.end(); // table
 
         // Selection indicator
-        buffer = buffer.begin('div').attr('class', 'table-selection').end();
+        buffer = buffer.begin('div').attr('class', 'table-selection')
+                     // This div serves as the "invisible" (very transparent) background for the table selection div.
+                     // Without this, the table selection div would be totally transparent and render only a border.
+                     // This causes inconsistencies in IE; when the table selection div is clicked, it's unclear which
+                     // element will receive the event.
+                     .begin('div').attr('class', 'table-selection-background').end()
+                 .end(); // div.table-selection
 
         // Edit field (text)
         buffer = buffer.begin('input').attr('class', 'table-edit-field').end();

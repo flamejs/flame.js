@@ -9,8 +9,6 @@ Flame.Popover = Flame.Panel.extend({
     handlebars: '<img {{bindAttr class="arrowPosition arrow"}} {{bindAttr src="image"}} />{{view contentView}}',
     anchor: null,
     position: null,
-    upVisible: true,
-    downVisible: false,
 
     _positionArrow: function() {
         var anchor = this.get('anchor');
@@ -22,8 +20,7 @@ Flame.Popover = Flame.Panel.extend({
             arrowOffset = offset.left + (anchor.outerWidth() / 2) - (!this.$().css('left') ? 0 : parseInt(this.$().css('left').replace('px', ''), 10)) - 15;
             arrow.css({ left: arrowOffset + 'px' });
             if (position & Flame.POSITION_ABOVE) {
-                var layout = this.get('layout');
-                arrow.css({ top: layout.height - 1});
+                arrow.css({ top: this.getPath('layout.height') - 1 + 'px' });
             }
         } else {
             arrowOffset = offset.top + (anchor.outerHeight() / 2) - parseInt(this.$().css('top').replace('px', ''), 10) - 15;
@@ -40,10 +37,10 @@ Flame.Popover = Flame.Panel.extend({
         this.set('position', position);
 
         var layout = this._super(anchor, position);
-        if (layout.moved_x || layout.moved_y) {
+        if (layout.movedX || layout.movedY) {
             // If the popover did not fit the viewport on one side, try to position it on the other side
-            if (layout.moved_x && position & (Flame.POSITION_LEFT | Flame.POSITION_RIGHT)) position ^= Flame.POSITION_LEFT | Flame.POSITION_RIGHT;
-            if (layout.moved_y && position & (Flame.POSITION_ABOVE | Flame.POSITION_BELOW)) position ^= Flame.POSITION_ABOVE | Flame.POSITION_BELOW;
+            if (layout.movedX && position & (Flame.POSITION_LEFT | Flame.POSITION_RIGHT)) position ^= Flame.POSITION_LEFT | Flame.POSITION_RIGHT;
+            if (layout.movedY && position & (Flame.POSITION_ABOVE | Flame.POSITION_BELOW)) position ^= Flame.POSITION_ABOVE | Flame.POSITION_BELOW;
             layout = this._super(anchor, position);
             this.set('position', position);
         }

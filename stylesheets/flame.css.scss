@@ -796,6 +796,14 @@ input[type="password"] {
         position: absolute;
         z-index: 2;
         font-size: 12px;
+
+        /* Make sure we can receive click events in IE */
+        .table-selection-background {
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            @include opacity(0.001);
+        }
     }
 
     div.read-only {
