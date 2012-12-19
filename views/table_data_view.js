@@ -361,8 +361,8 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
     },
 
     willLoseKeyResponder: function() {
-        this.set('selectedCell', null);
         this.gotoState('loaded');
+        this.set('selectedCell', null);
     },
 
     // Get the Cell instance that corresponds to the selected cell in the view
