@@ -44,3 +44,9 @@ Flame.computed.or = function(dependentKey, otherKey) {
         return Ember.getPath(this, dependentKey) || Ember.getPath(this, otherKey);
     }).cacheable();
 };
+
+Flame.computed.and = function(dependentKey, otherKey) {
+    return Ember.computed(dependentKey, otherKey, function(key) {
+        return Ember.getPath(this, dependentKey) && Ember.getPath(this, otherKey);
+    }).cacheable();
+};
