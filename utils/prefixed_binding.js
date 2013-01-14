@@ -86,9 +86,13 @@ Flame.reopen({
                     Ember.assert("Property '%@' was not found!".fmt(property), !Ember.none(prefix));
 
                     var finalPath = prefix + suffix;
-                    var newBinding = new Ember.Binding(binding._to, finalPath);
-                    newBinding._transforms = binding._transforms;  // Steal possible transforms
+                    // Copy transformations and the ilk.
+                    var newBinding = binding.copy();
+                    newBinding._from = finalPath;
                     newBinding.connect(view);
+                    // Make debugging easier
+                    binding._resolved_form = newBinding._resolved_form = newBinding._from;
+                    binding._unresolved_form = newBinding._unresolved_form = binding._from;
                 }
             }
         }
