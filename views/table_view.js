@@ -20,6 +20,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     initialState: 'idle',
 
     defaultColumnWidth: 88,
+    rowHeaderWidth: null,
     tableDelegate: null,
     content: null,  // Set to a Flame.TableController
     allowRefresh: true,
@@ -212,12 +213,14 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         }
 
         var defaultColumnWidth = this.get('defaultColumnWidth');
+        var rowHeaderWidth = this.get('rowHeaderWidth') || defaultColumnWidth;
+
         var columnHeaderRows = this.getPath('contentAdapter.columnHeaderRows');
         var rowHeaderRows = this.getPath('contentAdapter.rowHeaderRows');
         var columnHeaderHeight = columnHeaderRows.maxDepth * 21 + 1 + columnHeaderRows.maxDepth;
         var leftOffset = 0;
         if (renderRowHeader) {
-            leftOffset = rowHeaderRows.maxDepth * defaultColumnWidth + 1 + (renderColumnHeader ? 0 : 5);
+            leftOffset = rowHeaderRows.maxDepth * rowHeaderWidth + 1 + (renderColumnHeader ? 0 : 5);
         }
         var topOffset = didRenderTitle ? 18 : 0;
 
@@ -230,7 +233,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         }
         if (renderRowHeader) {
             // Row headers
-            buffer = this._renderHeader(buffer, 'row', topOffset, defaultColumnWidth);
+            buffer = this._renderHeader(buffer, 'row', topOffset, rowHeaderWidth);
         }
 
         // Scrollable div
