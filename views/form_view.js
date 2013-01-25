@@ -171,13 +171,10 @@ Flame.FormView = Flame.View.extend({
                         // XXX This will only work with controls with the value in the 'value' property
                         errorMessage = validationMessage(this.get('value'));
                     }
-                    var errorView = Flame.LabelView.extend({
-                        classNames: 'flame-form-view-validation-error'.w(),
-                        textAlign: Flame.ALIGN_LEFT,
+                    var errorView = Flame.ErrorMessageView.create({
                         layout: { top: offset.top - 7, left: offset.left + element.outerWidth() - 4, width: null, height: null, zIndex: zIndex },
-                        value: errorMessage,
-                        handlebars: '<div class="error-triangle"></div><div class="error-box">{{value}}</div>'
-                    }).create().append();
+                        value: errorMessage
+                    }).append();
 
                     this.set("_errorView", errorView);
                     self._errorViews.push(errorView);

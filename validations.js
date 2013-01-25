@@ -119,9 +119,12 @@ Flame.Validatable = Ember.Mixin.create({
     /**
      @returns {Boolean} to indicate if all properties of model are valid.
      **/
-    _checkValidity: function() {
+    _checkValidity: function(forceRevalidation) {
         var validations = this.get("validations");
         for (var key in validations) {
+            if (forceRevalidation) {
+                this.validateProperty(this, key, this.get(key));
+            }
             if (validations.hasOwnProperty(key) && this.get(this.isValidProperty(key)) !== true) {
                 return false;
             }

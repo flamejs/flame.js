@@ -7,25 +7,3 @@
         white-space: nowrap;
     }
 }
-
-/* This is outside the form-view element, so we can't use it as parent selector */
-.flame-form-view-validation-error {
-    .error-triangle {
-        margin: 3px 0px 3px 0px;
-        width: 14px;
-        height: 28px;
-        float: left;
-        background-image: image-url('images/error_triangle.png');
-        background-repeat: no-repeat;
-    }
-    .error-box {
-        margin: 3px 3px 3px 14px;
-        padding: 0px 10px 0px 6px;
-        line-height: 28px;
-        background-color: #cd443d;
-        border-radius: 0px 3px 3px 0px;
-        color: white;
-        font-weight: bold;
-        @include box-shadow(1, 1, 4, #333333);
-    }
-}
