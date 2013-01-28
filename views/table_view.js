@@ -1,6 +1,8 @@
 //= require ./table_data_view
 
 Flame.TableView = Flame.View.extend(Flame.Statechart, {
+    MIN_COLUMN_WIDTH: 30,
+
     classNames: 'flame-table-view'.w(),
     childViews: 'tableDataView'.w(),
     acceptsKeyResponder: false,
@@ -25,6 +27,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     content: null,  // Set to a Flame.TableController
     allowRefresh: true,
     batchUpdates: true,
+    useAutoWidth: false,
 
     contentAdapter: function() {
         return Flame.TableViewContentAdapter.create({
@@ -47,8 +50,32 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         return this.getPath('contentAdapter.rowHeaderRows.maxDepth');
     }.property('contentAdapter.rowHeaderRows').cacheable(),
 
+    /* IE 5-8 trigger mouse events in unorthodox order:
+
+     IE 5-8:        Any sane browser:
+     mousedown      mousedown
+     mouseup        mouseup
+     click          click
+     mouseup        mousedown
+     dblclick       mouseup
+                    click
+                    dblclick
+
+     Normally, the dblclick event works as expected, because the mouseup event is not being triggered for idle state
+     if mouseDown precedes it (because mouseup event is handled in resizing state). However, because IE8 triggers
+     two mouseups but only one mousedown for a dblclick event, the mouseUp function is called for idle state - which
+     in turn opens the sort order panel.
+
+     By adding another state we can mitigate the issue. The mousedown event puts the view into clickInProgress
+     state, and in clickInProgress mouseup returns it back to idle state. So, the state transition works as before.
+     However, if user clicks the resize-handle the view goes to resizing state. The first mouseup event moves the view
+     back to idle state, where the second redundant mouseup gets eaten silently.
+
+    */
     idle: Flame.State.extend({
         mouseDown: function(event) {
+            this.gotoState('clickInProgress');
+
             var target = jQuery(event.target);
             if (target.is('div.resize-handle')) {
                 this.gotoState('resizing');
@@ -69,7 +96,34 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
             return false;
         },
 
+        doubleClick: function(event) {
+            var owner = this.get('owner');
+            if (!owner.get('useAutoWidth')) return false;
+
+            var target = jQuery(event.target), index, header;
+            if (!!target.closest('.column-header').length && (index = target.closest('td').attr('data-leaf-index'))) {
+                header = this.getPath('owner.content.columnLeafs')[index];
+
+                var columnDataAsString = owner.getColumnContents(header).map(function(e) { return e; }).join("<br />");
+                var columnDimensions = Flame.measureString(columnDataAsString, 'ember-view');
+
+                var isBold = target.closest('td').css("font-weight") == "bold";
+                var headerLabelDimensions = Flame.measureString(owner.getLeafHeaderLabel(header), 'ember-view', 'label', isBold ? "font-weight:bold;" : '');
+
+                var width = Math.max(columnDimensions.width, headerLabelDimensions.width) + 40;
+
+                if (width < owner.MIN_COLUMN_WIDTH) width = owner.MIN_COLUMN_WIDTH;
+                owner.setColumnWidth(header.leafIndex, width);
+
+                return true;
+            }
+            return false;
+        }
+    }),
+
+    clickInProgress: Flame.State.extend({
         mouseUp: function(event) {
+            this.gotoState('idle');
             var clickDelegate = this.getPath('owner.tableViewDelegate');
             if (clickDelegate && clickDelegate.columnHeaderClicked) {
                 var target = jQuery(event.target), index, header;
@@ -101,7 +155,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
             var cell = this.getPath('owner.resizingCell');
             var deltaX = event.pageX - this.getPath('owner.dragStartX');
             var cellWidth = this.getPath('owner.startX') + deltaX;
-            if (cellWidth < 30) { cellWidth = 30; }
+            if (cellWidth < this.MIN_COLUMN_WIDTH) { cellWidth = this.MIN_COLUMN_WIDTH; }
             var leafIndex;
             // Adjust size of the cell
             if (this.getPath('owner.type') === 'column') { // Update data table column width
@@ -157,15 +211,46 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         }
     }),
 
+    setColumnWidth: function(columnIndex, cellWidth) {
+        var headerCellWidth = this._getBrowserSpecificHeaderCellWidth(cellWidth);
+        this.$().parent().find('div.column-header').find('colgroup :nth-child(%@)'.fmt(columnIndex + 1)).css('width', '%@px'.fmt(headerCellWidth));
+
+        cellWidth = this._getBrowserSpecificTableCellWidth(cellWidth);
+        var table = this.get('childViews')[0];
+        table.updateColumnWidth(columnIndex, cellWidth);
+    },
+
+    getColumnContents: function(columnHeader) {
+        return this.getPath("content.tableData").map(function(e) {
+            var elem = e[columnHeader.leafIndex];
+            return Ember.none(elem) ? '' : elem.formattedValue();
+        });
+    },
+
+    getLeafHeaderLabel: function(header) {
+        var leaf = this.getPath("content.columnLeafs")[header.leafIndex];
+        return leaf.get("headerLabel");
+    },
+
     _synchronizeColumnWidth: function() {
         // Update data table columns
         var cell = this.get('resizingCell');
         var table = this.get('childViews')[0];
-        var width = parseInt(cell.css('width'), 10);
+        var width = this._getBrowserSpecificTableCellWidth(parseInt(cell.css('width'), 10));
         var index = parseInt(cell.attr('data-leaf-index'), 10);
+        table.updateColumnWidth(index, width);
+    },
+
+    _getBrowserSpecificHeaderCellWidth: function(cellWidth) {
+        if (jQuery.browser.mozilla) cellWidth += 3;
+        if (jQuery.browser.webkit || jQuery.browser.msie) cellWidth += 4;
+        return cellWidth;
+    },
+
+    _getBrowserSpecificTableCellWidth: function(width) {
         if (jQuery.browser.webkit || jQuery.browser.msie) { width += 4; }
         if (jQuery.browser.mozilla) { width -= 2; }
-        table.updateColumnWidth(index, width);
+        return width;
     },
 
     willInsertElement: function() {
