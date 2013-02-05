@@ -226,7 +226,9 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         if (renderRowHeader) {
             if (rowHeaderWidths) {
                 var totalWidth = 0;
-                jQuery.each(rowHeaderWidths, function(index, value) {totalWidth += value});
+                for (var i = 0; i < Math.max(rowHeaderRows.maxDepth, 1); i++) {
+                    totalWidth += rowHeaderWidths[i];
+                }
                 leftOffset = totalWidth + 1 + (renderColumnHeader ? 0 : 5);                
             } else {
                 leftOffset = rowHeaderRows.maxDepth * defaultRowHeaderWidth + 1 + (renderColumnHeader ? 0 : 5);
