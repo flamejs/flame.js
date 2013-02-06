@@ -217,7 +217,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
 
         var defaultColumnWidth = this.get('defaultColumnWidth');
         var defaultRowHeaderWidth = this.get('rowHeaderWidth') || defaultColumnWidth;
-        var rowHeaderWidths = this.get('content').rowHeaderWidths();       
+        var rowHeaderWidths = this.get('content').rowHeaderWidths ? this.get('content').rowHeaderWidths() : null;
 
         var columnHeaderRows = this.getPath('contentAdapter.columnHeaderRows');
         var rowHeaderRows = this.getPath('contentAdapter.rowHeaderRows');
@@ -278,7 +278,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         buffer = buffer.begin('table').attr('style', 'position: absolute').attr('width', '1px');
         buffer = buffer.begin('colgroup');
         if (type === 'row') {
-            var widths = this.get('content').rowHeaderWidths();
+            var widths = this.get('content').rowHeaderWidths ? this.get('content').rowHeaderWidths() : null;
             for (i = 1; i < 4; i++) {
                 buffer = buffer.push('<col style="width: %@px;" class="level-%@" />'.fmt(widths ? (widths[i - 1] ? widths[i - 1] : defaultColumnWidth) : defaultColumnWidth, i));
             }
