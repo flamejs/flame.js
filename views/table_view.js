@@ -143,13 +143,16 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
 
         mouseUp: function(event) {
             var owner = this.get('owner');
-            if (owner.get('type') === 'column') {
-                var resizeDelegate = owner.get('tableViewDelegate');
-                if (resizeDelegate && resizeDelegate.columnResized) {
-                    var cell = owner.get('resizingCell');
+            var resizeDelegate = owner.get('tableViewDelegate');
+            if (resizeDelegate) {                
+                var cell = owner.get('resizingCell');
+                if (owner.get('type') === 'column' && resizeDelegate.columnResized) {                    
                     var width = parseInt(cell.css('width'), 10);
                     var index = parseInt(cell.attr('data-leaf-index'), 10);
                     resizeDelegate.columnResized(index, width);
+                } else if (resizeDelegate.rowHeaderResized) {
+                    var widths = this.$('.row-header col', '[class*=level]').map(function() {return $(this).width();});
+                    resizeDelegate.rowHeaderResized(widths.get());
                 }
             }
             this.gotoState('idle');
@@ -213,14 +216,23 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         }
 
         var defaultColumnWidth = this.get('defaultColumnWidth');
-        var rowHeaderWidth = this.get('rowHeaderWidth') || defaultColumnWidth;
+        var defaultRowHeaderWidth = this.get('rowHeaderWidth') || defaultColumnWidth;
+        var rowHeaderWidths = this.get('content').rowHeaderWidths ? this.get('content').rowHeaderWidths() : null;
 
         var columnHeaderRows = this.getPath('contentAdapter.columnHeaderRows');
         var rowHeaderRows = this.getPath('contentAdapter.rowHeaderRows');
         var columnHeaderHeight = columnHeaderRows.maxDepth * 21 + 1 + columnHeaderRows.maxDepth;
         var leftOffset = 0;
         if (renderRowHeader) {
-            leftOffset = rowHeaderRows.maxDepth * rowHeaderWidth + 1 + (renderColumnHeader ? 0 : 5);
+            if (rowHeaderWidths) {
+                var totalWidth = 0;
+                for (var i = 0; i < Math.max(rowHeaderRows.maxDepth, 1); i++) {
+                    totalWidth += rowHeaderWidths[i];
+                }
+                leftOffset = totalWidth + 1 + (renderColumnHeader ? 0 : 5);                
+            } else {
+                leftOffset = rowHeaderRows.maxDepth * defaultRowHeaderWidth + 1 + (renderColumnHeader ? 0 : 5);
+            }
         }
         var topOffset = didRenderTitle ? 18 : 0;
 
@@ -233,7 +245,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         }
         if (renderRowHeader) {
             // Row headers
-            buffer = this._renderHeader(buffer, 'row', topOffset, rowHeaderWidth);
+            buffer = this._renderHeader(buffer, 'row', topOffset, defaultRowHeaderWidth);
         }
 
         // Scrollable div
@@ -266,8 +278,10 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         buffer = buffer.begin('table').attr('style', 'position: absolute').attr('width', '1px');
         buffer = buffer.begin('colgroup');
         if (type === 'row') {
+            var widths = this.get('content').rowHeaderWidths ? this.get('content').rowHeaderWidths() : null;
             for (i = 1; i < 4; i++) {
-                buffer = buffer.push('<col style="width: %@px;" class="level-%@" />'.fmt(defaultColumnWidth, i));
+                var width = (widths && widths[i - 1]) ? widths[i - 1] : defaultColumnWidth;
+                buffer = buffer.push('<col style="width: %@px;" class="level-%@" />'.fmt(width, i));
             }
         } else {
             var l = this.getPath('content.columnLeafs').length;
