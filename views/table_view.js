@@ -280,7 +280,8 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         if (type === 'row') {
             var widths = this.get('content').rowHeaderWidths ? this.get('content').rowHeaderWidths() : null;
             for (i = 1; i < 4; i++) {
-                buffer = buffer.push('<col style="width: %@px;" class="level-%@" />'.fmt(widths ? (widths[i - 1] ? widths[i - 1] : defaultColumnWidth) : defaultColumnWidth, i));
+                var width = (widths && widths[i - 1]) ? widths[i - 1] : defaultColumnWidth;
+                buffer = buffer.push('<col style="width: %@px;" class="level-%@" />'.fmt(width, i));
             }
         } else {
             var l = this.getPath('content.columnLeafs').length;
