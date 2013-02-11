@@ -109,6 +109,9 @@ Flame.TableController = Ember.Object.extend({
         if (!headers) { return null; }
         return this._getLeafs(headers.rowHeaders, []);
     }.property('_headers', '_headers.columns').cacheable(),
+    // _headers.columns is really a nonexistent attribute, but adding it appears to trigger cache invalidation, which
+    // prevents rowLeafs and columnLeafs from returning invalid data. FIXME: When upgrading Ember.js, it should be
+    // tested if this hack is still necessary.
 
     columnLeafs: function() {
         var headers = this.get('_headers');
