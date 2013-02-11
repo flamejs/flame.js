@@ -1,11 +1,9 @@
 Ember.mixin(Flame, {
-    _setupStringMeasurement: function(parentClasses, elementClasses) {
-        if (!parentClasses) {
-            parentClasses = '';
-        }
-        if (!elementClasses) {
-            elementClasses = '';
-        }
+    _setupStringMeasurement: function(parentClasses, elementClasses, additionalStyles) {
+        if (!parentClasses) parentClasses = '';
+        if (!elementClasses) elementClasses = '';
+        if (!additionalStyles) additionalStyles = '';
+
         var element = this._metricsCalculationElement;
         if (!element) {
             var parentElement = document.createElement("div");
@@ -15,13 +13,15 @@ Ember.mixin(Flame, {
             parentElement.appendChild(element);
             document.body.insertBefore(parentElement, null);
         }
+
         element.parentNode.className = parentClasses;
         element.className = elementClasses;
+        element.style.cssText += additionalStyles;
         return element;
     },
 
-    measureString: function(string, parentClasses, elementClasses) {
-        var element = this._setupStringMeasurement(parentClasses, elementClasses);
+    measureString: function(string, parentClasses, elementClasses, additionalStyles) {
+        var element = this._setupStringMeasurement(parentClasses, elementClasses, additionalStyles);
         element.innerHTML = string;
         return {
             width: element.clientWidth,
