@@ -198,6 +198,13 @@ Flame.EventManager = {
             return !this._dispatch('mouseMove', event, view);
         },
 
+        doubleClick: function(event, view) {
+            if (Flame.get('mouseResponderView') !== undefined) {
+                view = Flame.get('mouseResponderView');
+            }
+            return !this._dispatch('doubleClick', event, view);
+        },
+
         keyDown: function(event) {
             if (Flame.keyResponderStack.current() !== undefined && Flame.keyResponderStack.current().get('isVisible')) {
                 return Flame.keyResponderStack.current().handleKeyEvent(event, Flame.keyResponderStack.current());
