@@ -324,6 +324,8 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
             buffer = buffer.begin('td');
 
             headerLabel = header.get ? header.get('headerLabel') : header.label;
+            if (!headerLabel) headerLabel = "";
+
             buffer = buffer.attr('title', headerLabel.replace(/<br>/g, '\n'));
 
             if (header.rowspan > 1) {
