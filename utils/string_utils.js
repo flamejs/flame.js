@@ -16,7 +16,7 @@ Flame.StringUtils = (function() {
     }
 
     function escapeForRegexp(rawString) {
-        return rawString.replace(/[\^$*+?.(){}[\]|]/g, "\\$&");
+        return rawString.replace(/[\^$*+?.(){}\[\]|]/g, "\\$&");
     }
 
     return  {
