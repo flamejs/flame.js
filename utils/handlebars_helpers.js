@@ -4,8 +4,8 @@
 */
 function handleLayoutHash(hash) {
     var layout = null;
-    if (hash.width > 0 || hash.height > 0 || hash.top > 0 || hash.bottom > 0 || hash.left > 0 || hash.right > 0 || hash.centerX !== null || hash.centerY !== null) {
-        layout = { width: hash.width, height: hash.height, bottom: hash.bottom, top: hash.top, left: hash.left, right: hash.right, centerX: hash.centerX, centerY: hash.centerY };
+    if (hash.width > 0 || hash.height > 0 || hash.top > 0 || hash.bottom > 0 || hash.left > 0 || hash.right > 0 || hash.centerX !== null || hash.centerY !== null || hash.maxHeight !== null) {
+        layout = { width: hash.width, height: hash.height, bottom: hash.bottom, top: hash.top, left: hash.left, right: hash.right, centerX: hash.centerX, centerY: hash.centerY, maxHeight: hash.maxHeight };
     }
     return layout;
 }

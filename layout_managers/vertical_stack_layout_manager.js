@@ -21,6 +21,7 @@ Flame.VerticalStackLayoutManager = Flame.LayoutManager.extend({
         var self = this;
         var top = self.get('topMargin');
         var fluid = false, isFirst = true;
+        var maxHeight = view.get('layout').maxHeight;
 
         // Filter out views that are not affected by the layout manager
         var views = view.get('childViews').filter(function(childView) {
@@ -61,9 +62,14 @@ Flame.VerticalStackLayoutManager = Flame.LayoutManager.extend({
         });
 
         // fluid == true means that the last child has no height set, meaning that it's meant to fill in the rest of the parent's view.
-        // In that case, we must not set parent's height either, because the system is supposed to remain fluid (i.e. bottom is set).
+        // In that case, we must not set parent's height either, because the system is supposed to remain fluid (i.e. bottom is set).               
         if (!fluid) {
-            top += this.get('bottomMargin');
+            top += this.get('bottomMargin');            
+        }
+        if (maxHeight !== undefined && top > maxHeight) {
+            top = maxHeight;
+        }
+        if (!fluid || maxHeight !== undefined) {
             view.adjustLayout('height', top);
         }
     }
