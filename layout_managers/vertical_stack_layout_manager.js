@@ -62,7 +62,7 @@ Flame.VerticalStackLayoutManager = Flame.LayoutManager.extend({
         });
 
         // fluid == true means that the last child has no height set, meaning that it's meant to fill in the rest of the parent's view.
-        // In that case, we must not set parent's height either, because the system is supposed to remain fluid (i.e. bottom is set).               
+        // In that case, we must not set parent's height either, because the system is supposed to remain fluid (i.e. bottom is set).
         if (!fluid) {
             top += this.get('bottomMargin');            
         }
