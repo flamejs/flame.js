@@ -8,8 +8,8 @@ Flame.LayoutSupport = {
     layoutManager: undefined,
     rootView: false,
 
-    _layoutProperties: ['left', 'right', 'top', 'bottom', 'width', 'height'],
-    _cssProperties: ['left', 'right', 'top', 'bottom', 'width', 'height', 'margin-left', 'margin-top'],
+    _layoutProperties: ['left', 'right', 'top', 'bottom', 'width', 'height', 'maxHeight'],
+    _cssProperties: ['left', 'right', 'top', 'bottom', 'width', 'height', 'margin-left', 'margin-top', 'overflow'],
     _layoutChangeInProgress: false,
     _layoutSupportInitialized: false,
 
@@ -105,6 +105,10 @@ Flame.LayoutSupport = {
     _translateLayout: function(layout) {
         var cssLayout = {};
 
+        if (layout.maxHeight !== undefined) {
+            cssLayout.overflow = 'auto';
+        }
+
         cssLayout.width = layout.width;
         if (layout.centerX === undefined) {
             cssLayout.left = layout.left;
@@ -173,6 +177,9 @@ Flame.LayoutSupport = {
         if (oldValue !== newValue) {
             layout[property] = newValue;
             this.updateLayout();
+            if (property === 'maxHeight') {
+                this.consultLayoutManager();
+            }
         }
     },
 
