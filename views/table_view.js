@@ -28,6 +28,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     allowRefresh: true,
     batchUpdates: true,
     useAutoWidth: false,
+    cornerText: "",
 
     contentAdapter: function() {
         return Flame.TableViewContentAdapter.create({
@@ -323,7 +324,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
 
         if (renderColumnHeader) {
             // Top left corner of the headers
-            buffer = buffer.push('<div class="table-corner" style="top: %@px; left: 0px; height: %@px; width: %@px;"></div>'.fmt(topOffset, columnHeaderHeight, leftOffset));
+            buffer = buffer.push('<div class="table-corner" style="top: %@px; left: 0px; height: %@px; width: %@px;">%@</div>'.fmt(topOffset, columnHeaderHeight, leftOffset, this.get('cornerText')));
             // Column headers
             buffer = this._renderHeader(buffer, 'column', leftOffset, defaultColumnWidth);
             topOffset += columnHeaderHeight;
