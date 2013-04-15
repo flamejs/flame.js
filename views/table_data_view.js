@@ -522,6 +522,12 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             for (j = 0; j < columnCount; j++) {
                 var cell = data[i][j];
                 var cssClassesString = cell ? cell.cssClassesString() : "";
+                var content;
+                if(cell){
+                    content = (Ember.none(cell.content()) ? '' : cell.content());
+                } else {
+                    content = '<span style="color: #999">...</span>';
+                }
                 cellWidth = columnLeafs[j].get('render_width') || defaultCellWidth;
                 if (jQuery.browser.mozilla) cellWidth -= 5;
                 // Surround the content with a relatively positioned div to make absolute positioning of content work with Firefox
@@ -530,7 +536,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                         (cssClassesString + (j % 2 === 0 ? " even-col" : " odd-col")),
                         cellWidth,
                         (cell && cell.titleValue && cell.titleValue() ? 'title="%@"'.fmt(cell.titleValue()) : ''),
-                        (cell ? cell.content() : '<span style="color: #999">...</span>')));
+                        content));
             }
             buffer.push("</tr>");
         }
