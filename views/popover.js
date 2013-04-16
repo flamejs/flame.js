@@ -10,6 +10,11 @@ Flame.Popover = Flame.Panel.extend({
     anchor: null,
     position: null,
 
+    ARROW_UP: Flame.image('arrow_up.png'),
+    ARROW_DOWN: Flame.image('arrow_down.png'),
+    ARROW_LEFT: Flame.image('arrow_left.png'),
+    ARROW_RIGHT: Flame.image('arrow_right.png'),
+
     _positionArrow: function() {
         var anchor = this.get('anchor');
         var position = this.get('position');
@@ -48,19 +53,19 @@ Flame.Popover = Flame.Panel.extend({
         if (position & Flame.POSITION_ABOVE) {
             layout.top -= 15;
             this.set('arrowPosition', 'above');
-            this.set('image', Flame.image('arrow_down.png'));
+            this.set('image', this.ARROW_DOWN);
         } else if (position & Flame.POSITION_BELOW) {
             layout.top += 15;
             this.set('arrowPosition', 'below');
-            this.set('image', Flame.image('arrow_up.png'));
+            this.set('image', this.ARROW_UP);
         } else if (position & Flame.POSITION_LEFT) {
             layout.left -= 15;
             this.set('arrowPosition', 'left');
-            this.set('image', Flame.image('arrow_right.png'));
+            this.set('image', this.ARROW_LEFT);
         } else if (position & Flame.POSITION_RIGHT) {
             layout.left += 15;
             this.set('arrowPosition', 'right');
-            this.set('image', Flame.image('arrow_left.png'));
+            this.set('image', this.ARROW_RIGHT);
         }
         return layout;
     },
