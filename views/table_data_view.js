@@ -520,11 +520,15 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         for (i = 0; i < rowCount; i++) {
             buffer.push('<tr data-index="'+i+'">');
             for (j = 0; j < columnCount; j++) {
-                var cell = data[i][j];
-                var cssClassesString = cell ? cell.cssClassesString() : "";
                 var content;
-                if(cell){
-                    content = (Ember.none(cell.content()) ? '' : cell.content());
+                var cell = data[i][j];
+                var cssClassesString = '';
+                var titleValue = '';
+                if (cell) {
+                    content = cell.content();
+                    content = (Ember.none(content) ? '' : content);
+                    cssClassesString = cell.cssClassesString();
+                    titleValue = (cell.titleValue && cell.titleValue() ? 'title="%@"'.fmt(cell.titleValue()) : '');
                 } else {
                     content = '<span style="color: #999">...</span>';
                 }
@@ -535,7 +539,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                         j,
                         (cssClassesString + (j % 2 === 0 ? " even-col" : " odd-col")),
                         cellWidth,
-                        (cell && cell.titleValue && cell.titleValue() ? 'title="%@"'.fmt(cell.titleValue()) : ''),
+                        titleValue,
                         content));
             }
             buffer.push("</tr>");
