@@ -25,11 +25,12 @@ Flame.FormView = Flame.View.extend({
     init: function() {
         this._super();
 
-        this.set('layoutManager', Flame.VerticalStackLayoutManager.create({
-            topMargin: this.get('topMargin'),
-            spacing: this.get('rowSpacing'),
-            bottomMargin: this.get('bottomMargin')
-        }));
+        if (!this.get('layoutManager'))
+            this.set('layoutManager', Flame.VerticalStackLayoutManager.create({
+                topMargin: this.get('topMargin'),
+                spacing: this.get('rowSpacing'),
+                bottomMargin: this.get('bottomMargin')
+            }));
 
         this.set('_errorViews', []);
         this.set('controls', []);
