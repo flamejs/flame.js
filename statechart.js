@@ -54,7 +54,10 @@ Flame.Statechart = {
 
     init: function() {
         this._super();
+        this.initStates();
+    },
 
+    initStates: function() {        
         // Look for defined states and initialize them
         var key;
         for (key in this) {
