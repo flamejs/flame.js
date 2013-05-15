@@ -153,7 +153,7 @@ Flame.FormView = Flame.View.extend({
                 if (errorView && !this.get('isValid')) {
                     errorView.remove();
                     this.set('_errorView', null);
-                    self._errorViews = self._errorViews.without(errorView);
+                    self.set('_errorViews', self.get('_errorViews').without(errorView));
                 }
             }.observesBefore('isValid'),
 
@@ -173,11 +173,13 @@ Flame.FormView = Flame.View.extend({
                     }
                     var errorView = Flame.ErrorMessageView.create({
                         layout: { top: offset.top - 7, left: offset.left + element.outerWidth() - 4, width: null, height: null, zIndex: zIndex },
-                        value: errorMessage
+                        value: errorMessage,
+                        parentView: self,
+                        isVisibleBinding: 'parentView.isVisible'
                     }).append();
 
                     this.set("_errorView", errorView);
-                    self._errorViews.push(errorView);
+                    self.get('_errorViews').pushObject(errorView);
                 }
             }.observes("isValid")
         };
@@ -297,7 +299,11 @@ Flame.FormView = Flame.View.extend({
                     settings.itemsBinding = descriptor.optionsBinding;
                 } else if (descriptor.options) {
                     settings.itemTitleKey = descriptor.itemTitleKey || "title";
-                    settings.items = descriptor.options;
+                    if (Ember.typeOf(descriptor.options) === "function") {
+                        settings.items = descriptor.options.apply(this);
+                    } else {
+                        settings.items = descriptor.options;
+                    }
                 }
                 if (!descriptor.get('allowNew')) {
                     return Flame.SelectButtonView.extend(settings);
@@ -309,6 +315,10 @@ Flame.FormView = Flame.View.extend({
     },
 
     willDestroyElement: function() {
-        this._errorViews.forEach(function(e) { e.remove(); });
-    }
+        this.get('_errorViews').forEach(function(e) { e.remove(); });
+    },
+
+    isValid: function() {
+        return this.get("_errorViews").length === 0;
+    }.property('_errorViews.@each').cacheable()
 });
