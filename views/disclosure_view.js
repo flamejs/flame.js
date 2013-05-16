@@ -8,7 +8,7 @@ Flame.DisclosureView = Flame.LabelView.extend({
 
     image: function() {
         return this.get('visibilityTarget') ? this.get('imageExpanded') : this.get('imageCollapsed');
-    }.property('visibilityTarget', 'imageExpanded', 'imageCollapsed'),
+    }.property('visibilityTarget', 'imageExpanded', 'imageCollapsed').cacheable(),
 
     handlebars: '<img {{bindAttr src="image"}}> {{value}}',
 

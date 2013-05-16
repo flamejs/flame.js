@@ -24,6 +24,10 @@ Flame.TreeItemView = Flame.ListItemView.extend({
     }.property('content.treeItemIsExpanded', 'defaultIsExpanded').cacheable(),
     layout: { left: 0, right: 0, top: 0, height: 0 },
 
+    init: function() {
+        this._super();
+    },
+
     defaultIsExpanded: function() {
         return this.getPath('parentView.rootTreeView.defaultIsExpanded');
     }.property('parentView.rootTreeView.defaultIsExpanded').cacheable(),
@@ -76,17 +80,15 @@ Flame.TreeItemView = Flame.ListItemView.extend({
     // This view class is responsible for rendering a single item in the tree. It's not the same thing as
     // the itemViewClass, because in the tree view that class is responsible for rendering the item AND
     // possible nested list view, if the item has children.
-    treeItemViewClass: function() {
-        return Flame.View.extend({
-            useAbsolutePosition: false,
-            layout: { top: 0, left: 0, right: 0, height: 20 },
-            classNames: ['flame-tree-item-view-content'],
-            contentIndexBinding: 'parentView.contentIndex',
-            handlebars: function() {
-                return this.getPath('parentView.parentView.rootTreeView').handlebarsForItem(this.get('content'));
-            }.property('content').cacheable()
-        });
-    }.property(),
+    treeItemViewClass: Flame.View.extend({
+        useAbsolutePosition: false,
+        layout: { top: 0, left: 0, right: 0, height: 20 },
+        classNames: ['flame-tree-item-view-content'],
+        contentIndexBinding: 'parentView.contentIndex',
+        handlebars: function() {
+            return this.getPath('parentView.parentView.rootTreeView').handlebarsForItem(this.get('content'));
+        }.property('content').cacheable()
+    }),
 
     /**
      * Get the immediate parent-view of all the TreeItemViews that are under this view in the tree. If no child views
