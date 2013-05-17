@@ -1,4 +1,3 @@
-
 /*
   A child view in a TreeView. In most cases you don't need to extend this, you can instead define
   a handlebarsMap on the tree view. If you want to use a custom view instead of handlebars, consider
@@ -23,6 +22,10 @@ Flame.TreeItemView = Flame.ListItemView.extend({
         }
     }.property('content.treeItemIsExpanded', 'defaultIsExpanded').cacheable(),
     layout: { left: 0, right: 0, top: 0, height: 0 },
+
+    init: function() {
+        this._super();
+    },
 
     defaultIsExpanded: function() {
         return this.getPath('parentView.rootTreeView.defaultIsExpanded');
@@ -76,17 +79,15 @@ Flame.TreeItemView = Flame.ListItemView.extend({
     // This view class is responsible for rendering a single item in the tree. It's not the same thing as
     // the itemViewClass, because in the tree view that class is responsible for rendering the item AND
     // possible nested list view, if the item has children.
-    treeItemViewClass: function() {
-        return Flame.View.extend({
-            useAbsolutePosition: false,
-            layout: { top: 0, left: 0, right: 0, height: 20 },
-            classNames: ['flame-tree-item-view-content'],
-            contentIndexBinding: 'parentView.contentIndex',
-            handlebars: function() {
-                return this.getPath('parentView.parentView.rootTreeView').handlebarsForItem(this.get('content'));
-            }.property('content').cacheable()
-        });
-    }.property(),
+    treeItemViewClass: Flame.View.extend({
+        useAbsolutePosition: false,
+        layout: { top: 0, left: 0, right: 0, height: 20 },
+        classNames: ['flame-tree-item-view-content'],
+        contentIndexBinding: 'parentView.contentIndex',
+        handlebars: function() {
+            return this.getPath('parentView.parentView.rootTreeView').handlebarsForItem(this.get('content'));
+        }.property('content').cacheable()
+    }),
 
     /**
      * Get the immediate parent-view of all the TreeItemViews that are under this view in the tree. If no child views
@@ -125,6 +126,8 @@ Flame.TreeItemView = Flame.ListItemView.extend({
     }),
 
     // The view class for displaying possible nested list view, in case this item has children.
+    // TODO Don't create a new CLASS EACH AND EVERY TIME this property is called! Using just a cacheable won't do
+    // because then a new class would still be created for each instance of a Tree.
     nestedTreeView: function() {
         return Flame.TreeView.extend({
             useAbsolutePosition: this.getPath('parentView.rootTreeView.useAbsolutePositionForItems'),
