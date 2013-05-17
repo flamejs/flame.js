@@ -1,4 +1,3 @@
-
 /*
   A child view in a TreeView. In most cases you don't need to extend this, you can instead define
   a handlebarsMap on the tree view. If you want to use a custom view instead of handlebars, consider
@@ -127,6 +126,8 @@ Flame.TreeItemView = Flame.ListItemView.extend({
     }),
 
     // The view class for displaying possible nested list view, in case this item has children.
+    // TODO Don't create a new CLASS EACH AND EVERY TIME this property is called! Using just a cacheable won't do
+    // because then a new class would still be created for each instance of a Tree.
     nestedTreeView: function() {
         return Flame.TreeView.extend({
             useAbsolutePosition: this.getPath('parentView.rootTreeView.useAbsolutePositionForItems'),
