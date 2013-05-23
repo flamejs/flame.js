@@ -48,35 +48,45 @@ Flame.TabView = Flame.View.extend({
     }.observes('tabs.@each'),
 
     _addTab: function(tab, index) {
-          var contentView = this.get('contentView');
-          var contentViewChildren = contentView.get('childViews');
-          var tabBarView = this.get('tabBarView');
-          var tabBarViewChildren = tabBarView.get('childViews');
-          var tabsHeight = this.get('tabsHeight');
-          var self = this;
-          tabBarViewChildren.insertAt(index, tabBarView.createChildView(Flame.ButtonView.create({
-              acceptsKeyResponder: false,
-              layout: { top: 0, bottom: 0, height: tabsHeight },
-              title: tab.title,
-              value: tab.value,
-              isSelected: Flame.computed.equals('parentView.parentView.nowShowing', tab.value),
-              action: function() {
-                  self.set('nowShowing', tab.value);
-              }
-          })));
-          var view = self.get(tab.value);
-          Ember.assert('View for tab %@ not defined!'.fmt(tab.value), !!view);
-          if (!self.get('initializeTabsLazily')) {
-              if (!(view instanceof Ember.View)) {
-                  view = contentView.createChildView(view);
-              }
-              view.set('isVisible', false);
-              contentViewChildren.addObject(view);
-              self.set(tab.value, view);
-          }
+        var contentView = this.get('contentView');
+        var contentViewChildren = contentView.get('childViews');
+        var tabBarView = this.get('tabBarView');
+        var tabBarViewChildren = tabBarView.get('childViews');
+        var tabsHeight = this.get('tabsHeight');
+        var self = this;
 
-          if (Ember.none(this.get('nowShowing'))) this.set('nowShowing', this.get('tabs').objectAt(0).value);
-      },
+        var buttonConfig = {
+            acceptsKeyResponder: false,
+            layout: { top: 0, bottom: 0, height: tabsHeight },
+            title: tab.title,
+            value: tab.value,
+            tabView: this,
+            isSelected: Flame.computed.equals('parentView.parentView.nowShowing', tab.value),
+            action: function() {
+              self.set('nowShowing', tab.value);
+            }
+        };
+
+        if (tab.tabClass) {
+            buttonConfig.classNameBindings = ['tabView.%@.%@'.fmt(tab.value, tab.tabClass)];
+        }
+
+        tabBarViewChildren.insertAt(index, tabBarView.createChildView(Flame.ButtonView.create(buttonConfig)));
+
+        var view = this.get(tab.value);
+        Ember.assert('View for tab %@ not defined!'.fmt(tab.value), !!view);
+
+        if (!this.get('initializeTabsLazily')) {
+            if (!(view instanceof Ember.View)) {
+                view = contentView.createChildView(view);
+            }
+            view.set('isVisible', false);
+            contentViewChildren.addObject(view);
+            this.set(tab.value, view);
+        }
+
+        if (Ember.none(this.get('nowShowing'))) this.set('nowShowing', this.get('tabs').objectAt(0).value);
+    },
 
     _tabWillChange: function() {
         if (this.get('nowShowing')) {
