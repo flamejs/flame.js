@@ -217,7 +217,6 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
         this._super(anchorElement, position);
         this.set("_anchorElement", anchorElement);
         this._updateMenuSize();
-        this._layoutRelativeTo(anchorElement, position);    // re-layout now that width has been computed
     },
 
     _updateMenuSize: function() {
