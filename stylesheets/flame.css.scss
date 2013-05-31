@@ -939,6 +939,14 @@ input[type="password"] {
             z-index: 2;
         }
     }
+
+    .content-container {
+        position: relative;
+    }
+    /* Inserts a nbsp which fixes FF bug #9550  */
+    .content-container:after {
+        content: "\00a0";
+    }
 }
 
 .scroll-view {

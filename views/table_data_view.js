@@ -535,7 +535,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                 cellWidth = columnLeafs[j].get('render_width') || defaultCellWidth;
                 if (jQuery.browser.mozilla) cellWidth -= 5;
                 // Surround the content with a relatively positioned div to make absolute positioning of content work with Firefox
-                buffer.push('<td data-index="%@" class="%@" style="width: %@px;" %@><div style="position: relative">%@</div></td>'.fmt(
+                buffer.push('<td data-index="%@" class="%@" style="width: %@px;" %@><div class="content-container">%@</div></td>'.fmt(
                         j,
                         (cssClassesString + (j % 2 === 0 ? " even-col" : " odd-col")),
                         cellWidth,
@@ -566,7 +566,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             var content = cell.content();
             var titleValue = cell.titleValue && cell.titleValue();
             element.className = cssClassesString;
-            element.innerHTML = Ember.none(content) ? "" : '<div style="position: relative">' + content + '</div>';
+            element.innerHTML = Ember.none(content) ? "" : '<div class="content-container">' + content + '</div>';
             if (titleValue) {
                 element.title = titleValue;
             }
