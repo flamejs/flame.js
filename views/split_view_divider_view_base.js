@@ -40,6 +40,13 @@ Flame.SplitViewDividerViewBase = Ember.Mixin.create(Flame.Statechart, {
         },
 
         mouseUp: Flame.State.gotoHandler('idle'),
-        touchEnd: Flame.State.gotoHandler('idle')
+        touchEnd: Flame.State.gotoHandler('idle'),
+
+        exitState: function() {
+            var parentView = this.getPath('owner.parentView');
+            if (parentView.endResize) {
+                parentView.endResize();
+            }
+        }
     })
 });
