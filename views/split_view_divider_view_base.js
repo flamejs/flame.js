@@ -6,7 +6,7 @@ Flame.SplitViewDividerViewBase = Ember.Mixin.create(Flame.Statechart, {
         mouseDown: function(event) {
             var parentView = this.getPath('owner.parentView');
             if (!parentView.get('allowResizing')) return false;
-            parentView.startResize(event);
+            parentView.startResize(event, this);
             this.gotoState('resizing');
             return true;
         },
