@@ -781,12 +781,11 @@ input[type="password"] {
     }
 
     div.resize-handle {
-        position: relative;
+        position: absolute;
         cursor: col-resize;
-        float: right;
         width: 17px;
         height: 21px;
-        left: 9px;
+        right: -9px;
         z-index: 2;
     }
 
@@ -878,7 +877,7 @@ input[type="password"] {
         }
 
         td {
-            overflow: visible;
+            position: relative;
             border: 1px solid #366E6A;
         }
 
