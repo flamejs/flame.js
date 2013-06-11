@@ -151,11 +151,10 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
 
     resizing: Flame.State.extend({
         mouseMove: function(event) {
-            var target = jQuery(event.target);
             var cell = this.getPath('owner.resizingCell');
             var deltaX = event.pageX - this.getPath('owner.dragStartX');
             var cellWidth = this.getPath('owner.startX') + deltaX;
-            if (cellWidth < this.MIN_COLUMN_WIDTH) { cellWidth = this.MIN_COLUMN_WIDTH; }
+            if (cellWidth < this.getPath('owner.MIN_COLUMN_WIDTH')) { cellWidth = this.getPath('owner.MIN_COLUMN_WIDTH'); }
             var leafIndex;
             // Adjust size of the cell
             if (this.getPath('owner.type') === 'column') { // Update data table column width
@@ -421,13 +420,14 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
             }
 
             label = '<div class="label">%@</div>';
+            var resizeHandle = "";
             buffer.attr('class', (i % 2 === 0 ? "even-col" : "odd-col"));
             if (type === 'column' && !header.hasOwnProperty('children')) { // Leaf node
                 buffer = buffer.attr('data-index', i);
                 // Mark the leafIndex, so when sorting it's trivial to find the correct field to sort by
                 buffer = buffer.attr('data-leaf-index', header.leafIndex);
                 if (this.get('isResizable') && this.get('renderColumnHeader')) {
-                    buffer = buffer.push('<div class="resize-handle">&nbsp;</div>');
+                    resizeHandle = '<div class="resize-handle">&nbsp;</div>';
                 }
 
                 var headerSortDelegate = this.get('tableViewDelegate');
@@ -444,10 +444,9 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                             // Ensure that resize-handle covers the whole height of the cell border. Mere child count
                             // does not suffice with multi-level row headers.
                             var leafCount = countLeaves(header);
-
-                            buffer = buffer.push('<div class="resize-handle" style="height: %@px"></div>'.fmt(leafCount * 21));
+                            resizeHandle = '<div class="resize-handle" style="height: %@px"></div>'.fmt(leafCount * 21);
                         } else {
-                            buffer = buffer.push('<div class="resize-handle"></div>');
+                            resizeHandle = '<div class="resize-handle"></div>';
                         }
                     }
                     if (this.get("isRowHeaderClickable") && header.get('isClickable')) {
@@ -455,7 +454,9 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                     }
                 }
             }
-            buffer = buffer.push(label.fmt(headerLabel)).end(); // td
+            buffer = buffer.push(resizeHandle)
+                    .push(label.fmt(headerLabel))
+                    .end(); // td
         }
         return buffer;
     }
