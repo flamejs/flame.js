@@ -455,11 +455,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                 }
             }
             buffer = buffer.push(resizeHandle)
-//            buffer = buffer.begin("div")
-//                    .attr("class", "cell-content")
-//                    .push(resizeHandle)
                     .push(label.fmt(headerLabel))
-//                    .end() // div
                     .end(); // td
         }
         return buffer;
