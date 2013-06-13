@@ -363,9 +363,9 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         buffer = buffer.begin('colgroup');
         if (type === 'row') {
             var widths = this.get('content').rowHeaderWidths ? this.get('content').rowHeaderWidths() : null;
-            for (i = 1; i < 4; i++) {
-                var width = (widths && widths[i - 1]) ? widths[i - 1] : defaultColumnWidth;
-                buffer = buffer.push('<col style="width: %@px;" class="level-%@" />'.fmt(width, i));
+            for (i = 0; i < (headers.maxDepth || 1); i++) {
+                var width = (widths && widths[i]) ? widths[i] : defaultColumnWidth;
+                buffer = buffer.push('<col style="width: %@px;" class="level-%@" />'.fmt(width, i + 1));
             }
         } else {
             var l = this.getPath('content.columnLeafs').length;
