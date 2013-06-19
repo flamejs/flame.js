@@ -837,6 +837,8 @@ input[type="password"] {
 
         td {
             box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
             font-size: 12px;
             white-space: nowrap;
             overflow: hidden;
@@ -885,14 +887,17 @@ input[type="password"] {
             &.level-1 td {
                 font-weight: bold;
                 @include gradient-except-ie(#8BCFCA, #73C5C0);
+                background-clip: padding-box;
             }
 
             &.level-2 td {
                 @include gradient-except-ie(#ADE6E6, #98E0E0);
+                background-clip: padding-box;
             }
 
             &.level-3 td {
                 background-color: #C9F0EF;
+                background-clip: padding-box;
             }
         }
     }
@@ -941,10 +946,6 @@ input[type="password"] {
 
     .content-container {
         position: relative;
-    }
-    /* Inserts a nbsp which fixes FF bug #9550  */
-    .content-container:after {
-        content: "\00a0";
     }
 }
 

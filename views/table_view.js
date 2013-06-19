@@ -28,6 +28,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     allowRefresh: true,
     batchUpdates: true,
     useAutoWidth: false,
+    tableViewDelegate: null,
 
     contentAdapter: function() {
         return Flame.TableViewContentAdapter.create({
@@ -80,7 +81,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
             if (target.is('div.resize-handle')) {
                 this.gotoState('resizing');
                 var owner = this.get('owner');
-                var cell = target.parent();
+                var cell = target.parents("td").first();
                 owner.set('resizingCell', cell);
                 owner.set('dragStartX', event.pageX);
                 owner.set('startX', parseInt(target.parent().css('width'), 10));
@@ -250,8 +251,8 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     },
 
     _getBrowserSpecificTableCellWidth: function(width) {
-        if (jQuery.browser.webkit || jQuery.browser.msie) { width += 4; }
-        if (jQuery.browser.mozilla) { width -= 2; }
+        if (jQuery.browser.webkit || jQuery.browser.msie) { return width + 4; }
+        if (jQuery.browser.mozilla) { return width + 3; }
         return width;
     },
 
@@ -311,7 +312,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
             if (rowHeaderWidths) {
                 var totalWidth = 0;
                 for (var i = 0; i < Math.max(rowHeaderRows.maxDepth, 1); i++) {
-                    totalWidth += rowHeaderWidths[i];
+                    totalWidth += isNaN(rowHeaderWidths[i]) ? defaultRowHeaderWidth : rowHeaderWidths[i];
                 }
                 leftOffset = totalWidth + 1 + (renderColumnHeader ? 0 : 5);                
             } else {
@@ -454,8 +455,11 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                     }
                 }
             }
-            buffer = buffer.push(resizeHandle)
+            buffer = buffer.begin("div")
+                    .attr("class", "content-container")
+                    .push(resizeHandle)
                     .push(label.fmt(headerLabel))
+                    .end() // div
                     .end(); // td
         }
         return buffer;
