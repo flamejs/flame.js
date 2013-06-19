@@ -533,7 +533,6 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                     content = '<span style="color: #999">...</span>';
                 }
                 cellWidth = columnLeafs[j].get('render_width') || defaultCellWidth;
-                if (jQuery.browser.mozilla) cellWidth -= 5;
                 // Surround the content with a relatively positioned div to make absolute positioning of content work with Firefox
                 buffer.push('<td data-index="%@" class="%@" style="width: %@px;" %@><div class="content-container">%@</div></td>'.fmt(
                         j,
