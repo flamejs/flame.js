@@ -165,11 +165,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
             } else {
                 var width = this.getPath('owner.offset') + deltaX - 2;
                 if (width < 30) { width = 30; }
-                if (jQuery.browser.mozilla) {
-                    width -= 1;
-                } else if (jQuery.browser.webkit || jQuery.browser.msie) {
-                    width -= 2;
-                }
+                width -= 1;
                 // Move data table and column header
                 this.getPath('owner.scrollable').css('left', '%@px'.fmt(width));
                 this.getPath('owner.columnHeader').parent().css('left', '%@px'.fmt(width));
@@ -244,16 +240,12 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         table.updateColumnWidth(index, width);
     },
 
-    _getBrowserSpecificHeaderCellWidth: function(cellWidth) {
-        if (jQuery.browser.mozilla) cellWidth += 3;
-        if (jQuery.browser.webkit || jQuery.browser.msie) cellWidth += 4;
-        return cellWidth;
+    _getBrowserSpecificHeaderCellWidth: function(width) {
+        return width + 3;
     },
 
     _getBrowserSpecificTableCellWidth: function(width) {
-        if (jQuery.browser.webkit || jQuery.browser.msie) { return width + 4; }
-        if (jQuery.browser.mozilla) { return width + 3; }
-        return width;
+        return width +3;
     },
 
     willInsertElement: function() {
