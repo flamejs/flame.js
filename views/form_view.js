@@ -54,8 +54,8 @@ Flame.FormView = Flame.View.extend({
         }
     }.observes('properties.@each'),
 
-    _createLabelAndControl: function(descriptor) {
-        descriptor = Ember.Object.create(descriptor);
+    _createLabelAndControl: function(desc) {
+        var descriptor = Ember.Object.create(desc);
         var control = descriptor.view || this._buildControl(descriptor);
         var formView = this;
 
@@ -71,14 +71,17 @@ Flame.FormView = Flame.View.extend({
             layoutManager: Flame.VerticalStackLayoutManager.create({ topMargin: this._focusRingMargin, spacing: 0, bottomMargin: this._focusRingMargin }),
             childViews: ['label', 'control'],
 
-            isVisible: descriptor.get('isVisible') === undefined ? true : descriptor.get('isVisible'),
+            isVisible: desc.isVisible === undefined ? true : desc.isVisible,
 
             label: this._buildLabel(descriptor),
             control: function () {
                 return formView._createChildViewWithLayout(control, this, formView.labelWidth + formView.columnSpacing, formView._focusRingMargin);
             }.property().cacheable()
         };
-        if (descriptor.get('isVisibleBinding')) view.isVisibleBinding = descriptor.get('isVisibleBinding');
+        if (descriptor.get('isVisibleBinding')) {
+            delete view.isVisible;
+            view.isVisibleBinding = descriptor.get('isVisibleBinding');
+        }
 
         return Flame.View.extend(view);
     },
