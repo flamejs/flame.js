@@ -28,6 +28,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     allowRefresh: true,
     batchUpdates: true,
     useAutoWidth: false,
+    tableViewDelegate: null,
 
     contentAdapter: function() {
         return Flame.TableViewContentAdapter.create({
@@ -80,7 +81,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
             if (target.is('div.resize-handle')) {
                 this.gotoState('resizing');
                 var owner = this.get('owner');
-                var cell = target.parent();
+                var cell = target.parents("td").first();
                 owner.set('resizingCell', cell);
                 owner.set('dragStartX', event.pageX);
                 owner.set('startX', parseInt(target.parent().css('width'), 10));
@@ -164,11 +165,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
             } else {
                 var width = this.getPath('owner.offset') + deltaX - 2;
                 if (width < 30) { width = 30; }
-                if (jQuery.browser.mozilla) {
-                    width -= 1;
-                } else if (jQuery.browser.webkit || jQuery.browser.msie) {
-                    width -= 2;
-                }
+                width -= 1;
                 // Move data table and column header
                 this.getPath('owner.scrollable').css('left', '%@px'.fmt(width));
                 this.getPath('owner.columnHeader').parent().css('left', '%@px'.fmt(width));
@@ -243,16 +240,12 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         table.updateColumnWidth(index, width);
     },
 
-    _getBrowserSpecificHeaderCellWidth: function(cellWidth) {
-        if (jQuery.browser.mozilla) cellWidth += 3;
-        if (jQuery.browser.webkit || jQuery.browser.msie) cellWidth += 4;
-        return cellWidth;
+    _getBrowserSpecificHeaderCellWidth: function(width) {
+        return width + 3;
     },
 
     _getBrowserSpecificTableCellWidth: function(width) {
-        if (jQuery.browser.webkit || jQuery.browser.msie) { width += 4; }
-        if (jQuery.browser.mozilla) { width -= 2; }
-        return width;
+        return width +3;
     },
 
     willInsertElement: function() {
@@ -311,7 +304,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
             if (rowHeaderWidths) {
                 var totalWidth = 0;
                 for (var i = 0; i < Math.max(rowHeaderRows.maxDepth, 1); i++) {
-                    totalWidth += rowHeaderWidths[i];
+                    totalWidth += isNaN(rowHeaderWidths[i]) ? defaultRowHeaderWidth : rowHeaderWidths[i];
                 }
                 leftOffset = totalWidth + 1 + (renderColumnHeader ? 0 : 5);                
             } else {
@@ -454,8 +447,11 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                     }
                 }
             }
-            buffer = buffer.push(resizeHandle)
+            buffer = buffer.begin("div")
+                    .attr("class", "content-container")
+                    .push(resizeHandle)
                     .push(label.fmt(headerLabel))
+                    .end() // div
                     .end(); // td
         }
         return buffer;
