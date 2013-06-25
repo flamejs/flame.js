@@ -70,7 +70,7 @@ Flame.View = Ember.ContainerView.extend(Flame.LayoutSupport, Flame.EventManager,
         var template = this.get('template');
         if (template) {
             // Copied from Ember.View for now
-            var output = template(this.get('templateContext'), { data: { view: this, buffer: buffer, isRenderData: true, keywords: {} } });
+            var output = template(this, { data: { view: this, buffer: buffer, isRenderData: true, keywords: {} } });
             if (output !== undefined) { buffer.push(output); }
         } else {
             return this._super(buffer);
