@@ -27,7 +27,7 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
     itemViewClass: Flame.ListItemView.extend({
         templateContext: function(key, value) {
             return value !== undefined ? value : Ember.get(this, 'content');
-        }.property('content').cacheable(),
+        }.property('content'),
         templateBinding: "parentView.template",
         handlebars: "{{title}}"
     }),
@@ -112,7 +112,7 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
     // Overridden in TreeView
     rootTreeView: function() {
         return this;
-    }.property(),
+    }.property().volatile(),
 
     arrayWillChange: function(content, start, removedCount) {
         if (!this.getPath('rootTreeView.isDragging')) {

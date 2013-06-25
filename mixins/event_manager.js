@@ -83,7 +83,7 @@ Ember.mixin(Flame, {
         // Observer-friendly version of getting current
         currentKeyResponder: function() {
             return this.current();
-        }.property(),
+        }.property().volatile(),
 
         current: function() {
             var length = this._stack.get('length');

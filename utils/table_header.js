@@ -3,7 +3,7 @@ Flame.TableHeader = Ember.Object.extend({
 
     headerLabel: function() {
         return this.get('label');
-    }.property('label').cacheable(),
+    }.property('label'),
 
     createCell: function(data) {
         throw 'Not implemented';

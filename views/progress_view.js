@@ -5,7 +5,7 @@ Flame.ProgressView = Flame.View.extend({
     handlebars: function() {
         var height = this.get('layout').height;
         return "<div style='height: %@px;' class='progress-container'></div><div style='height: %@px; width: %@px;' class='progress-bar'></div>".fmt(height - 2, height - 4, this.get('size'));
-    }.property().cacheable(),
+    }.property(),
 
     size: function() {
         var progress = this.get('value') / this.get('maximum');
@@ -16,7 +16,7 @@ Flame.ProgressView = Flame.View.extend({
             if (progress > 1) progress = 1;
             return Math.floor(width * progress) - 4;
         }
-    }.property('value', 'maximum'),
+    }.property('value', 'maximum').volatile(),
 
     _sizeDidChange: function() {
         // In CubeTableLoadingView, the progress views are rendered before the value & maximum bindings have synchronized,

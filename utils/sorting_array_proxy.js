@@ -56,7 +56,7 @@ Flame.SortingArrayProxy = Ember.ArrayProxy.extend({
             this.set('_content', content = []);
         }
         return content;
-    }.property(),
+    }.property().volatile(),
 
     // When moving an item, use this sequence of calls:
     //  * startMoving()
@@ -145,7 +145,7 @@ Flame.SortingArrayProxy = Ember.ArrayProxy.extend({
 
     _getObserverKey: function() {
         return '__observer_'+Ember.guidFor(this);
-    }.property().cacheable(),
+    }.property(),
 
     // Observes changes on the sortKey for each item in the source array. When changes, we simply
     // replace the items in our content array with a newly sorted copy. This means that from the

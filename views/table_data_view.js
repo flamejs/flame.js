@@ -369,7 +369,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
     selectedDataCell: function() {
         var selectedCell = this.get('selectedCell');
         return this.get('data')[selectedCell.parent().attr('data-index')][selectedCell.attr('data-index')];
-    }.property(),
+    }.property().volatile(),
 
     editableValue: function(dataCell, readOnly) {
         var editValue = this.get('editValue');

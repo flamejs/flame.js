@@ -3,15 +3,15 @@ Flame.TableViewContentAdapter = Ember.Object.extend({
 
     headers: function() {
         return this.getPath('content._headers');
-    }.property('content._headers').cacheable(),
+    }.property('content._headers'),
 
     columnLeafs: function() {
         return this.getPath('content.columnLeafs');
-    }.property('content.columnLeafs').cacheable(),
+    }.property('content.columnLeafs'),
 
     rowLeafs: function() {
         return this.getPath('content.rowLeafs');
-    }.property('content.rowLeafs').cacheable(),
+    }.property('content.rowLeafs'),
 
     columnHeaderRows: function() {
         var columnHeaderRows = [];
@@ -30,7 +30,7 @@ Flame.TableViewContentAdapter = Ember.Object.extend({
         }
 
         return columnHeaderRows;
-    }.property('headers').cacheable(),
+    }.property('headers'),
 
     rowHeaderRows: function() {
         var rowHeaderRows = [[]];
@@ -49,7 +49,7 @@ Flame.TableViewContentAdapter = Ember.Object.extend({
         }
 
         return rowHeaderRows;
-    }.property('headers').cacheable(),
+    }.property('headers'),
 
     clear: function() {
         this._headers = null;

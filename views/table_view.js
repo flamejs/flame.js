@@ -33,7 +33,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         return Flame.TableViewContentAdapter.create({
             content: this.get('content')
         });
-    }.property('content').cacheable(),
+    }.property('content'),
 
     tableDataView: Flame.TableDataView.extend({
         dataBinding: '^content._data',
@@ -48,7 +48,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
 
     rowDepth: function() {
         return this.getPath('contentAdapter.rowHeaderRows.maxDepth');
-    }.property('contentAdapter.rowHeaderRows').cacheable(),
+    }.property('contentAdapter.rowHeaderRows'),
 
     /* IE 5-8 trigger mouse events in unorthodox order:
 

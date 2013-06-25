@@ -159,7 +159,7 @@ Flame.Panel = Flame.RootView.extend({
                 return true;
             }
         });
-    }.property(),
+    }.property().volatile(),
 
     insertNewline: function(event) {
         var defaultButton = this.firstDescendantWithProperty('isDefault');

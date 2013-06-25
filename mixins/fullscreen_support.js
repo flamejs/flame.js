@@ -16,7 +16,7 @@ Flame.FullscreenSupport = {
             classNames: ['flame-fullscreen-pane'],
             owner: undefined
         });
-    }.property(),
+    }.property().volatile(),
 
     closeButton: function() {
         return Flame.ButtonView.create({
@@ -28,7 +28,7 @@ Flame.FullscreenSupport = {
                 this.getPath('owner').exitFullscreen();
             }
         });
-    }.property(),
+    }.property().volatile(),
 
     // A statechart would perhaps make sense here, but as FullscreenSupport is meant to be mixed in to any view
     // you want full-screenable, that view might already be using a statechart for other purposes?
