@@ -868,13 +868,15 @@ input[type="password"] {
             &.sort-asc, &.sort-desc {
                 background-repeat: no-repeat;
                 padding-left: 15px;
-                background-position: 0px 3px;
+                background-position-x: 0px;
             }
             &.sort-asc {
-               background-image: image-url('images/sort_asc.png');
+                background-image: image-url('images/sort_asc.png');
+                background-position-y: 8px;
             }
             &.sort-desc {
-               background-image: image-url('images/sort_desc.png');
+                background-image: image-url('images/sort_desc.png');
+                background-position-y: 0px;
             }
         }
 
