@@ -81,7 +81,7 @@ Flame.View = Ember.ContainerView.extend(Flame.LayoutSupport, Flame.EventManager,
         if (propertyName === "template" && value !== undefined) return value;
         var str = this.get('handlebars');
         return str ? this._compileTemplate(str) : null;
-    }.property('templateName', 'handlebars').cacheable(),
+    }.property('templateName', 'handlebars'),
 
     // Compiles given handlebars template, with caching to make it perform better. (Called repetitively e.g.
     // when rendering a list view whose item views use a template.)

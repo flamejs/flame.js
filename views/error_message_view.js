@@ -6,9 +6,9 @@ Flame.ErrorMessageView = Flame.LabelView.extend({
     pointTo: 'left',
     textAlign: function() {
         return this.get('pointTo') === 'left' ? Flame.ALIGN_LEFT : Flame.ALIGN_RIGHT;
-    }.property('pointTo').cacheable(),
+    }.property('pointTo'),
     pointToClass: function() {
         return 'points-to-%@'.fmt(this.get('pointTo'));
-    }.property('pointTo').cacheable(),
+    }.property('pointTo'),
     handlebars: '<div class="pointer"></div><div class="error-box">{{value}}</div>'
 });

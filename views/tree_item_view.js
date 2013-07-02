@@ -20,22 +20,22 @@ Flame.TreeItemView = Flame.ListItemView.extend({
             this._isExpanded = value;
             return value;
         }
-    }.property('content.treeItemIsExpanded', 'defaultIsExpanded').cacheable(),
+    }.property('content.treeItemIsExpanded', 'defaultIsExpanded'),
     layout: { left: 0, right: 0, top: 0, height: 0 },
 
     defaultIsExpanded: function() {
         return this.getPath('parentView.rootTreeView.defaultIsExpanded');
-    }.property('parentView.rootTreeView.defaultIsExpanded').cacheable(),
+    }.property('parentView.rootTreeView.defaultIsExpanded'),
 
     // Don't use the list view isSelected highlight logic
     isSelected: function(key, value) {
         return false;
-    }.property().cacheable(),
+    }.property(),
 
     // This is the highlight logic for tree items, the is-selected class is bound to the flame-tree-item-view-container
     classAttribute: function() {
         return this.get('content') === this.getPath('parentView.rootTreeView.selection') ? 'flame-tree-item-view-container is-selected' : 'flame-tree-item-view-container';
-    }.property('content', 'parentView.rootTreeView.selection').cacheable(),
+    }.property('content', 'parentView.rootTreeView.selection'),
 
     // The HTML that we need to produce is a bit complicated, because while nested items should appear
     // indented, the selection highlight should span the whole width of the tree view, and should not
@@ -59,7 +59,7 @@ Flame.TreeItemView = Flame.ListItemView.extend({
      */
     renderSubTree: function() {
         return this.get("hasChildren") && this.get("isExpanded");
-    }.property().cacheable(),
+    }.property(),
 
     /**
      * Force updating of renderSubTree when we need to create the subview.
@@ -82,7 +82,7 @@ Flame.TreeItemView = Flame.ListItemView.extend({
         contentIndexBinding: 'parentView.contentIndex',
         handlebars: function() {
             return this.getPath('parentView.parentView.rootTreeView').handlebarsForItem(this.get('content'));
-        }.property('content').cacheable()
+        }.property('content')
     }),
 
     /**
@@ -98,11 +98,11 @@ Flame.TreeItemView = Flame.ListItemView.extend({
             return this.getPath("childViews.lastObject.childViews.firstObject");
         }
         return null;
-    }.property("showsubTree").cacheable(),
+    }.property("showsubTree"),
 
     hasChildren: function() {
         return !Ember.none(this.getPath('content.treeItemChildren'));
-    }.property('content.treeItemChildren'),
+    }.property('content.treeItemChildren').volatile(),
 
     mouseUp: function() {
         if (this.getPath('parentView.rootTreeView.clickTogglesIsExpanded')) {
@@ -137,5 +137,5 @@ Flame.TreeItemView = Flame.ListItemView.extend({
             itemViewClass: this.getPath('parentView.rootTreeView.itemViewClass'),
             isNested: true
         });
-    }.property('content')
+    }.property('content').volatile()
 });

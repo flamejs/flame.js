@@ -103,7 +103,7 @@ Flame.Validatable = Ember.Mixin.create({
             }
         }
         return invalids;
-    }.property(),
+    }.property().volatile(),
 
     _validate: function(validator, target, key, value) {
         var isValid = null;
@@ -140,7 +140,7 @@ Flame.Validatable = Ember.Mixin.create({
             this._objectIsValid = this._checkValidity();
         }
         return this._objectIsValid;
-    }.property(),
+    }.property().volatile(),
 
     /**
      * Allow setting of validations only once. Validations set through this property are ignored after they've been
@@ -155,7 +155,7 @@ Flame.Validatable = Ember.Mixin.create({
             }
         }
         return this._validations;
-    }.property(),
+    }.property().volatile(),
 
     /**
      * Create all the *isValid properties this object should have based on its validations-property.
@@ -192,7 +192,7 @@ Flame.Validatable = Ember.Mixin.create({
                     }
                     return self._propertyValidity[propertyIsValidName];
                 }
-        ).property());
+        ).property().volatile());
     },
 
     /**

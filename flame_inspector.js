@@ -155,11 +155,11 @@ FlameInspector.RefView = Flame.LabelView.extend({
 
     currentState: function() {
         return this.getPath('ownerObject.currentState') === this.get('content');
-    }.property('ownerObject.currentState').cacheable(),
+    }.property('ownerObject.currentState'),
 
     typeClass: function() {
         return 'flame-inspector-ref-view-'+this.get('type');
-    }.property('type').cacheable(),
+    }.property('type'),
 
     type: function() {
         var content = this.get('content');
@@ -167,13 +167,13 @@ FlameInspector.RefView = Flame.LabelView.extend({
         else if (content instanceof Ember.View) return 'view';
         else if (content instanceof Flame.State) return 'state';
         else return 'object';
-    }.property('content').cacheable(),
+    }.property('content'),
 
     value: function() {
         var content = this.get('content');
         var type = this.get('type');
         return type === 'view' ? Ember.guidFor(content) : type;
-    }.property('content'),
+    }.property('content').volatile(),
 
     mouseEnter: function(event) {
         if (this.get('type') === 'view') FlameInspector.eventManager.set('highlighted', this.get('content').$());
@@ -475,7 +475,7 @@ FlameInspector.InspectorController = Ember.Object.extend({
 
     allowPrev: function() {
         return this.get('_historyIndex') > 0;
-    }.property('_historyIndex'),
+    }.property('_historyIndex').volatile(),
 
     next: function() {
         if (this.get('allowNext')) {
@@ -487,11 +487,11 @@ FlameInspector.InspectorController = Ember.Object.extend({
 
     allowNext: function() {
         return this.get('_historyIndex') < this.getPath('_inspectHistory.length') - 1;
-    }.property('_historyIndex'),
+    }.property('_historyIndex').volatile(),
 
     inspectedObject: function() {
         return this._inspectHistory.objectAt(this.get('_historyIndex'));
-    }.property().cacheable(),
+    }.property(),
 
     // Remove observers and flush event log when inspected object changes
     inspectedObjectWillChange: function() {
@@ -518,12 +518,12 @@ FlameInspector.InspectorController = Ember.Object.extend({
     inspectedObjectGuid: function() {
         var cur = this.get('inspectedObject');
         return cur ? Ember.guidFor(cur) : '(none)';
-    }.property('inspectedObject').cacheable(),
+    }.property('inspectedObject'),
 
     inspectedObjectType: function() {
         var cur = this.get('inspectedObject');
         return cur ? FlameInspector.getObjectType(cur) : undefined;
-    }.property('inspectedObject').cacheable(),
+    }.property('inspectedObject'),
 
     inspectedObjectProperties: function() {
         var object = this.get('inspectedObject');
@@ -558,7 +558,7 @@ FlameInspector.InspectorController = Ember.Object.extend({
         }));
 
         return arr;
-    }.property('inspectedObject').cacheable(),
+    }.property('inspectedObject'),
 
     _generateStateArray: function(object) {
         if (!object.get) return null;  // No getter, no states
@@ -726,15 +726,15 @@ FlameInspector.DebugPanel = Flame.Panel.extend({
 
     currentKeyResponder: function() {
         return Flame.keyResponderStack.current() || null;
-    }.property('Flame.keyResponderStack.currentKeyResponder'),
+    }.property('Flame.keyResponderStack.currentKeyResponder').volatile(),
 
     currentMouseResponder: function() {
         return Flame.get('mouseResponderView') || null;
-    }.property('Flame.mouseResponderView'),
+    }.property('Flame.mouseResponderView').volatile(),
 
     keyResponderStack: function() {
         return Ember.copy(Flame.keyResponderStack._stack).reverse();
-    }.property('Flame.keyResponderStack.currentKeyResponder').cacheable(),
+    }.property('Flame.keyResponderStack.currentKeyResponder'),
 
     inspect: function(view) {
         this.inspectorController.inspect(view);

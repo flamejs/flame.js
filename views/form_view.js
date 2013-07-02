@@ -76,7 +76,7 @@ Flame.FormView = Flame.View.extend({
             label: this._buildLabel(descriptor),
             control: function () {
                 return formView._createChildViewWithLayout(control, this, formView.labelWidth + formView.columnSpacing, formView._focusRingMargin);
-            }.property().cacheable()
+            }.property()
         };
         if (descriptor.get('isVisibleBinding')) {
             delete view.isVisible;
@@ -324,5 +324,5 @@ Flame.FormView = Flame.View.extend({
 
     isValid: function() {
         return this.get("_errorViews").length === 0;
-    }.property('_errorViews.@each').cacheable()
+    }.property('_errorViews.@each')
 });
