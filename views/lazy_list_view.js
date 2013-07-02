@@ -66,12 +66,15 @@ Flame.LazyListView = Flame.ListView.extend({
     // changed without firing a scroll event.
     becameVisible: function() {
         var scrollView = this.nearestInstanceOf(Flame.ScrollView);
-        if (scrollView && scrollView.get('element')) {
-            var element = scrollView.get('element');
-            this._lastScrollHeight = element.offsetHeight;
-            this._lastScrollTop = element.scrollTop;
-            this.didScroll(this._lastScrollHeight, this._lastScrollTop);
-        }
+        // TODO change to Ember.run.scheduleOnce('afterRender' when upgrading to Ember 1.0
+        Ember.run.schedule('render', this, function() {
+            if (scrollView && scrollView.get('element')) {
+                var element = scrollView.get('element');
+                this._lastScrollHeight = element.offsetHeight;
+                this._lastScrollTop = element.scrollTop;
+                this.didScroll(this._lastScrollHeight, this._lastScrollTop);
+            }
+        });
     },
 
     willDestroyElement: function() {
