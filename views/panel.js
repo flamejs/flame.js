@@ -231,6 +231,7 @@ Flame.Panel = Flame.RootView.extend({
 
             this.append();
             this.set('isShown', true);
+            this.set('isVisible', true);
             if (this.get('acceptsKeyResponder')) this.becomeKeyResponder(false);
             this._focusDefaultInput();
         }
@@ -245,6 +246,7 @@ Flame.Panel = Flame.RootView.extend({
             }
             this.remove();
             this.set('isShown', false);
+            this.set('isVisible', false);
             if (this.get('acceptsKeyResponder')) this.resignKeyResponder();
             Flame._zIndexCounter -= 100;
 
