@@ -10,7 +10,7 @@ Flame.LazyTreeItemView = Flame.LazyListItemView.extend({
 
     handlebars: function() {
         return '{{{unbound disclosureImage}}} <span>' + this.get('itemContent') + '</span>';
-    }.property('itemContent').cacheable(),
+    }.property('itemContent'),
 
     isExpandedDidChange: function() {
         this.$().find('img').first().replaceWith(this.get('disclosureImage'));
@@ -24,7 +24,7 @@ Flame.LazyTreeItemView = Flame.LazyListItemView.extend({
         var isExpandable = this.isExpandable();
         if (!isExpandable) return '';
         return '<img src="%@">'.fmt(this.get('isExpanded') ? this.get('expandedImage') : this.get('collapsedImage'));
-    }.property('isExpanded', 'content', 'expandedImage', 'collapsedImage').cacheable(),
+    }.property('isExpanded', 'content', 'expandedImage', 'collapsedImage'),
 
     mouseIsDown: Flame.LazyListViewStates.MouseIsDown.extend({
         mouseUp: function(event) {

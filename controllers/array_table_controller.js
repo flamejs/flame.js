@@ -42,7 +42,7 @@ Flame.ArrayTableController = Flame.DataTableController.extend(Flame.TableSortSup
                 return {label: Ember.getPath(column, 'label'), property: Ember.getPath(column, 'property')};
             })
         };
-    }.property('content.@each', 'columns', 'headerProperty', 'rowHeadersClickable').cacheable(),
+    }.property('content.@each', 'columns', 'headerProperty', 'rowHeadersClickable'),
 
     data: function() {
         var self = this;
@@ -61,7 +61,7 @@ Flame.ArrayTableController = Flame.DataTableController.extend(Flame.TableSortSup
                 return Ember.get(object, Ember.getPath(column, 'property'));
             });
         });
-    }.property('headers').cacheable(),
+    }.property('headers'),
 
     _setPropertyObserver: function(object, propertyName, observerMethod) {
         var observerName = propertyName + "DidChangeInArrayTableController"; // extra suffix for avoiding name conflicts

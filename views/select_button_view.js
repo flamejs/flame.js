@@ -11,13 +11,13 @@ Flame.SelectButtonView = Flame.ButtonView.extend({
     handlebars: function() {
         var itemTitleKey = this.get('itemTitleKey');
         return '<label {{bindAttr title="_selectedMenuItem.%@"}}>{{_selectedMenuItem.%@}}</label><div><img src="%@"></div>'.fmt(itemTitleKey, itemTitleKey, Flame.image('select_button_arrow.png'));
-    }.property("value", "_selectedMenuItem").cacheable(),
+    }.property("value", "_selectedMenuItem"),
 
     _selectedMenuItem: function() {
         if (this.get('value') === undefined) { return undefined; }
         var selectedItem = this._findItem();
         return selectedItem;
-    }.property("value", "itemValueKey", "subMenuKey", "items").cacheable(),
+    }.property("value", "itemValueKey", "subMenuKey", "items"),
 
     itemsDidChange: function() {
         if (this.get('items') && this.getPath('items.length') > 0 && !this._findItem()) {
@@ -61,7 +61,7 @@ Flame.SelectButtonView = Flame.ButtonView.extend({
                 this._super();
             }
         });
-    }.property(),
+    }.property().volatile(),
 
     mouseDown: function() {
         if (!this.get('isDisabled')) this._openMenu();

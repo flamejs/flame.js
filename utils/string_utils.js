@@ -1,5 +1,4 @@
 Flame.StringUtils = (function() {
-
     function compare(stringA, stringB) {
         var a = asBlank(stringA);
         var b = asBlank(stringB);

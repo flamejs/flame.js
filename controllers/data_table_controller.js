@@ -36,7 +36,7 @@ Flame.DataTableController = Flame.TableController.extend({
             rowHeaders: this._wrapHeaders(headers.rowHeaders || []),
             columnHeaders: this._wrapHeaders(headers.columnHeaders || [])
         };
-    }.property('headers').cacheable(),
+    }.property('headers'),
 
     _wrapHeaders: function(headers) {
         var self = this;
@@ -58,7 +58,7 @@ Flame.DataTableController = Flame.TableController.extend({
                 return new cellClass({value: cellData.value});
             }
         });
-    }.property().cacheable(),
+    }.property(),
 
     cellClass: Flame.TableCell,
 

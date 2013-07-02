@@ -53,7 +53,7 @@ Flame.TreeView = Flame.ListView.extend({
 
     nestingLevel: function() {
         return 'level-%@'.fmt(this.getPath('treeLevel'));
-    }.property('treeLevel'),
+    }.property('treeLevel').volatile(),
 
     // Propagates selection to the parent. This way we can make sure that only exactly one of the nested
     // list views is showing a selection (see property isTreeItemSelected in TreeItemView)
@@ -80,14 +80,14 @@ Flame.TreeView = Flame.ListView.extend({
 
     treeLevel: function() {
         return (this.getPath('parentTreeView.treeLevel') || 0) + 1;
-    }.property('parentTreeView.treeLevel'),
+    }.property('parentTreeView.treeLevel').volatile(),
 
     parentTreeView: function() {
         return this.get('isNested') ? this.getPath('parentView.parentView') : undefined;
-    }.property('isNested', 'parentView.parentView'),
+    }.property('isNested', 'parentView.parentView').volatile(),
 
     rootTreeView: function() {
         return this.getPath('parentTreeView.rootTreeView') || this;
-    }.property('parentTreeView.rootTreeView')
+    }.property('parentTreeView.rootTreeView').volatile()
 
 });

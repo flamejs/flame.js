@@ -4,7 +4,7 @@ Flame.MenuScrollViewButton = Flame.View.extend({
 
     directionClass: function() {
         return "scroll-%@".fmt(this.get("direction"));
-    }.property(),
+    }.property().volatile(),
 
     isShown: false,
     direction : "down", // "up" / "down"
