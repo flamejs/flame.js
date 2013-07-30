@@ -34,6 +34,10 @@ Flame.StringUtils = (function() {
          * @return the input string or in case it is null / undefined, "".
          */
         asBlank: asBlank,
-        escapeForRegexp: escapeForRegexp
+        escapeForRegexp: escapeForRegexp,
+
+        endsWith: function(string, suffix) {
+            return string.indexOf(suffix, string.length - suffix.length) !== -1;
+        }
     };
 })();
