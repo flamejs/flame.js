@@ -10,6 +10,7 @@ Flame.TextAreaView = Flame.View.extend({
     placeholder: null,
     isValid: null,
     isVisible: true,
+    isDisabled: true,
 
     becomeKeyResponder: function() {
         this.get('textArea').becomeKeyResponder();
@@ -25,6 +26,7 @@ Flame.TextAreaView = Flame.View.extend({
         valueBinding: '^value',
         placeholderBinding: '^placeholder',
         isVisibleBinding: '^isVisible',
+        disabledBinding: '^isDisabled',
 
         keyDown: function() { return false; },
         keyUp: function() {
