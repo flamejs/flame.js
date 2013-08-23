@@ -74,7 +74,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
         wipeCell: function() {
             var dataCell = this.getPath('owner.selectedDataCell');
-            if (Ember.none(dataCell)) {
+            if (Ember.isNone(dataCell)) {
                 return;
             }
 
@@ -89,7 +89,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
         startEdit: function(event) {
             var dataCell = this.getPath('owner.selectedDataCell');
-            if (Ember.none(dataCell)) {
+            if (Ember.isNone(dataCell)) {
                 return;
             }
             if (dataCell.isEditable()) {
@@ -141,7 +141,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         // We need to use the keyPress event, as some browsers don't report the character pressed correctly with keyDown
         keyPress: function(event) {
             var dataCell = this.getPath('owner.selectedDataCell');
-            if (Ember.none(dataCell) || (dataCell && !dataCell.isEditable())) {
+            if (Ember.isNone(dataCell) || (dataCell && !dataCell.isEditable())) {
                 return false;
             }
             var key = String.fromCharCode(event.which);
@@ -377,7 +377,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             return editValue;
         } else {
             editValue = readOnly ? dataCell.formattedValue() : dataCell.editableValue();
-            return !Ember.none(editValue)? editValue : '';
+            return !Ember.isNone(editValue)? editValue : '';
         }
     },
 
@@ -526,7 +526,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                 var titleValue = '';
                 if (cell) {
                     content = cell.content();
-                    content = (Ember.none(content) ? '' : content);
+                    content = (Ember.isNone(content) ? '' : content);
                     cssClassesString = cell.cssClassesString();
                     titleValue = (cell.titleValue && cell.titleValue() ? 'title="%@"'.fmt(cell.titleValue()) : '');
                 } else {
@@ -565,7 +565,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             var content = cell.content();
             var titleValue = cell.titleValue && cell.titleValue();
             element.className = cssClassesString;
-            element.innerHTML = Ember.none(content) ? "" : '<div class="content-container">' + content + '</div>';
+            element.innerHTML = Ember.isNone(content) ? "" : '<div class="content-container">' + content + '</div>';
             if (titleValue) {
                 element.title = titleValue;
             }

@@ -21,7 +21,7 @@ Flame.Repeater = Ember.Object.extend(Flame.ActionSupport, {
             wait = 0;
         } else {
             var lastInvocation = this.get('lastInvoke');
-            if (Ember.none(lastInvocation)) {
+            if (Ember.isNone(lastInvocation)) {
                 wait = this.get('interval');
             } else {
                 wait = (new Date()).getTime() - lastInvocation + this.get('interval');

@@ -59,7 +59,7 @@ Flame.FormView = Flame.View.extend({
         var control = descriptor.view || this._buildControl(descriptor);
         var formView = this;
 
-        if (Ember.none(descriptor.label)) {
+        if (Ember.isNone(descriptor.label)) {
             return this._createChildViewWithLayout(control, this, this.get('leftMargin') + this._focusRingMargin, this.get('rightMargin') + this._focusRingMargin);
         }
         if (descriptor.type === 'checkbox') {
@@ -142,7 +142,7 @@ Flame.FormView = Flame.View.extend({
     },
 
     _buildValidationObservers: function(validationMessage) {
-        if (Ember.none(validationMessage)) return {};
+        if (Ember.isNone(validationMessage)) return {};
 
         var self = this;
         return {
@@ -167,7 +167,7 @@ Flame.FormView = Flame.View.extend({
                     var offset = element.offset();
 
                     // This is strictly not necessary, but currently you can save invalid form with enter, which then fails here
-                    if (Ember.none(offset)) return;
+                    if (Ember.isNone(offset)) return;
 
                     var zIndex = Flame._zIndexCounter;
                     var errorMessage = validationMessage;
@@ -249,7 +249,7 @@ Flame.FormView = Flame.View.extend({
 
         // If a text field (or similar), emulate good old html forms that submit when hitting return by
         // clicking on the default button. This also prevents submitting of disabled forms.
-        if (Ember.none(settings.action) && (type === 'text' || type === 'textarea' || type === 'password')) {
+        if (Ember.isNone(settings.action) && (type === 'text' || type === 'textarea' || type === 'password')) {
             var form = this;
             settings.fireAction = function() {
                 var defaultButton = form.firstDescendantWithProperty('isDefault');
@@ -278,14 +278,14 @@ Flame.FormView = Flame.View.extend({
                     settings.isAutocomplete = true;
                     settings.autocompleteDelegate = descriptor.autocompleteDelegate;
                 }
-                settings.name = Ember.none(descriptor.name) ? descriptor.property : descriptor.name;
+                settings.name = Ember.isNone(descriptor.name) ? descriptor.property : descriptor.name;
                 return Flame.TextFieldView.extend(settings);
             case 'textarea':
                 settings.layout.height = descriptor.height || 70;
                 return Flame.TextAreaView.extend(settings);
             case 'password':
                 settings.isPassword = true;
-                settings.name = Ember.none(descriptor.name) ? descriptor.property : descriptor.name;
+                settings.name = Ember.isNone(descriptor.name) ? descriptor.property : descriptor.name;
                 return Flame.TextFieldView.extend(settings);
             case 'html':
                 return Flame.LabelView.extend(jQuery.extend(settings, {escapeHTML: false, formatter: function(val) {

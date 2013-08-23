@@ -160,7 +160,7 @@ Flame.TableController = Ember.Object.extend({
     // When setting headers, resolve refs and record extra information to make rendering easier
     _headersDidChange: function() {
         var headers = this.get('_headers');
-        if (!Ember.none(headers)) {
+        if (!Ember.isNone(headers)) {
             var data = [];
             this.set('dirtyCells', []);
 

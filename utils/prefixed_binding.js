@@ -83,7 +83,7 @@ Flame.reopen({
                     } else {
                         prefix = this._lookupPathToProperty(view, property);
                     }
-                    Ember.assert("Property '%@' was not found!".fmt(property), !Ember.none(prefix));
+                    Ember.assert("Property '%@' was not found!".fmt(property), !Ember.isNone(prefix));
 
                     var finalPath = prefix + suffix;
                     // Copy transformations and the ilk.
@@ -115,7 +115,7 @@ Flame.reopen({
         // Sometimes there's a binding but it hasn't 'kicked in' yet, so also check explicitly for a binding
         var bindingPropertyName = propertyName + 'Binding';
 
-        while (!Ember.none(cur)) {
+        while (!Ember.isNone(cur)) {
             // It seems that earlier (at least 0.9.4) the constructor of the view contained pleothra of properties,
             // but nowadays (at least 0.9.6) the properties are there throughout the prototype-chain and not in the
             // last prototype. Thus testing whether current objects prototype has the property does not give correct

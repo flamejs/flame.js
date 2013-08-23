@@ -31,11 +31,11 @@ Flame.SelectButtonView = Flame.ButtonView.extend({
             value = this.get('value'),
             subMenuKey = this.get('subMenuKey'),
             foundItem;
-        if (Ember.none(itemList)) { return foundItem; }
+        if (Ember.isNone(itemList)) { return foundItem; }
         itemList.forEach(function(item) {
             if (Ember.get(item, subMenuKey)) {
                 var possiblyFound = this._findItem(Ember.get(item, subMenuKey));
-                if (!Ember.none(possiblyFound)) { foundItem = possiblyFound; }
+                if (!Ember.isNone(possiblyFound)) { foundItem = possiblyFound; }
             } else if (Ember.get(item, itemValueKey) === value) {
                 foundItem = item;
             }

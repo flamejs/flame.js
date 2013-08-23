@@ -13,7 +13,7 @@ Flame.LabelView = Flame.View.extend(Flame.ActionSupport, {
     render: function(buffer) {
         var height = this.getPath('layout.height');
         if (this.get('useAbsolutePosition') &&
-            !Ember.none(height) &&
+            !Ember.isNone(height) &&
             !this.get('allowWrapping')) {
             buffer.style('line-height', height+'px');
         }

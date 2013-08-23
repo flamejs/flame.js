@@ -67,7 +67,7 @@ Flame.LayoutSupport = {
 
         this._cssProperties.forEach(function(prop) {
             var value = cssLayout[prop];
-            if (!Ember.none(value)) {
+            if (!Ember.isNone(value)) {
                 buffer.style(prop, value);
             }
         });
@@ -90,7 +90,7 @@ Flame.LayoutSupport = {
         this._layoutProperties.forEach(function(prop) {
             var value = layout[prop];
             // Does it look like a property path (and not e.g. '50%')?
-            if (!Ember.none(value) && 'string' === typeof value && value !== '' && isNaN(parseInt(value, 10))) {
+            if (!Ember.isNone(value) && 'string' === typeof value && value !== '' && isNaN(parseInt(value, 10))) {
                 // TODO remove the observer when view destroyed?
                 self.addObserver(value, self, function() {
                     self.adjustLayout(prop, self.getPath(value));

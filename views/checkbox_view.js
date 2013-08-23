@@ -11,7 +11,7 @@ Flame.CheckboxView = Flame.ButtonView.extend({
         this._super(context);
         context.push("<div class='flame-checkbox-box'></div>");
         this.renderCheckMark(context);
-        var title = Ember.none(this.get("title")) ? "" : this.get("title");
+        var title = Ember.isNone(this.get("title")) ? "" : this.get("title");
         context.push("<label class='flame-checkbox-label'>" + title + "</label>");
     },
 

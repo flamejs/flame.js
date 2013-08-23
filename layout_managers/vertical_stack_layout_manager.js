@@ -42,7 +42,7 @@ Flame.VerticalStackLayoutManager = Flame.LayoutManager.extend({
 
             var layout = childView.get('layout');
             childView._resolveLayoutBindings(layout);  // XXX ugly
-            Ember.assert('All child views must define layout when using VerticalStackLayoutManager!', !Ember.none(layout));
+            Ember.assert('All child views must define layout when using VerticalStackLayoutManager!', !Ember.isNone(layout));
 
             top += (layout.topMargin || 0);
             childView.adjustLayout('top', top);  // Use adjustLayout, it checks if the property changes (can trigger a series of layout updates)
@@ -51,10 +51,10 @@ Flame.VerticalStackLayoutManager = Flame.LayoutManager.extend({
             var height = layout.height;
             if ('string' === typeof height) height = parseInt(height, 10);
             if (i < len - 1) {  // XXX should not check the index, this check should only consider visible child views
-                Ember.assert('All child views except last one must define layout.height when using VerticalStackLayoutManager!', !Ember.none(height));
+                Ember.assert('All child views except last one must define layout.height when using VerticalStackLayoutManager!', !Ember.isNone(height));
             }
 
-            if (Ember.none(layout.height)) {
+            if (Ember.isNone(layout.height)) {
                 fluid = true;
             } else {
                 top += height;

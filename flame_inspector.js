@@ -163,7 +163,7 @@ FlameInspector.RefView = Flame.LabelView.extend({
 
     type: function() {
         var content = this.get('content');
-        if (Ember.none(content)) return 'none';
+        if (Ember.isNone(content)) return 'none';
         else if (content instanceof Ember.View) return 'view';
         else if (content instanceof Flame.State) return 'state';
         else return 'object';
@@ -346,7 +346,7 @@ FlameInspector.inspectorViewMap = Ember.Object.create({
 });
 
 FlameInspector.getObjectType = function(object) {
-    if (Ember.none(object)) return undefined;
+    if (Ember.isNone(object)) return undefined;
     else if (typeof object === 'string') return 'string';
     else if (typeof object === 'number') return 'number';
     else if (object instanceof Ember.View) return 'view';
@@ -457,7 +457,7 @@ FlameInspector.InspectorController = Ember.Object.extend({
     },  //.observes('inspectedObject.currentState'),
 
     _resolveStateName: function(view, state) {
-        if (!Ember.none(state)) {
+        if (!Ember.isNone(state)) {
             for (var prop in view) {
                 if (prop !== '_super' && view.hasOwnProperty(prop) && view.get(prop) === state) return prop;
             }
@@ -585,7 +585,7 @@ FlameInspector.InspectorController = Ember.Object.extend({
 
     _generateChildViewArray: function(object, childViews) {
         var arr = [];
-        if (Ember.none(childViews) || childViews.get('length') === 0) return null;
+        if (Ember.isNone(childViews) || childViews.get('length') === 0) return null;
 
         var self = this;
         return childViews.map(function(childView) {

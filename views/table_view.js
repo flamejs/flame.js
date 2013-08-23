@@ -222,7 +222,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     getColumnContents: function(columnHeader) {
         return this.getPath("content.tableData").map(function(e) {
             var elem = e[columnHeader.leafIndex];
-            return Ember.none(elem) ? '' : elem.formattedValue();
+            return Ember.isNone(elem) ? '' : elem.formattedValue();
         });
     },
 
