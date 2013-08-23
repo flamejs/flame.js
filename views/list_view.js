@@ -115,13 +115,13 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
     }.property().volatile(),
 
     arrayWillChange: function(content, start, removedCount) {
-        if (!this.getPath('rootTreeView.isDragging')) {
+        if (!this.get('rootTreeView.isDragging')) {
             return this._super.apply(this, arguments);
         }
     },
 
     arrayDidChange: function(content, start, removed, added) {
-        if (!this.getPath('rootTreeView.isDragging')) {
+        if (!this.get('rootTreeView.isDragging')) {
             var result = this._super.apply(this, arguments);
             this._updateContentIndexes();
             return result;
@@ -129,13 +129,13 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
     },
 
     childViewsWillChange: function() {
-        if (!this.getPath('rootTreeView.isDragging')) {
+        if (!this.get('rootTreeView.isDragging')) {
             return this._super.apply(this, arguments);
         }
     },
 
     childViewsDidChange: function() {
-        if (!this.getPath('rootTreeView.isDragging')) {
+        if (!this.get('rootTreeView.isDragging')) {
             return this._super.apply(this, arguments);
         }
     },

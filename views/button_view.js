@@ -14,7 +14,7 @@ Flame.ButtonView = Flame.View.extend(Flame.ActionSupport, Flame.Statechart, {
     handlebars: "<label class='flame-button-label'>{{title}}</label>",
 
     render: function(buffer) {
-        var height = this.getPath('layout.height');
+        var height = this.get('layout.height');
         if (this.get('useAbsolutePosition') && !Ember.isNone(height)) buffer.style('line-height', (height-2)+'px');  // -2 to account for borders
         this._super(buffer);
     },
@@ -49,7 +49,7 @@ Flame.ButtonView = Flame.View.extend(Flame.ActionSupport, Flame.Statechart, {
         },
 
         mouseDown: function() {
-            if (!this.getPath('owner.isDisabled')) {
+            if (!this.get('owner.isDisabled')) {
                 this.gotoState('mouseDownInside');
             }
             return true;

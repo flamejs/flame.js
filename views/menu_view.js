@@ -137,7 +137,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
                 if (item.isSelected) { this.set("highlightIndex", i); }
             }, this);
         }
-        this.getPath("contentView").setScrolledView(this._createMenuView());
+        this.get("contentView").setScrolledView(this._createMenuView());
         if (this.get("_anchorElement")) {
             this._updateMenuSize();
         }

@@ -48,7 +48,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     }),
 
     rowDepth: function() {
-        return this.getPath('contentAdapter.rowHeaderRows.maxDepth');
+        return this.get('contentAdapter.rowHeaderRows.maxDepth');
     }.property('contentAdapter.rowHeaderRows'),
 
     /* IE 5-8 trigger mouse events in unorthodox order:
@@ -85,7 +85,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                 owner.set('resizingCell', cell);
                 owner.set('dragStartX', event.pageX);
                 owner.set('startX', parseInt(target.parent().css('width'), 10));
-                owner.set('offset', parseInt(this.getPath('owner.tableCorner').css('width'), 10));
+                owner.set('offset', parseInt(this.get('owner.tableCorner').css('width'), 10));
                 owner.set('type', cell.is('.column-header td') ? 'column' : 'row');
                 return true;
             } else if (!!target.closest('.column-header').length) {
@@ -103,7 +103,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
 
             var target = jQuery(event.target), index, header;
             if (!!target.closest('.column-header').length && (index = target.closest('td').attr('data-leaf-index'))) {
-                header = this.getPath('owner.content.columnLeafs')[index];
+                header = this.get('owner.content.columnLeafs')[index];
 
                 var columnDataAsString = owner.getColumnContents(header).map(function(e) { return e; }).join("<br />");
                 var columnDimensions = Flame.measureString(columnDataAsString, 'ember-view');
@@ -125,12 +125,12 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     clickInProgress: Flame.State.extend({
         mouseUp: function(event) {
             this.gotoState('idle');
-            var clickDelegate = this.getPath('owner.tableViewDelegate');
+            var clickDelegate = this.get('owner.tableViewDelegate');
             if (clickDelegate && clickDelegate.columnHeaderClicked) {
                 var target = jQuery(event.target), index, header;
                 if (!!target.closest('.column-header').length && (index = target.closest('td').attr('data-leaf-index'))) {
                     if (clickDelegate.columnHeaderClicked) {
-                        header = this.getPath('owner.content.columnLeafs')[index];
+                        header = this.get('owner.content.columnLeafs')[index];
                         clickDelegate.columnHeaderClicked(header, target);
                     }
                     return true;
@@ -138,7 +138,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                     if (clickDelegate.rowHeaderClicked) {
                         var cell = target.closest('td');
                         index = parseInt(cell.attr('data-index'), 10);
-                        header = this.getPath('owner.content._headers.rowHeaders')[index];
+                        header = this.get('owner.content._headers.rowHeaders')[index];
                         if (!header) { return false; }
                         clickDelegate.rowHeaderClicked(header, target, index);
                     }
@@ -152,26 +152,26 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
 
     resizing: Flame.State.extend({
         mouseMove: function(event) {
-            var cell = this.getPath('owner.resizingCell');
-            var deltaX = event.pageX - this.getPath('owner.dragStartX');
-            var cellWidth = this.getPath('owner.startX') + deltaX;
-            if (cellWidth < this.getPath('owner.MIN_COLUMN_WIDTH')) { cellWidth = this.getPath('owner.MIN_COLUMN_WIDTH'); }
+            var cell = this.get('owner.resizingCell');
+            var deltaX = event.pageX - this.get('owner.dragStartX');
+            var cellWidth = this.get('owner.startX') + deltaX;
+            if (cellWidth < this.get('owner.MIN_COLUMN_WIDTH')) { cellWidth = this.get('owner.MIN_COLUMN_WIDTH'); }
             var leafIndex;
             // Adjust size of the cell
-            if (this.getPath('owner.type') === 'column') { // Update data table column width
+            if (this.get('owner.type') === 'column') { // Update data table column width
                 leafIndex = parseInt(cell.attr('data-leaf-index'), 10) + 1;
                 cell.parents('table').find('colgroup :nth-child(%@)'.fmt(leafIndex)).css('width', '%@px'.fmt(cellWidth));
                 this.get('owner')._synchronizeColumnWidth();
             } else {
-                var width = this.getPath('owner.offset') + deltaX - 2;
+                var width = this.get('owner.offset') + deltaX - 2;
                 if (width < 30) { width = 30; }
                 width -= 1;
                 // Move data table and column header
-                this.getPath('owner.scrollable').css('left', '%@px'.fmt(width));
-                this.getPath('owner.columnHeader').parent().css('left', '%@px'.fmt(width));
-                this.getPath('owner.tableCorner').css('width', '%@px'.fmt(width));
+                this.get('owner.scrollable').css('left', '%@px'.fmt(width));
+                this.get('owner.columnHeader').parent().css('left', '%@px'.fmt(width));
+                this.get('owner.tableCorner').css('width', '%@px'.fmt(width));
                 // Update column width
-                var totalDepth = this.getPath('owner.rowDepth');
+                var totalDepth = this.get('owner.rowDepth');
                 var remainingDepth = 0;
                 // must account for row headers spanning multiple columns to get the right leafIndex and width
                 cell.nextAll().each(function() {
@@ -220,14 +220,14 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     },
 
     getColumnContents: function(columnHeader) {
-        return this.getPath("content.tableData").map(function(e) {
+        return this.get("content.tableData").map(function(e) {
             var elem = e[columnHeader.leafIndex];
             return Ember.isNone(elem) ? '' : elem.formattedValue();
         });
     },
 
     getLeafHeaderLabel: function(header) {
-        var leaf = this.getPath("content.columnLeafs")[header.leafIndex];
+        var leaf = this.get("content.columnLeafs")[header.leafIndex];
         return leaf.get("headerLabel");
     },
 
@@ -282,13 +282,13 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         var renderRowHeader = this.get('renderRowHeader');
         var didRenderTitle = false;
 
-        var headers = this.getPath('contentAdapter.headers');
+        var headers = this.get('contentAdapter.headers');
         if (!headers) {
             return; // Nothing to render
         }
 
-        if (this.getPath('content.title')) {
-            buffer = buffer.push('<div class="panel-title">%@</div>'.fmt(this.getPath('content.title')));
+        if (this.get('content.title')) {
+            buffer = buffer.push('<div class="panel-title">%@</div>'.fmt(this.get('content.title')));
             didRenderTitle = true;
         }
 
@@ -296,8 +296,8 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         var defaultRowHeaderWidth = this.get('rowHeaderWidth') || defaultColumnWidth;
         var rowHeaderWidths = this.get('content').rowHeaderWidths ? this.get('content').rowHeaderWidths() : null;
 
-        var columnHeaderRows = this.getPath('contentAdapter.columnHeaderRows');
-        var rowHeaderRows = this.getPath('contentAdapter.rowHeaderRows');
+        var columnHeaderRows = this.get('contentAdapter.columnHeaderRows');
+        var rowHeaderRows = this.get('contentAdapter.rowHeaderRows');
         var columnHeaderHeight = columnHeaderRows.maxDepth * 21 + 1 + columnHeaderRows.maxDepth;
         var leftOffset = 0;
         if (renderRowHeader) {
@@ -336,17 +336,17 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     },
 
     _renderHeader: function(buffer, type, offset, defaultColumnWidth) {
-        var headers = this.getPath('contentAdapter.headers');
+        var headers = this.get('contentAdapter.headers');
         if (!headers) {
             return buffer.begin('div').end();
         }
 
         var position, i;
         if (type === 'column') {
-            headers = this.getPath('contentAdapter.columnHeaderRows');
+            headers = this.get('contentAdapter.columnHeaderRows');
             position = 'left';
         } else {
-            headers = this.getPath('contentAdapter.rowHeaderRows');
+            headers = this.get('contentAdapter.rowHeaderRows');
             position = 'top';
         }
         var length = headers.length;
@@ -361,9 +361,9 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                 buffer = buffer.push('<col style="width: %@px;" class="level-%@" />'.fmt(width, i + 1));
             }
         } else {
-            var l = this.getPath('content.columnLeafs').length;
+            var l = this.get('content.columnLeafs').length;
             for (i = 0; i < l; i++) {
-                buffer = buffer.push('<col style="width: %@px;" />'.fmt(this.getPath('content.columnLeafs')[i].get('render_width') || defaultColumnWidth));
+                buffer = buffer.push('<col style="width: %@px;" />'.fmt(this.get('content.columnLeafs')[i].get('render_width') || defaultColumnWidth));
             }
         }
         buffer = buffer.end();

@@ -89,8 +89,8 @@ Flame.FormView = Flame.View.extend({
     _createChildViewWithLayout: function(view, parent, leftMargin, rightMargin) {
         var childView = parent.createChildView(view);
         if (!childView.get('layout')) childView.set('layout', {});
-        childView.setPath('layout.left', leftMargin);
-        childView.setPath('layout.right', rightMargin);
+        childView.set('layout.left', leftMargin);
+        childView.set('layout.right', rightMargin);
         return childView;
     },
 
@@ -116,7 +116,7 @@ Flame.FormView = Flame.View.extend({
                 var self = this;
                 (buttons || []).forEach(function(descriptor) {
                     var buttonView = self.createChildView(formView._buildButton(descriptor, right));
-                    right += (buttonView.getPath('layout.width') || 0) + 15;
+                    right += (buttonView.get('layout.width') || 0) + 15;
                     childViews.push(buttonView);
                 });
             }

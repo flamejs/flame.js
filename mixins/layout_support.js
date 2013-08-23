@@ -93,9 +93,9 @@ Flame.LayoutSupport = {
             if (!Ember.isNone(value) && 'string' === typeof value && value !== '' && isNaN(parseInt(value, 10))) {
                 // TODO remove the observer when view destroyed?
                 self.addObserver(value, self, function() {
-                    self.adjustLayout(prop, self.getPath(value));
+                    self.adjustLayout(prop, self.get(value));
                 });
-                layout[prop] = self.getPath(value);
+                layout[prop] = self.get(value);
             }
         });
         layout._bindingsResolved = true;

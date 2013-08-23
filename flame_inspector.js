@@ -154,7 +154,7 @@ FlameInspector.RefView = Flame.LabelView.extend({
     },
 
     currentState: function() {
-        return this.getPath('ownerObject.currentState') === this.get('content');
+        return this.get('ownerObject.currentState') === this.get('content');
     }.property('ownerObject.currentState'),
 
     typeClass: function() {
@@ -278,9 +278,9 @@ FlameInspector.EventLogView = Flame.View.extend({
             render: function(buffer) {
                 this._super(buffer);
                 var html = '<div style="background-color: %@"><div class="flame-inspector-event-name">%@</div><div class="flame-inspector-event-info">%@</div></div>'.fmt(
-                    this.getPath('content.color'),
-                    this.getPath('content.eventName'),
-                    this.getPath('content.info')
+                    this.get('content.color'),
+                    this.get('content.eventName'),
+                    this.get('content.info')
                 );
                 buffer.push(html);
             }
@@ -486,7 +486,7 @@ FlameInspector.InspectorController = Ember.Object.extend({
     },
 
     allowNext: function() {
-        return this.get('_historyIndex') < this.getPath('_inspectHistory.length') - 1;
+        return this.get('_historyIndex') < this.get('_inspectHistory.length') - 1;
     }.property('_historyIndex').volatile(),
 
     inspectedObject: function() {
@@ -705,7 +705,7 @@ FlameInspector.DebugPanel = Flame.Panel.extend({
     currentInspectorView: null,
 
     inspectedObjectWillChange: function() {
-        this.getPath('contentView.inspector').removeFromParent();
+        this.get('contentView.inspector').removeFromParent();
         if (this.get('currentInspectorView')) {
             this.get('currentInspectorView').destroy();
             this.set('currentInspectorView', null);
@@ -714,7 +714,7 @@ FlameInspector.DebugPanel = Flame.Panel.extend({
 
     inspectedObjectDidChange: function() {
         var contentView = this.get('contentView');
-        var type = this.getPath('inspectorController.inspectedObjectType');
+        var type = this.get('inspectorController.inspectedObjectType');
         var newInspectorViewClass = FlameInspector.inspectorViewMap[type];
         if (!newInspectorViewClass) newInspectorViewClass = FlameInspector.inspectorViewMap.object;  // Default to object inspector
         var newInspectorView = contentView.createChildView(newInspectorViewClass.extend({targetBinding: 'parentView.parentView.inspectorController'}));

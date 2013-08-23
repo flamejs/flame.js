@@ -20,8 +20,8 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         },
 
         enterState: function() {
-            if (this.getPath('owner.state') === 'inDOM') {
-                this.getPath('owner.selection').hide();
+            if (this.get('owner.state') === 'inDOM') {
+                this.get('owner.selection').hide();
             }
         }
     }),
@@ -42,7 +42,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         },
 
         mouseUp: function(event) {
-            var tableViewDelegate = this.getPath('owner.tableViewDelegate');
+            var tableViewDelegate = this.get('owner.tableViewDelegate');
             if (tableViewDelegate && tableViewDelegate.mouseUp) {
                 var target = jQuery(event.target);
                 var targetDataCell;
@@ -52,7 +52,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                 var rowIndex = columnIndexCell.parent().attr('data-index');
 
                 if (columnIndex && rowIndex) {
-                    targetDataCell = this.getPath('owner.data')[rowIndex][columnIndex];
+                    targetDataCell = this.get('owner.data')[rowIndex][columnIndex];
                     index = [rowIndex, columnIndex];
                     tableViewDelegate.mouseUp(event, target, targetDataCell, index, this.get('owner'));
                 }
@@ -73,7 +73,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         },
 
         wipeCell: function() {
-            var dataCell = this.getPath('owner.selectedDataCell');
+            var dataCell = this.get('owner.selectedDataCell');
             if (Ember.isNone(dataCell)) {
                 return;
             }
@@ -88,7 +88,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         },
 
         startEdit: function(event) {
-            var dataCell = this.getPath('owner.selectedDataCell');
+            var dataCell = this.get('owner.selectedDataCell');
             if (Ember.isNone(dataCell)) {
                 return;
             }
@@ -105,25 +105,25 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         },
 
         moveLeft: function(event) {
-            var selectedCell = this.getPath('owner.selectedCell');
+            var selectedCell = this.get('owner.selectedCell');
             this.get('owner').selectCell(selectedCell.prev());
             return true;
         },
 
         moveRight: function(event) {
-            var selectedCell = this.getPath('owner.selectedCell');
+            var selectedCell = this.get('owner.selectedCell');
             this.get('owner').selectCell(selectedCell.next());
             return true;
         },
 
         moveDown: function(event) {
-            var selectedCell = this.getPath('owner.selectedCell');
+            var selectedCell = this.get('owner.selectedCell');
             this.get('owner').selectCell(jQuery(selectedCell.parent().next().children()[selectedCell.attr('data-index')]));
             return true;
         },
 
         moveUp: function(event) {
-            var selectedCell = this.getPath('owner.selectedCell');
+            var selectedCell = this.get('owner.selectedCell');
             this.get('owner').selectCell(jQuery(selectedCell.parent().prev().children()[selectedCell.attr('data-index')]));
             return true;
         },
@@ -140,7 +140,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
         // We need to use the keyPress event, as some browsers don't report the character pressed correctly with keyDown
         keyPress: function(event) {
-            var dataCell = this.getPath('owner.selectedDataCell');
+            var dataCell = this.get('owner.selectedDataCell');
             if (Ember.isNone(dataCell) || (dataCell && !dataCell.isEditable())) {
                 return false;
             }
@@ -156,7 +156,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         },
 
         enterState: function() {
-            this.getPath('owner.selection').show();
+            this.get('owner.selection').show();
         }
     }),
 
@@ -224,7 +224,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         },
 
         exitState: function() {
-            var selection = this.getPath('owner.selection');
+            var selection = this.get('owner.selection');
             selection.html('<div class="table-selection-background"></div>');
             selection.removeClass('read-only is-selectable');
         },
@@ -290,7 +290,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             var selectedCell = owner.get('selectedCell');
             var dataCell = owner.get('selectedDataCell');
             var editCell = owner.get('editField');
-            var scrollable = owner.getPath('parentView.scrollable');
+            var scrollable = owner.get('parentView.scrollable');
             var selection = owner.get('selection');
             var options = dataCell.options();
 
@@ -392,7 +392,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             return;
         }
         var selection = this.get('selection');
-        var scrollable = this.getPath('parentView.scrollable');
+        var scrollable = this.get('parentView.scrollable');
 
         var position = selectedCell.position();
         var scrollTop = scrollable.scrollTop();
@@ -475,7 +475,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
     },
 
     selectCell: function(newSelection) {
-        if (this.getPath('parentView.allowSelection') && this.isCellSelectable(newSelection)) {
+        if (this.get('parentView.allowSelection') && this.isCellSelectable(newSelection)) {
             this.set('selectedCell', newSelection);
             return true;
         }
@@ -509,12 +509,12 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
         var rowCount = data.length;
         var columnCount = data[0].length;
-        var defaultCellWidth = this.getPath('parentView.defaultColumnWidth');
-        var columnLeafs = this.getPath('parentView.content.columnLeafs');
+        var defaultCellWidth = this.get('parentView.defaultColumnWidth');
+        var columnLeafs = this.get('parentView.content.columnLeafs');
         var cellWidth;
 
         var classes = 'flame-table';
-        if (!this.getPath('parentView.allowSelection')) { classes += ' is-selectable'; }
+        if (!this.get('parentView.allowSelection')) { classes += ' is-selectable'; }
         buffer = buffer.begin('table').attr('class', classes).attr('width', '1px');
         var i, j;
         for (i = 0; i < rowCount; i++) {

@@ -43,7 +43,7 @@ Flame.AlertPanel.reopen({
             titleBinding: '^cancelButtonTitle',
             isVisibleBinding: '^isCancelVisible',
             action: function() {
-                this.getPath('parentView.parentView').onCancel();
+                this.get('parentView.parentView').onCancel();
             }
         }),
 
@@ -53,7 +53,7 @@ Flame.AlertPanel.reopen({
             isVisibleBinding: '^isConfirmVisible',
             isDefault: true,
             action: function() {
-                this.getPath('parentView.parentView').onConfirm();
+                this.get('parentView.parentView').onConfirm();
             }
         })
     }),
