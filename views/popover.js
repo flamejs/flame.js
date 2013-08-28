@@ -61,11 +61,11 @@ Flame.Popover = Flame.Panel.extend({
         } else if (position & Flame.POSITION_LEFT) {
             layout.left -= 15;
             this.set('arrowPosition', 'left');
-            this.set('image', this.ARROW_LEFT);
+            this.set('image', this.ARROW_RIGHT);
         } else if (position & Flame.POSITION_RIGHT) {
             layout.left += 15;
             this.set('arrowPosition', 'right');
-            this.set('image', this.ARROW_RIGHT);
+            this.set('image', this.ARROW_LEFT);
         }
         return layout;
     },
