@@ -179,9 +179,7 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
         // Render missing views
         for (var i = range.start; i <= range.end; i++) {
             if (indices.indexOf(i) === -1) {
-                view = this.viewForRow(i);
-                var itemHeight = this.itemHeightForRow(i);
-                view.adjustLayout('top', i * itemHeight);
+                this.viewForRow(i);
             }
         }
     },
