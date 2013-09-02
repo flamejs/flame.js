@@ -15,7 +15,7 @@ Flame.TreeItemView = Flame.ListItemView.extend({
     isExpanded: function(key, value) {
         if (arguments.length === 1) {
             if (this._isExpanded !== undefined) return this._isExpanded;
-            return this.getPath('content.treeItemIsExpanded') || this.get('defaultIsExpanded');
+            return this.get('content.treeItemIsExpanded') || this.get('defaultIsExpanded');
         } else {
             this._isExpanded = value;
             return value;
@@ -24,7 +24,7 @@ Flame.TreeItemView = Flame.ListItemView.extend({
     layout: { left: 0, right: 0, top: 0, height: 0 },
 
     defaultIsExpanded: function() {
-        return this.getPath('parentView.rootTreeView.defaultIsExpanded');
+        return this.get('parentView.rootTreeView.defaultIsExpanded');
     }.property('parentView.rootTreeView.defaultIsExpanded'),
 
     // Don't use the list view isSelected highlight logic
@@ -34,7 +34,7 @@ Flame.TreeItemView = Flame.ListItemView.extend({
 
     // This is the highlight logic for tree items, the is-selected class is bound to the flame-tree-item-view-container
     classAttribute: function() {
-        return this.get('content') === this.getPath('parentView.rootTreeView.selection') ? 'flame-tree-item-view-container is-selected' : 'flame-tree-item-view-container';
+        return this.get('content') === this.get('parentView.rootTreeView.selection') ? 'flame-tree-item-view-container is-selected' : 'flame-tree-item-view-container';
     }.property('content', 'parentView.rootTreeView.selection'),
 
     // The HTML that we need to produce is a bit complicated, because while nested items should appear
@@ -81,7 +81,7 @@ Flame.TreeItemView = Flame.ListItemView.extend({
         classNames: ['flame-tree-item-view-content'],
         contentIndexBinding: 'parentView.contentIndex',
         handlebars: function() {
-            return this.getPath('parentView.parentView.rootTreeView').handlebarsForItem(this.get('content'));
+            return this.get('parentView.parentView.rootTreeView').handlebarsForItem(this.get('content'));
         }.property('content')
     }),
 
@@ -95,17 +95,17 @@ Flame.TreeItemView = Flame.ListItemView.extend({
     childListView: function() {
         if (this.get("renderSubTree")) {
             // Is there a nicer way to get in touch with child list? This is a bit brittle.
-            return this.getPath("childViews.lastObject.childViews.firstObject");
+            return this.get("childViews.lastObject.childViews.firstObject");
         }
         return null;
     }.property("showsubTree"),
 
     hasChildren: function() {
-        return !Ember.none(this.getPath('content.treeItemChildren'));
+        return !Ember.isNone(this.get('content.treeItemChildren'));
     }.property('content.treeItemChildren').volatile(),
 
     mouseUp: function() {
-        if (this.getPath('parentView.rootTreeView.clickTogglesIsExpanded')) {
+        if (this.get('parentView.rootTreeView.clickTogglesIsExpanded')) {
             this.toggleProperty('isExpanded');
         }
         return false;  // Always propagate to ListItemView
@@ -126,15 +126,15 @@ Flame.TreeItemView = Flame.ListItemView.extend({
     // because then a new class would still be created for each instance of a Tree.
     nestedTreeView: function() {
         return Flame.TreeView.extend({
-            useAbsolutePosition: this.getPath('parentView.rootTreeView.useAbsolutePositionForItems'),
+            useAbsolutePosition: this.get('parentView.rootTreeView.useAbsolutePositionForItems'),
             layoutManager: Flame.VerticalStackLayoutManager.create({ topMargin: 0, spacing: 0, bottomMargin: 0 }),
             layout: { top: 0, left: 0, right: 0 },
             classNames: ['flame-tree-view-nested'],
             isVisible: Flame.computed.bool('parentView.isExpanded'), // Ember isVisible handling considers undefined to be visible
-            allowSelection: this.getPath('parentView.rootTreeView.allowSelection'),
-            allowReordering: this.getPath('parentView.rootTreeView.allowReordering'),
-            content: this.getPath('content.treeItemChildren'),
-            itemViewClass: this.getPath('parentView.rootTreeView.itemViewClass'),
+            allowSelection: this.get('parentView.rootTreeView.allowSelection'),
+            allowReordering: this.get('parentView.rootTreeView.allowReordering'),
+            content: this.get('content.treeItemChildren'),
+            itemViewClass: this.get('parentView.rootTreeView.itemViewClass'),
             isNested: true
         });
     }.property('content').volatile()

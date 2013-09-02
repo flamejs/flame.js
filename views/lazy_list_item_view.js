@@ -10,14 +10,14 @@ Flame.LazyListViewStates.MouseIsDown = Flame.State.extend({
 
     mouseMove: function(event) {
         var owner = this.get('owner');
-        if (!owner.getPath('parentView.allowReordering')) return true;
+        if (!owner.get('parentView.allowReordering')) return true;
         // Only start dragging if we move more than 2 pixels vertically
         if (this.xOffset === null) { this.xOffset = event.pageX; this.yOffset = event.pageY; }
         if (Math.abs(event.pageY - this.yOffset) < 3) return true;
 
         var offset = owner.$().offset();
-        this.setPath('owner.xOffset', this.xOffset - offset.left);
-        this.setPath('owner.yOffset', this.yOffset - offset.top);
+        this.set('owner.xOffset', this.xOffset - offset.left);
+        this.set('owner.yOffset', this.yOffset - offset.top);
         this.gotoState('dragging');
         return true;
     },
@@ -74,18 +74,18 @@ Flame.LazyListItemView = Flame.ListItemView.extend(Flame.Statechart, {
             var listView = owner.get('parentView');
             if (owner.willStartDragging) owner.willStartDragging();
             var listViewElement = listView.$();
-            this.setPath('owner.isDragged', true);
+            this.set('owner.isDragged', true);
             this.scrollViewOffset = listView.get('parentView').$().offset();
             this.clone = this.get('owner').$().safeClone();
             this.clone.addClass('dragged-clone');
-            this.clone.draggingInfo = { currentIndex: this.getPath('owner.contentIndex') };
+            this.clone.draggingInfo = { currentIndex: this.get('owner.contentIndex') };
             this.indicator = jQuery('<div class="indicator"><img src="%@"></div>'.fmt(Flame.image('reorder_indicator.png'))).hide();
             listViewElement.append(this.clone);
             listViewElement.append(this.indicator);
         },
 
         exitState: function() {
-            this.setPath('owner.isDragged', false);
+            this.set('owner.isDragged', false);
             this.finishDragging();
             this.clone.remove();
             this.clone = null;
@@ -110,21 +110,21 @@ Flame.LazyListItemView = Flame.ListItemView.extend(Flame.Statechart, {
         },
 
         didDragItem: function(newTop, newLeft) {
-            if (this.getPath('owner.parentView.constrainDragginToXAxis')) {
+            if (this.get('owner.parentView.constrainDragginToXAxis')) {
                 this.clone.css({top: newTop});
             } else {
                 this.clone.css({top: newTop, left: newLeft});
             }
-            var itemHeight = this.getPath('owner.parentView.itemHeight');
+            var itemHeight = this.get('owner.parentView.itemHeight');
             var index = Math.ceil(newTop / itemHeight);
-            this.clone.draggingInfo = this.getPath('owner.parentView').indexForMovedItem(this.clone.draggingInfo, index, this.getPath('owner.contentIndex'));
+            this.clone.draggingInfo = this.get('owner.parentView').indexForMovedItem(this.clone.draggingInfo, index, this.get('owner.contentIndex'));
             var height = this.clone.draggingInfo.currentIndex * itemHeight;
             this.indicator.css({top: height - 1 + 'px'});
             this.indicator.show();
         },
 
         finishDragging: function() {
-            this.getPath('owner.parentView').moveItem(this.getPath('owner.contentIndex'), this.clone.draggingInfo);
+            this.get('owner.parentView').moveItem(this.get('owner.contentIndex'), this.clone.draggingInfo);
         }
     })
 });

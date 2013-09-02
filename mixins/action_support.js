@@ -19,9 +19,9 @@ Flame.ActionSupport = {
 
         while ('string' === typeof target) {  // Use a while loop: the target can be a path gives another path
             if (target.charAt(0) === '.') {
-                target = this.getPath(target.slice(1));  // If starts with a dot, interpret relative to this view
+                target = this.get(target.slice(1));  // If starts with a dot, interpret relative to this view
             } else {
-                target = Ember.getPath(target);
+                target = Ember.get(target);
             }
         }
         if (action === undefined) { action = this.get('action'); }
@@ -29,8 +29,8 @@ Flame.ActionSupport = {
         if (action) {
             var actionFunction = 'function' === typeof action ? action : Ember.get(target, action);
             if (!actionFunction) throw 'Target %@ does not have action %@'.fmt(target, action);
-            var actualPayload = !Ember.none(payload) ? payload : this.get('payload');
-            if (Ember.none(actualPayload)) { actualPayload = this; }
+            var actualPayload = !Ember.isNone(payload) ? payload : this.get('payload');
+            if (Ember.isNone(actualPayload)) { actualPayload = this; }
             return actionFunction.call(target, actualPayload, action, this);
         }
 

@@ -4,7 +4,7 @@ Flame.SplitViewDividerViewBase = Ember.Mixin.create(Flame.Statechart, {
 
     idle: Flame.State.extend({
         mouseDown: function(event) {
-            var parentView = this.getPath('owner.parentView');
+            var parentView = this.get('owner.parentView');
             if (!parentView.get('allowResizing')) return false;
             parentView.startResize(event, this);
             this.gotoState('resizing');
@@ -18,7 +18,7 @@ Flame.SplitViewDividerViewBase = Ember.Mixin.create(Flame.Statechart, {
         },
 
         doubleClick: function(event) {
-            var parentView = this.getPath('owner.parentView');
+            var parentView = this.get('owner.parentView');
             if (!parentView.get('allowResizing')) return false;
             parentView.toggleCollapse(event);
             return true;
@@ -27,7 +27,7 @@ Flame.SplitViewDividerViewBase = Ember.Mixin.create(Flame.Statechart, {
 
     resizing: Flame.State.extend({
         mouseMove: function(event) {
-            this.getPath('owner.parentView').resize(event);
+            this.get('owner.parentView').resize(event);
             return true;
         },
 
@@ -43,7 +43,7 @@ Flame.SplitViewDividerViewBase = Ember.Mixin.create(Flame.Statechart, {
         touchEnd: Flame.State.gotoHandler('idle'),
 
         exitState: function() {
-            var parentView = this.getPath('owner.parentView');
+            var parentView = this.get('owner.parentView');
             if (parentView.endResize) {
                 parentView.endResize();
             }

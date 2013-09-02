@@ -10,28 +10,28 @@ Flame.TabView = Flame.View.extend({
     init: function() {
         this._super();
         //if tabs not set via binding, we need to build the tabs here
-        if (!Ember.none(this.get('tabs'))) {
+        if (!Ember.isNone(this.get('tabs'))) {
             this._tabsDidChange();
         }
     },
 
     _tabsWillChange: function() {
         var tabs = this.get('tabs');
-        if (!Ember.none(tabs)) {
+        if (!Ember.isNone(tabs)) {
             this.set('previousTabs', tabs.slice());
         }
     }.observesBefore('tabs.@each'),
 
     _tabsDidChange: function() {
         var tabs = this.get('tabs');
-        if (Ember.none(tabs)) {
+        if (Ember.isNone(tabs)) {
             return;
         }
         var previousTabs = this.get('previousTabs');
 
-        if (!Ember.none(previousTabs)) {
+        if (!Ember.isNone(previousTabs)) {
             previousTabs.forEach(function(tab, i) {
-                if (Ember.none(tabs.findProperty('value', tab.value))) {
+                if (Ember.isNone(tabs.findProperty('value', tab.value))) {
                     var tabBarView = this.get('tabBarView');
                     tabBarView.get('childViews').forEach(function(tabView) {
                         if (tabView.get('value') === tab.value) tabBarView.removeChild(tabView);
@@ -41,7 +41,7 @@ Flame.TabView = Flame.View.extend({
         }
 
         tabs.forEach(function(tab, i) {
-            if (Ember.none(previousTabs) || Ember.none(previousTabs.findProperty('value', tab.value))) {
+            if (Ember.isNone(previousTabs) || Ember.isNone(previousTabs.findProperty('value', tab.value))) {
                 this._addTab(tab, i);
             }
         }, this);
@@ -85,7 +85,7 @@ Flame.TabView = Flame.View.extend({
             this.set(tab.value, view);
         }
 
-        if (Ember.none(this.get('nowShowing'))) this.set('nowShowing', this.get('tabs').objectAt(0).value);
+        if (Ember.isNone(this.get('nowShowing'))) this.set('nowShowing', this.get('tabs').objectAt(0).value);
     },
 
     _tabWillChange: function() {

@@ -64,7 +64,7 @@ Flame.Statechart = {
                 this._setupProxyMethods(this[key]);
             }
         }
-        Ember.assert("No initial state defined for statechart!", !Ember.none(this.get('initialState')));
+        Ember.assert("No initial state defined for statechart!", !Ember.isNone(this.get('initialState')));
         this.gotoState(this.get('initialState'));
     },
 
@@ -89,15 +89,15 @@ Flame.Statechart = {
     },
 
     gotoState: function(stateName) {
-        Ember.assert("Cannot go to an undefined or null state!", !Ember.none(stateName));
+        Ember.assert("Cannot go to an undefined or null state!", !Ember.isNone(stateName));
         var currentState = this.get('currentState');
         var newState = this.get(stateName);
         //do nothing if we are already in the state to go to
         if (currentState === newState) {
             return;
         }
-        if (!Ember.none(newState) && newState instanceof Flame.State) {
-            if (!Ember.none(currentState)) {
+        if (!Ember.isNone(newState) && newState instanceof Flame.State) {
+            if (!Ember.isNone(currentState)) {
                 if (currentState.exitState) currentState.exitState();
             }
             this._currentStateName = stateName;
@@ -120,7 +120,7 @@ Flame.Statechart = {
     invokeStateMethod: function(methodName, args) {
         args = Array.prototype.slice.call(arguments); args.shift();
         var state = this.get('currentState');
-        Ember.assert("Cannot invoke state method without having a current state!", !Ember.none(state) && state instanceof Flame.State);
+        Ember.assert("Cannot invoke state method without having a current state!", !Ember.isNone(state) && state instanceof Flame.State);
         var method = state[methodName];
         if (Ember.typeOf(method) === "function") {
             return method.apply(state, args);

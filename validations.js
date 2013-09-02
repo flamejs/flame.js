@@ -52,7 +52,7 @@ Flame.Validatable = Ember.Mixin.create({
 
     // The observer calls this method with a value, so we have to add ignoreCoupledProperties afterwards
     validateProperty: function(target, key, value, ignoreCoupledProperties) {
-        if (Ember.none(ignoreCoupledProperties)) {
+        if (Ember.isNone(ignoreCoupledProperties)) {
             ignoreCoupledProperties = false;
         }
         if (value === undefined) {
@@ -109,7 +109,7 @@ Flame.Validatable = Ember.Mixin.create({
         var isValid = null;
         if (validator instanceof Flame.Validator) {
             isValid = validator.validate(target, key);
-        } else if (!Ember.none(validator)) {
+        } else if (!Ember.isNone(validator)) {
             //if not Flame.Validator, assume function
             isValid = validator.call(this, value);
         }
@@ -147,7 +147,7 @@ Flame.Validatable = Ember.Mixin.create({
      * set once.
      */
     validations: function(key, val) {
-        if (!Ember.none(val)) {
+        if (!Ember.isNone(val)) {
             if (this._validations === null) {
                 this._validations = val;
             } else {

@@ -54,7 +54,7 @@ Flame.MenuScrollView = Flame.View.extend({
     },
 
     setScrolledView: function(newContent) {
-        this.getPath("viewPort.childViews").replace(0, 1, [newContent]);
+        this.get("viewPort.childViews").replace(0, 1, [newContent]);
     },
 
     scrollPositionDidChange: function() {
@@ -79,7 +79,7 @@ Flame.MenuScrollView = Flame.View.extend({
     },
 
     _recalculateSizes: function() {
-        var height = this.getPath("parentView.layout.height");
+        var height = this.get("parentView.layout.height");
         if (height > 0) {
             var paddingAndBorders = 5 + 5 + 1 + 1;  // XXX obtain paddings & borders from MenuView?
             this.set("layout", {height: height - paddingAndBorders, width: "100%"});
@@ -116,7 +116,7 @@ Flame.MenuScrollView = Flame.View.extend({
                 continueScrolling = false;
             }
         } else if (scrollDirection === 1) {
-            var listHeight = this.getPath("viewPort.childViews.firstObject").$().outerHeight();
+            var listHeight = this.get("viewPort.childViews.firstObject").$().outerHeight();
             var shownBottom = oldTop + viewPortHeight;
             if (shownBottom + delta >= listHeight) {
                 delta = listHeight - shownBottom;

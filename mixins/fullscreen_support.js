@@ -25,7 +25,7 @@ Flame.FullscreenSupport = {
             // XXX image support in ButtonView?
             handlebars: "<img style='margin: 3px;' src='%@'>".fmt(Flame.image('fullscreen_off.png')),
             action: function() {
-                this.getPath('owner').exitFullscreen();
+                this.get('owner').exitFullscreen();
             }
         });
     }.property().volatile(),

@@ -6,7 +6,7 @@ if (String.prototype.trim === undefined) {
 
 Ember.mixin(String.prototype, {
     truncate: function(maxLength) {
-        var length = Ember.none(maxLength) ? 30 : maxLength;
+        var length = Ember.isNone(maxLength) ? 30 : maxLength;
         if (this.length <= length) {
             return this.toString();
         } else {

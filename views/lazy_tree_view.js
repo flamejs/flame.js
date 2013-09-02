@@ -263,12 +263,12 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
         } else if (itemAbove && this.levelForItem(itemAbove) === itemLevel && this._expandedItems.indexOf(itemAbove) === -1) {
             acceptedIndex = proposedIndex;
             toParent = this._itemToParentCache.get(itemAbove);
-            toPosition = toParent ? toParent.getPath('treeItemChildren.length') : this.getPath('content.length');
+            toPosition = toParent ? toParent.get('treeItemChildren.length') : this.get('content.length');
         } else if ((!itemBelow || (itemBelow && this.levelForItem(itemBelow) < itemLevel)) &&
                    itemAbove && this.levelForItem(itemAbove) > itemLevel) {
             acceptedIndex = proposedIndex;
             toParent = this.closestCommonAncestor(itemFrom, itemAbove);
-            toPosition = toParent ? toParent.getPath('treeItemChildren.length') : this.getPath('content.length');
+            toPosition = toParent ? toParent.get('treeItemChildren.length') : this.get('content.length');
         } else if (itemAbove && itemLevel - 1 === this.levelForItem(itemAbove) && this._expandedItems.indexOf(itemAbove) !== -1) {
             // Dragging into parent item that is currently empty and open
             acceptedIndex = proposedIndex;

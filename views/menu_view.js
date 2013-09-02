@@ -18,7 +18,7 @@ Flame.MenuItem = function(opts) {
         var classes = ["flame-view", "flame-list-item-view", "flame-menu-item-view"];
         if (this.isSelected) { classes.push("is-selected"); }
         if (this.isChecked) { classes.push("is-checked"); }
-        var subMenuLength = Ember.none(this.subMenuItems) ? -1 : this.subMenuItems.get('length');
+        var subMenuLength = Ember.isNone(this.subMenuItems) ? -1 : this.subMenuItems.get('length');
         var menuIndicatorClasses = ["menu-indicator"];
         if (!this.isEnabled()) {
             classes.push("is-disabled");
@@ -42,7 +42,7 @@ Flame.MenuItem = function(opts) {
     };
     this.closeSubMenu = function() {
         var subMenu = this.subMenuView;
-        if (!Ember.none(subMenu)) {
+        if (!Ember.isNone(subMenu)) {
             subMenu.close();
             this.subMenuView = null;
         }
@@ -132,12 +132,12 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     _needToRecreateItems: function() {
         var menuItems = this._createMenuItems();
         this.set("_menuItems", menuItems);
-        if (Ember.none(this.get("parentMenu"))) {
+        if (Ember.isNone(this.get("parentMenu"))) {
             menuItems.forEach(function(item, i) {
                 if (item.isSelected) { this.set("highlightIndex", i); }
             }, this);
         }
-        this.getPath("contentView").setScrolledView(this._createMenuView());
+        this.get("contentView").setScrolledView(this._createMenuView());
         if (this.get("_anchorElement")) {
             this._updateMenuSize();
         }
@@ -162,7 +162,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     makeSelection: function() {
         var parentMenu = this.get("parentMenu");
         var action, value;
-        if (!Ember.none(parentMenu)) {
+        if (!Ember.isNone(parentMenu)) {
             parentMenu.makeSelection();
             this.close();
         } else {
@@ -178,7 +178,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
             // Close this menu before firing an action - the action might open a new popup, and if closing after that,
             // the new popup panel is popped off the key responder stack instead of this menu.
             this.close();
-            if (!Ember.none(action)) {
+            if (!Ember.isNone(action)) {
                 this.fireAction(action, value);
             }
         }
@@ -210,7 +210,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     },
 
     popup: function(anchorElementOrJQ, position) {
-        if (Ember.none(this.get('parentMenu'))) {
+        if (Ember.isNone(this.get('parentMenu'))) {
             this._openedAt = new Date().getTime();
         }
         var anchorElement = anchorElementOrJQ instanceof jQuery ? anchorElementOrJQ : anchorElementOrJQ.$();
@@ -233,7 +233,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
         var anchorHeight = anchorElement.outerHeight();
         var layout = this.get("layout");
 
-        var isSubMenu = !Ember.none(this.get("parentMenu"));
+        var isSubMenu = !Ember.isNone(this.get("parentMenu"));
         var spaceDownwards = wh - anchorTop + (isSubMenu ? (borderWidth + paddingTop) : (-anchorHeight));
         var needScrolling = false;
 
@@ -284,7 +284,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
 
     moveLeft: function() {
         var parentMenu = this.get("parentMenu");
-        if (!Ember.none(parentMenu)) { parentMenu.closeCurrentlyOpenSubMenu(); }
+        if (!Ember.isNone(parentMenu)) { parentMenu.closeCurrentlyOpenSubMenu(); }
         return true;
     },
 
@@ -323,7 +323,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     mouseClicked: function(index) {
         // If we're just handling a mouseUp that is part of the click that opened this menu, do nothing.
         // When the mouseUp follows within 100ms of opening the menu, we know that's the case.
-        if (Ember.none(this.get('parentMenu')) && new Date().getTime() - this._openedAt < 100) {
+        if (Ember.isNone(this.get('parentMenu')) && new Date().getTime() - this._openedAt < 100) {
             return;
         }
 
@@ -361,7 +361,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     _valueDidChange: function() {
         var value = this.get("value");
         var valueKey = this.get("itemValueKey");
-        if (!Ember.none(value) && !Ember.none(valueKey)) {
+        if (!Ember.isNone(value) && !Ember.isNone(valueKey)) {
             var index = this._findIndex(function(item) {
                 return Ember.get(item, valueKey) === value;
             });
@@ -404,7 +404,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     _highlightWillChange: function() {
         var index = this.get("highlightIndex");
         var lastItem = this.get("_menuItems").objectAt(index);
-        if (!Ember.none(lastItem)) {
+        if (!Ember.isNone(lastItem)) {
             this._toggleClass("is-selected", index);
             lastItem.isSelected = false;
             lastItem.closeSubMenu();
@@ -415,7 +415,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
         var index = this.get("highlightIndex");
         var newItem = this.get("_menuItems").objectAt(index);
         var internalSelection;
-        if (!Ember.none(newItem)) {
+        if (!Ember.isNone(newItem)) {
             this._toggleClass("is-selected", index);
             newItem.isSelected = true;
             if (newItem.isSelectable()) {
@@ -439,7 +439,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     }.observes("userHighlightIndex"),
 
     _clearKeySearch: function() {
-        if (!Ember.none(this._timer)) {
+        if (!Ember.isNone(this._timer)) {
             Ember.run.cancel(this._timer);
         }
         this._searchKey = "";
@@ -452,7 +452,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
             this.set("highlightIndex", index);
         }
 
-        if (!Ember.none(this._timer)) {
+        if (!Ember.isNone(this._timer)) {
             Ember.run.cancel(this._timer);
         }
         this._timer = Ember.run.later(this, this._clearKeySearch, 1000);
@@ -475,10 +475,10 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
             return false;
         }
         var subMenuItems = item.subMenuItems;
-        if (!Ember.none(subMenuItems) && item.isEnabled() && subMenuItems.get("length") > 0) {
+        if (!Ember.isNone(subMenuItems) && item.isEnabled() && subMenuItems.get("length") > 0) {
             this._clearKeySearch();
             var subMenu = item.subMenuView;
-            if (Ember.none(subMenu)) {
+            if (Ember.isNone(subMenu)) {
                 subMenu = this.createSubMenu(subMenuItems);
                 item.subMenuView = subMenu;
             }

@@ -93,7 +93,7 @@ Flame.LazyListView = Flame.ListView.extend({
     },
 
     numberOfRows: function() {
-        return this.getPath('content.length');
+        return this.get('content.length');
     },
 
     didScroll: function(scrollHeight, scrollTop) {
@@ -143,7 +143,7 @@ Flame.LazyListView = Flame.ListView.extend({
         var length = this.numberOfRows();
         var itemHeight = this.get('itemHeight');
         // Need to know how much the list view is offset from the parent scroll view
-        var offsetFromParent = this.getPath('parentView.element').scrollTop + this.$().position().top;
+        var offsetFromParent = this.get('parentView.element').scrollTop + this.$().position().top;
         var normalizedScrollTop = Math.max(0, scrollTop - offsetFromParent);
         var topRow = ~~(normalizedScrollTop / itemHeight);
         var bufferSize = this.get('bufferSize');

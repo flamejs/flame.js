@@ -20,8 +20,8 @@ Flame.SelectButtonView = Flame.ButtonView.extend({
     }.property("value", "itemValueKey", "subMenuKey", "items"),
 
     itemsDidChange: function() {
-        if (this.get('items') && this.getPath('items.length') > 0 && !this._findItem()) {
-            this.set('value', this.getPath('items.firstObject.%@'.fmt(this.get('itemValueKey'))));
+        if (this.get('items') && this.get('items.length') > 0 && !this._findItem()) {
+            this.set('value', this.get('items.firstObject.%@'.fmt(this.get('itemValueKey'))));
         }
     }.observes('items'),
 
@@ -31,11 +31,11 @@ Flame.SelectButtonView = Flame.ButtonView.extend({
             value = this.get('value'),
             subMenuKey = this.get('subMenuKey'),
             foundItem;
-        if (Ember.none(itemList)) { return foundItem; }
+        if (Ember.isNone(itemList)) { return foundItem; }
         itemList.forEach(function(item) {
             if (Ember.get(item, subMenuKey)) {
                 var possiblyFound = this._findItem(Ember.get(item, subMenuKey));
-                if (!Ember.none(possiblyFound)) { foundItem = possiblyFound; }
+                if (!Ember.isNone(possiblyFound)) { foundItem = possiblyFound; }
             } else if (Ember.get(item, itemValueKey) === value) {
                 foundItem = item;
             }
@@ -55,7 +55,7 @@ Flame.SelectButtonView = Flame.ButtonView.extend({
             subMenuKey: this.get('subMenuKey'),
             itemsBinding: 'selectButtonView.items',
             valueBinding: 'selectButtonView.value',
-            minWidth: this.getPath('layout.width') || this.$().width(),
+            minWidth: this.get('layout.width') || this.$().width(),
             close: function() {
                 self.gotoState('idle');
                 this._super();

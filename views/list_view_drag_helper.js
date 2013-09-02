@@ -111,7 +111,7 @@ Flame.ListViewDragHelper = Ember.Object.extend({
 
     finishReorder: function() {
         var itemPathView = this.itemPath.getView();
-        this.get('listView').didReorderContent(itemPathView.getPath('parentView.content'));
+        this.get('listView').didReorderContent(itemPathView.get('parentView.content'));
         itemPathView.set("isDragged", false);
         this.clone.remove();  // Remove the clone holding the clones from the DOM
     },
@@ -252,7 +252,7 @@ Flame.ListViewDragHelper = Ember.Object.extend({
         // If as the last item of a nested list, moving left moves one level up (placing immediately after current parent), OR
         // if the current level isn't valid, try and see if there is a valid drop one level up
         while ((xDiff < -xStep || this._pathInvalid(draggedView, path)) && (path.position === 'a' || this.itemPath.equals(path)) &&
-               path.array.length > 1 && targetView.get('contentIndex') === targetView.getPath('parentView.childViews.length') - 1) {
+               path.array.length > 1 && targetView.get('contentIndex') === targetView.get('parentView.childViews.length') - 1) {
             xDiff += xStep;
             path = path.up();
             targetView = path.getView();
@@ -289,7 +289,7 @@ Flame.ListViewDragHelper = Ember.Object.extend({
     },
 
     _getPrecedingView: function(view) {
-        return view.get('contentIndex') > 0 ? view.getPath('parentView.childViews').objectAt(view.get('contentIndex') - 1) : undefined;
+        return view.get('contentIndex') > 0 ? view.get('parentView.childViews').objectAt(view.get('contentIndex') - 1) : undefined;
     },
 
     _resolvePath: function(view) {
@@ -370,7 +370,7 @@ Flame.ListViewDragHelper.Path = Ember.Object.extend({
     down: function() {
         var newArray = Ember.copy(this.array);
         var newPosition;
-        var nestedChildrenCount = this.getNestedListView().getPath('content.length');
+        var nestedChildrenCount = this.getNestedListView().get('content.length');
         if (nestedChildrenCount > 0) {
             newArray.push(nestedChildrenCount - 1);
             newPosition = 'a';
