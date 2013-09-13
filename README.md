@@ -260,17 +260,6 @@ First install node.js …
 
 Make sure your changes pass JSHint cleanly before submitting a pull request.
 
-## Flame Inspector
-The build process will also have created ```flame_inspector.js``` and ```flame_inspector.css``` which you can include while debugging.
-
- * Holding down the ALT key while moving around the mouse around in your Flame application will highlight the views to show their extents.
- * While holding ALT, click on an element. This will bind the element to window.e and the associated view (if any) to window.v (accessible in JS console as e and v), for your further inspection.
- * While holding ALT, double click on an element. If there's a view associated with that element, an inspector panel is opened, showing various information about the view. Click around to explore.
- * While the inspector is open, ALT + single click also opens the view in the inspector panel.
- * You can also launch the inspector on any object in console: ```FlameInspector.inspect(someObject)```
-
-It’s recommended to not include the Flame Inspector in production.
-
 ## Contributing
 
 Fork flamejs/flame.js on GitHub, fix a bug or add a feature, push it to a branch in your fork named for the topic and send a pull request. You can also file a bug or feature request as an issue under the flame.js project on GitHub. If you’d like to chat, drop by #flamejs on Freenode IRC. (Also #emberjs is a good place for less Flame.js-specific discussion.)

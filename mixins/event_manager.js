@@ -19,7 +19,6 @@
                 case "keypress": emberEvent = 'keyPress'; break;
             }
             var handler = emberEvent ? this.get(emberEvent) : null;
-            if (window.FlameInspector && emberEvent) FlameInspector.logEvent(event, emberEvent, this);
             if (handler) {
                 // Note that in jQuery, the contract is that event handler should return
                 // true to allow default handling, false to prevent it. But in Ember, event handlers return true if they handled the event,
@@ -223,7 +222,6 @@ Flame.EventManager = {
         // returns true, returns the view. If the method returns false, recurses on the parent view. If no
         // view handles the event, returns false.
         _dispatch: function(eventName, event, view) {
-            if (window.FlameInspector) FlameInspector.logEvent(event, eventName, view);
             var handler = view.get(eventName);
             if (handler) {
                 var result = handler.call(view, event, view);
