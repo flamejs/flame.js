@@ -27,6 +27,11 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
         this._numberOfCachedRows = 0;
     },
 
+    // override this to temporarily disable re-ordering
+    disableReordering: function(event) {
+        return false;
+    },
+
     numberOfRowsChanged: function() {
         this._invalidateRowCache();
         this.loadCache();
