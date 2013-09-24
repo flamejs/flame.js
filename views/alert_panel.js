@@ -40,8 +40,8 @@ Flame.AlertPanel.reopen({
             classNames: 'message-view'.w(),
             valueBinding: '^message',
             didInsertElement: function() {
-                width = this.$().width() + "px;";
-                var height = Flame.measureString(this.get('value'), 'ember-view flame-view flame-alert-panel flame-panel', 'flame-label-view', "width: " + width).height;
+                var width = this.$().width() + "px;";
+                var height = Flame.measureString(this.get('value'), 'ember-view flame-view flame-alert-panel flame-panel', 'flame-label-view', 'width: ' + width).height;
                 this.set('height', height);
                 this.setPath('parentView.parentView.height', height + 110);
             }
