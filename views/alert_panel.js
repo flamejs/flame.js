@@ -11,7 +11,9 @@ Flame.AlertPanel.ERROR_ICON = Flame.image('error_icon.png');
 
 Flame.AlertPanel.reopen({
     layout: { centerX: 0, centerY: -50, width: 400, height: 'height' },
-    height: null,
+    height: function() {
+        return this.getPath('contentView.messageView.height') + 110;
+    }.property('contentView.messageView.height'),
     classNames: 'flame-alert-panel'.w(),
     icon: Flame.AlertPanel.INFO_ICON,
     isModal: true,
@@ -40,10 +42,9 @@ Flame.AlertPanel.reopen({
             classNames: 'message-view'.w(),
             valueBinding: '^message',
             didInsertElement: function() {
-                var width = this.$().width() + "px;";
-                var height = Flame.measureString(this.get('value'), 'ember-view flame-view flame-alert-panel flame-panel', 'flame-label-view', 'width: ' + width).height;
+                var width = this.$().width();
+                var height = Flame.measureString(this.get('value'), 'ember-view flame-view flame-alert-panel flame-panel', 'flame-label-view', 'width: %@px;'.fmt(width)).height;
                 this.set('height', height);
-                this.setPath('parentView.parentView.height', height + 110);
             }
         }),
 
