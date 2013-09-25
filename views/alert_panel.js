@@ -43,7 +43,7 @@ Flame.AlertPanel.reopen({
             valueBinding: '^message',
             didInsertElement: function() {
                 var width = this.$().width();
-                var height = Flame.measureString(this.get('value'), 'ember-view flame-view flame-alert-panel flame-panel', 'flame-label-view', 'width: %@px;'.fmt(width)).height;
+                var height = Math.min(Flame.measureString(this.get('value'), 'ember-view flame-view flame-alert-panel flame-panel', 'flame-label-view', 'width: %@px;'.fmt(width)).height, 300);
                 this.set('height', height);
             }
         }),
