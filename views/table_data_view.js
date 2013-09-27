@@ -32,7 +32,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             // If a cell is clicked that was already selected and it's a cell
             // with fixed options, start editing it.
             var selectedDataCell = owner.get('selectedDataCell');
-            if (jQuery(event.target).hasClass('table-selection-background') && selectedDataCell.options && selectedDataCell.options()) {
+            if (!Ember.none(selectedDataCell) && selectedDataCell.options && selectedDataCell.options() && jQuery(event.target).hasClass('table-selection-background')) {
                 this.startEdit();
                 return true;
             }
