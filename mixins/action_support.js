@@ -15,7 +15,9 @@ Flame.ActionSupport = {
     payload: null,
 
     fireAction: function(action, payload) {
+        if (this.isDestroyed) return false;
         var target = this.get('target') || this;
+        this.beforeAction(this);
 
         while ('string' === typeof target) {  // Use a while loop: the target can be a path gives another path
             if (target.charAt(0) === '.') {
@@ -31,9 +33,17 @@ Flame.ActionSupport = {
             if (!actionFunction) throw 'Target %@ does not have action %@'.fmt(target, action);
             var actualPayload = !Ember.none(payload) ? payload : this.get('payload');
             if (Ember.none(actualPayload)) { actualPayload = this; }
-            return actionFunction.call(target, actualPayload, action, this);
+
+            var self = this;
+            var afterActionCallback = function() {
+                self.afterAction(self);
+            }
+            return actionFunction.call(target, actualPayload, action, this, afterActionCallback);
         }
 
         return false;
-    }
+    },
+
+    beforeAction: function(view) {},
+    afterAction: function(view) {}
 };
