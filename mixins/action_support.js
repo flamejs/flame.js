@@ -37,7 +37,7 @@ Flame.ActionSupport = {
             var self = this;
             var afterActionCallback = function() {
                 self.afterAction(self);
-            }
+            };
             return actionFunction.call(target, actualPayload, action, this, afterActionCallback);
         }
 
