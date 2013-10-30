@@ -15,7 +15,6 @@ Flame.ActionSupport = {
     payload: null,
 
     fireAction: function(action, payload) {
-        if (this.isDestroyed) return false;
         var target = this.get('target') || this;
         this.beforeAction(this);
 
