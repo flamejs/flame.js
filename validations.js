@@ -205,6 +205,11 @@ Flame.Validatable = Ember.Mixin.create({
         // defined with Ember.Object({foo: false}).
 
         var validations = this.get("validations");
+        if (validations == this.__proto__.validations) {
+            // ensure that setValidationFor does not mess with prototype-defined validations
+            validations = jQuery.extend({}, validations);
+            this.set('validations', validations);
+        }
         validations[propertyName] = validator;
         this._createIsValidProperty(propertyName);
         this.removeObserver(propertyName, this, 'validateProperty'); // In case we're redefining the validation
