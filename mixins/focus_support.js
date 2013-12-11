@@ -17,7 +17,8 @@ Flame.FocusSupport = {
 
     focusOut: function() {
         if (Flame.keyResponderStack.current() === this) {
-            this.resignKeyResponder();
+            // If focus was lost from the document, keep the "local" focus intact
+            if (document.hasFocus()) this.resignKeyResponder();
         }
     }
 };
