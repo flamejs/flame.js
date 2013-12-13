@@ -277,7 +277,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                 this.gotoState('selected');
                 owner.selectCell(cell);
                 return true;
-            } else if (cell && editField && cell[0] !== editField[0] && !owner._confirmEdit()) {
+            } else if (!Ember.empty(cell) && editField && cell[0] !== editField[0] && !owner._confirmEdit()) {
                 editField.focus();
                 return true;
             } else {
@@ -307,11 +307,11 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                                 title: o.title,
                                 value: o.value,
                                 isChecked: o.value === dataCell.value,
-                                action: function() { owner.didSelectMenuItem(this.get('value')); }
+                                action: function(value) { owner.didSelectMenuItem(value); }
                             };
                         }),
                         // Make the cube table view go back to the selected state when the menu is closed
-                        close: function() { this.get('parent').gotoState('selected'); this._super(); }
+                        close: function() { owner.gotoState('selected'); this._super(); }
                     });
                     menu.popup(selectedCell);
                 } else { // Normal edit field for everything else
