@@ -163,7 +163,7 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
             var contentIndex = view.get('contentIndex');
             var content = view.get('content');
             var row = this.rowForItem(content);
-            if (row === null) {
+            if (row === null && typeof contentIndex !== 'undefined') {
                 toRemove.push(view);
             } else if (typeof contentIndex !== 'undefined') {
                 indices.push(row);
