@@ -307,7 +307,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                                 title: o.title,
                                 value: o.value,
                                 isChecked: o.value === dataCell.value,
-                                action: function(value) { owner.didSelectMenuItem(value); }
+                                action: function() { owner.didSelectMenuItem(this.get('value')); }
                             };
                         }),
                         // Make the cube table view go back to the selected state when the menu is closed
