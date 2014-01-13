@@ -1,4 +1,4 @@
-Flame.StringUtils = (function() {
+Flame.StringUtil = (function() {
     function compare(stringA, stringB) {
         var a = asBlank(stringA);
         var b = asBlank(stringB);
