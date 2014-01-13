@@ -194,17 +194,19 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         mouseUp: function(event) {
             var owner = this.get('owner');
             var resizeDelegate = owner.get('tableViewDelegate');
-            if (resizeDelegate) {                
+            if (resizeDelegate) {
                 var cell = owner.get('resizingCell');
-                if (owner.get('type') === 'column' && resizeDelegate.columnResized) {                    
+                if (owner.get('type') === 'column' && resizeDelegate.columnResized) {
                     var width = parseInt(cell.css('width'), 10);
                     var index = parseInt(cell.attr('data-leaf-index'), 10);
                     resizeDelegate.columnResized(index, width);
                 } else if (resizeDelegate.rowHeaderResized) {
-                    var widths = this.$('.row-header col', '[class*=level]').map(function() {return $(this).width();});
+                    // Can't use col-element to get the width from as it does not work correctly in IE
+                    var widths = this.$('.row-header tr:first', '[class*=level]').map(function() { return $(this).width(); });
                     resizeDelegate.rowHeaderResized(widths.get());
                 }
             }
+
             this.gotoState('idle');
             return true;
         }
@@ -306,7 +308,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                 for (var i = 0; i < Math.max(rowHeaderRows.maxDepth, 1); i++) {
                     totalWidth += isNaN(rowHeaderWidths[i]) ? defaultRowHeaderWidth : rowHeaderWidths[i];
                 }
-                leftOffset = totalWidth + 1 + (renderColumnHeader ? 0 : 5);                
+                leftOffset = totalWidth + 1 + (renderColumnHeader ? 0 : 5);
             } else {
                 leftOffset = rowHeaderRows.maxDepth * defaultRowHeaderWidth + 1 + (renderColumnHeader ? 0 : 5);
             }
