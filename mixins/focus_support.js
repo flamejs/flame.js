@@ -22,4 +22,3 @@ Flame.FocusSupport = {
         }
     }
 };
-

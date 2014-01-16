@@ -8,14 +8,14 @@ Flame.LabelView = Flame.View.extend(Flame.ActionSupport, {
     isDisabled: false,
     allowWrapping: false,
 
-    handlebars: '{{value}}',
+    handlebars: '{{view.value}}',
 
-    render: function(buffer) {
-        var height = this.getPath('layout.height');
+    beforeRender: function(buffer) {
+        var height = this.get('layout.height');
         if (this.get('useAbsolutePosition') &&
-            !Ember.none(height) &&
+            !Ember.isNone(height) &&
             !this.get('allowWrapping')) {
-            buffer.style('line-height', height+'px');
+            buffer.style('line-height', height + 'px');
         }
         this._super(buffer);
     },
@@ -46,14 +46,6 @@ Flame.LabelView.reopenClass({
         return Flame.LabelView.extend({
             layout: { left: left, top: top, width: width, height: height },
             value: value
-        });
-    },
-
-    // Shortcut for creating label views using a binding
-    binding: function(valueBinding, left, top, width, height) {
-        return Flame.LabelView.extend({
-            layout: { left: left, top: top, width: width, height: height },
-            valueBinding: valueBinding
         });
     }
 });

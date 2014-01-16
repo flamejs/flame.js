@@ -17,7 +17,7 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
     allowSelection: true,
     allowReordering: true,
     selection: undefined,
-    initialState: 'idle',
+    initialFlameState: 'idle',
     reorderDelegate: null,
     init: function() {
         this._super();
@@ -29,14 +29,14 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
             return value !== undefined ? value : Ember.get(this, 'content');
         }.property('content'),
         templateBinding: "parentView.template",
-        handlebars: "{{title}}"
+        handlebars: "{{view.title}}"
     }),
 
     selectIndex: function(index) {
         if (!this.get('allowSelection')) return false;
         var content = this.get('content');
         if (content) {
-            var childView = this.get('childViews').objectAt(index);
+            var childView = this.objectAt(index);
             if (childView && childView.get('isVisible') && childView.get('allowSelection') !== false) {
                 var selection = content.objectAt(index);
                 this.set('selection', selection);
@@ -72,7 +72,7 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
         if (contentItem) {
             var index = (this.get('content') || []).indexOf(contentItem);
             if (index >= 0) {
-                var child = this.get('childViews').objectAt(index);
+                var child = this.objectAt(index);
                 if (child) child.set('isSelected', status);
             }
         }
@@ -80,10 +80,9 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
 
     // If items are removed or reordered, we must update the contentIndex of each childView to reflect their current position in the list
     _updateContentIndexes: function() {
-        var childViews = this.get('childViews');
-        var len = childViews.get('length');
+        var len = this.get('length');
         for (var i = 0; i < len; i++) {
-            var childView = childViews.objectAt(i);
+            var childView = this.objectAt(i);
             if (childView) childView.set('contentIndex', i);
         }
         // In case the child views are using absolute positioning, also their positions need to be updated,
@@ -115,13 +114,13 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
     }.property().volatile(),
 
     arrayWillChange: function(content, start, removedCount) {
-        if (!this.getPath('rootTreeView.isDragging')) {
+        if (!this.get('rootTreeView.isDragging')) {
             return this._super.apply(this, arguments);
         }
     },
 
     arrayDidChange: function(content, start, removed, added) {
-        if (!this.getPath('rootTreeView.isDragging')) {
+        if (!this.get('rootTreeView.isDragging')) {
             var result = this._super.apply(this, arguments);
             this._updateContentIndexes();
             return result;
@@ -129,13 +128,13 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
     },
 
     childViewsWillChange: function() {
-        if (!this.getPath('rootTreeView.isDragging')) {
+        if (!this.get('rootTreeView.isDragging')) {
             return this._super.apply(this, arguments);
         }
     },
 
     childViewsDidChange: function() {
-        if (!this.getPath('rootTreeView.isDragging')) {
+        if (!this.get('rootTreeView.isDragging')) {
             return this._super.apply(this, arguments);
         }
     },
@@ -158,7 +157,7 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
             if (owner.get('allowReordering') && itemIndex !== undefined) {
                 if (owner.allowReorderingItem(itemIndex)) {
                     //console.log('Drag started on %s, dragging %s items', itemIndex, itemCount);
-                    var childView = owner.get('childViews').objectAt(itemIndex);
+                    var childView = owner.objectAt(itemIndex);
                     owner.set('dragHelper', Flame.ListViewDragHelper.create({
                         listView: owner,
                         lastPageX: evt.pageX,
@@ -168,7 +167,7 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
                 }
             }
 
-            this.gotoState('mouseButtonPressed');
+            this.gotoFlameState('mouseButtonPressed');
 
             // Have to always return true here because the user might start dragging, and if so, we need the mouseMove events.
             return true;
@@ -183,25 +182,25 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
     startReordering: function(dragHelper, event) {
         dragHelper.set('listView', this);
         this.set('dragHelper', dragHelper);
-        this.gotoState('reordering');
+        this.gotoFlameState('reordering');
         return this.mouseMove(event);  // Handle also this event in the new state
     },
 
     mouseButtonPressed: Flame.State.extend({
-        mouseUpOnItem: Flame.State.gotoHandler('idle'),
-        mouseUp: Flame.State.gotoHandler('idle'),
+        mouseUpOnItem: Flame.State.gotoFlameState('idle'),
+        mouseUp: Flame.State.gotoFlameState('idle'),
 
         mouseMove: function(event) {
             var owner = this.get('owner');
             if (owner.get('dragHelper')) {  // Only enter reordering state if it was allowed, indicated by the presence of dragHelper
                 var dragHelper = owner.get('dragHelper');
-                this.gotoState('idle');
+                this.gotoFlameState('idle');
                 owner.startReordering(dragHelper, event);
             }
             return true;
         },
 
-        touchEnd: Flame.State.gotoHandler('idle'),
+        touchEnd: Flame.State.gotoFlameState('idle'),
 
         touchMove: function(event) {
             this.mouseMove(this.normalizeTouchEvents(event));
@@ -214,14 +213,14 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
             return this.get('owner').get('dragHelper').updateDisplay(evt);
         },
 
-        mouseUp: Flame.State.gotoHandler('idle'),
+        mouseUp: Flame.State.gotoFlameState('idle'),
 
         touchMove: function(event) {
             this.mouseMove(this.normalizeTouchEvents(event));
             return true;
         },
 
-        touchEnd: Flame.State.gotoHandler('idle'),
+        touchEnd: Flame.State.gotoFlameState('idle'),
 
         // Start reorder drag operation
         enterState: function() {

@@ -53,11 +53,11 @@ Flame.LazyListView = Flame.ListView.extend({
     /** Do a full rerender of the ListView */
     fullRerender: function() {
         // Recycle any currently rendered views
-        this.forEachChildView(function(view) {
+        this.forEach(function(view) {
             if (typeof view.get('contentIndex') !== 'undefined') {
                 this._recycleView(view);
             }
-        });
+        }, this);
         this.numberOfRowsChanged();
         this.didScroll(this._lastScrollHeight, this._lastScrollTop);
     },
@@ -65,35 +65,42 @@ Flame.LazyListView = Flame.ListView.extend({
     // Some browsers reset the scroll position when the `block` CSS property has
     // changed without firing a scroll event.
     becameVisible: function() {
-        var scrollView = this.nearestInstanceOf(Flame.ScrollView);
-        // TODO change to Ember.run.scheduleOnce('afterRender' when upgrading to Ember 1.0
-        Ember.run.schedule('render', this, function() {
-            if (scrollView && scrollView.get('element')) {
-                var element = scrollView.get('element');
-                this._lastScrollHeight = element.offsetHeight;
-                this._lastScrollTop = element.scrollTop;
-                this.didScroll(this._lastScrollHeight, this._lastScrollTop);
-            }
-        });
+        Ember.run.scheduleOnce('afterRender', this, this._updateScrollPosition);
+    },
+
+    _updateScrollPosition: function() {
+        var scrollView = this.nearestOfType(Flame.ScrollView);
+        if (scrollView && scrollView.get('element')) {
+            var element = scrollView.get('element');
+            this._lastScrollHeight = element.offsetHeight;
+            this._lastScrollTop = element.scrollTop;
+            this.didScroll(this._lastScrollHeight, this._lastScrollTop);
+        }
     },
 
     willDestroyElement: function() {
-        this.forEachChildView(function(view) {
+        this.forEach(function(view) {
             if (typeof view.get('contentIndex') !== 'undefined') {
                 this._recycleView(view);
             }
-        });
+        }, this);
     },
 
     numberOfRowsChanged: function() {
-        this.adjustLayout('height', this.numberOfRows() * this.get('itemHeight'));
+        var height = this.numberOfRows() * this.get('itemHeight');
+        this.adjustLayout('height', height);
+
         // In case the LazyListView has `useAbsolutePosition` set to false, `adjustLayout` will not work
         // and we need to set the height manually.
-        this.$().css('height', this.numberOfRows() * this.get('itemHeight') + 'px');
+        Ember.run.scheduleOnce('afterRender', this, this._updateHeight);
+    },
+
+    _updateHeight: function() {
+        if (this.$()) this.$().css('height', this.numberOfRows() * this.get('itemHeight') + 'px');
     },
 
     numberOfRows: function() {
-        return this.getPath('content.length');
+        return this.get('content.length');
     },
 
     didScroll: function(scrollHeight, scrollTop) {
@@ -102,7 +109,7 @@ Flame.LazyListView = Flame.ListView.extend({
 
         var range = this._rowsToRenderRange(scrollHeight, scrollTop);
         var min = range.end, max = range.start;
-        this.forEachChildView(function(view) {
+        this.forEach(function(view) {
             var contentIndex = view.get('contentIndex');
             if (typeof contentIndex !== 'undefined') {
                 if (contentIndex < range.start || contentIndex > range.end) {
@@ -113,7 +120,7 @@ Flame.LazyListView = Flame.ListView.extend({
                     max = Math.max(max, contentIndex);
                 }
             }
-        });
+        }, this);
 
         // Fill up empty gap on top
         var i;
@@ -143,7 +150,7 @@ Flame.LazyListView = Flame.ListView.extend({
         var length = this.numberOfRows();
         var itemHeight = this.get('itemHeight');
         // Need to know how much the list view is offset from the parent scroll view
-        var offsetFromParent = this.getPath('parentView.element').scrollTop + this.$().position().top;
+        var offsetFromParent = this.get('parentView.element').scrollTop + this.$().position().top;
         var normalizedScrollTop = Math.max(0, scrollTop - offsetFromParent);
         var topRow = ~~(normalizedScrollTop / itemHeight);
         var bufferSize = this.get('bufferSize');
@@ -187,7 +194,7 @@ Flame.LazyListView = Flame.ListView.extend({
         var view = (this._recycledViews[itemClass] && this._recycledViews[itemClass].pop());
         if (!view) {
             view = this.createChildView(viewClass, jQuery.extend({ useAbsolutePosition: true }, attributes || {}));
-            this.get('childViews').pushObject(view);
+            this.pushObject(view);
         }
         if (item === this.get('selection')) {
             view.set('isSelected', true);
@@ -247,10 +254,10 @@ Flame.LazyListView = Flame.ListView.extend({
     },
 
     moveItem: function(from, draggingInfo) {
-        throw 'Not implemented yet!';
+        throw new Error('Not implemented yet!');
     },
 
     childViewForIndex: function(index) {
-        return this.get('childViews').findProperty('contentIndex', index);
+        return this.findBy('contentIndex', index);
     }
 });

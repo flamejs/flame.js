@@ -1,9 +1,9 @@
 //= require ./split_view
 
-/*
- * VerticalSplitView divides the current view between leftView and rightView using a vertical
- * dividerView.
- */
+/**
+  VerticalSplitView divides the current view between leftView and rightView using a vertical
+  dividerView.
+*/
 Flame.VerticalSplitView = Flame.SplitView.extend({
     classNames: 'flame-vertical-split-view'.w(),
     childViews: 'leftView dividerView rightView'.w(),
@@ -25,8 +25,6 @@ Flame.VerticalSplitView = Flame.SplitView.extend({
 
         if (this.get('flex') === 'right') this.rightWidth = undefined;
         else this.leftWidth = undefined;
-
-        this._updateLayout(); // Update layout according to the initial widths
 
         this.addObserver('leftWidth', this, this._updateLayout);
         this.addObserver('rightWidth', this, this._updateLayout);
@@ -58,13 +56,13 @@ Flame.VerticalSplitView = Flame.SplitView.extend({
         this.set('rightWidth', rightWidth);
 
         if (this.get('flex') === 'right') {
-            this._setDimensions(leftView, 0, leftWidth, undefined);
-            this._setDimensions(dividerView, leftWidth, dividerThickness, undefined);
-            this._setDimensions(rightView, leftWidth + dividerThickness, undefined, 0);
+            this._setDimensions(leftView, 0, leftWidth, '');
+            this._setDimensions(dividerView, leftWidth, dividerThickness, '');
+            this._setDimensions(rightView, leftWidth + dividerThickness, '', 0);
         } else {
-            this._setDimensions(leftView, 0, undefined, rightWidth + dividerThickness);
-            this._setDimensions(dividerView, undefined, dividerThickness, rightWidth);
-            this._setDimensions(rightView, undefined, rightWidth, 0);
+            this._setDimensions(leftView, 0, '', rightWidth + dividerThickness);
+            this._setDimensions(dividerView, '', dividerThickness, rightWidth);
+            this._setDimensions(rightView, '', rightWidth, 0);
         }
     },
 

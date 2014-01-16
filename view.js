@@ -1,5 +1,6 @@
 //= require_tree ./mixins
 //= require ./layout_manager
+//= require ./view_support
 //= require_self
 //= require_tree ./views
 
@@ -8,6 +9,7 @@ Ember.View.reopen({
     firstDescendantWithProperty: function(property) {
         var result;
         this.forEachChildView(function(childView) {
+            if (!(childView instanceof Ember.View)) return;
             if (result === undefined) {
                 if (childView.get(property)) {
                     result = childView;
@@ -25,62 +27,72 @@ Flame.reopen({
     ALIGN_RIGHT: 'align-right',
     ALIGN_CENTER: 'align-center',
 
-    POSITION_BELOW: 1 << 0,
-    POSITION_RIGHT: 1 << 1,
-    POSITION_LEFT: 1 << 2,
-    POSITION_ABOVE: 1 << 3,
-    POSITION_MIDDLE: 1 << 4,
-
     FOCUS_RING_MARGIN: 3
 });
 
 // Base class for Flame views. Can be used to hold child views or render a template. In Ember, you normally either use
 // Ember.View for rendering a template or Ember.ContainerView to render child views. But we want to support both here, so
 // that we can use e.g. Flame.ListItemView for items in list views, and the app can decide whether to use a template or not.
-Flame.View = Ember.ContainerView.extend(Flame.LayoutSupport, Flame.EventManager, {
+Flame.View = Ember.ContainerView.extend(Flame.ViewSupport, Flame.LayoutSupport, Flame.EventManager, {
     displayProperties: [],
-    isFocused: false,  // Does this view currently have key focus?
-
-    init: function() {
-        this._super();
-
-        // There's a 'gotcha' in Ember that we need to work around here: an Ember.View does not have child views in the sense
-        // that you cannot define them yourself. But when used with a handlebars template, Ember.View uses child views
-        // internally to keep track of dynamic portions in the template so that they can be updated in-place in the DOM.
-        // The template rendering process adds this kind of child views on the fly. The problem is that we need to extend
-        // Ember.ContainerView here (see above), and that observes the child views to trigger a re-render, which then happens
-        // when we're already in the middle of a render, crashing with error 'assertion failed: You need to provide an
-        // object and key to `get`' (happens because parent buffer in a render buffer is null).
-        if (this.get('template')) {
-            this.set('states', Ember.View.states);  // Use states from Ember.View to remedy the problem
-        }
-
-        // Add observers for displayProperties so that the view gets rerendered if any of them changes
-        var properties = this.get('displayProperties') || [];
-        for (var i = 0; i < properties.length; i++) {
-            var property = properties[i];
-            this.addObserver(property, this, this.rerender);
-        }
-
-    },
+    isFocused: false, // Does this view currently have key focus?
 
     render: function(buffer) {
-        this._renderElementAttributes(buffer);
         // If a template is defined, render that, otherwise use ContainerView's rendering (render childViews)
+        var get = Ember.get;
         var template = this.get('template');
         if (template) {
-            // Copied from Ember.View for now
-            var output = template(this, { data: { view: this, buffer: buffer, isRenderData: true, keywords: {} } });
+            // TODO should just call Ember.View.prototype.render.call(this, buffer) here (for that we need to rename `layout` to something else first)
+            var context = get(this, 'context');
+            var keywords = this.cloneKeywords();
+            var output;
+
+            var data = {
+                view: this,
+                buffer: buffer,
+                isRenderData: true,
+                keywords: keywords,
+                insideGroup: get(this, 'templateData.insideGroup')
+            };
+
+            // Invoke the template with the provided template context, which
+            // is the view's controller by default. A hash of data is also passed that provides
+            // the template with access to the view and render buffer.
+
+            Ember.assert('template must be a function. Did you mean to call Ember.Handlebars.compile("...") or specify templateName instead?', typeof template === 'function');
+            // The template should write directly to the render buffer instead
+            // of returning a string.
+            output = template(context, { data: data });
+
+            // If the template returned a string instead of writing to the buffer,
+            // push the string onto the buffer.
             if (output !== undefined) { buffer.push(output); }
         } else {
-            return this._super(buffer);
+            this._super(buffer);
         }
     },
 
-    template: function(propertyName, value) {
-        if (propertyName === "template" && value !== undefined) return value;
-        var str = this.get('handlebars');
-        return str ? this._compileTemplate(str) : null;
+    // For Ember 1.0, removeChild on ContainerViews expects there not to be any SimpleHandlebarsView children
+    // Flame.View extends ContainerView, but it allows templates, so there will be SimpleHandlebarsViews children.
+    // This is the Ember.View implementation of removeChild for when there is a template.
+    removeChild: function(view) {
+        if (this.get('template')) {
+            // there is a template - use Ember.View's `removeChild`
+            var set = Ember.set;
+            return Ember.View.prototype.removeChild.call(this, view);
+        } else {
+            // no template - use Ember.ContainerView's `removeChild`
+            return this._super(view);
+        }
+    },
+
+    template: function() {
+        var handlebarsStr = this.get('handlebars');
+        if (handlebarsStr) return this._compileTemplate(handlebarsStr);
+
+        var templateName = this.get('templateName'),
+            template = this.templateForName(templateName, 'template');
+        return template || null;
     }.property('templateName', 'handlebars'),
 
     // Compiles given handlebars template, with caching to make it perform better. (Called repetitively e.g.
@@ -88,7 +100,6 @@ Flame.View = Ember.ContainerView.extend(Flame.LayoutSupport, Flame.EventManager,
     _compileTemplate: function(template) {
         var compiled = Flame._templateCache[template];
         if (!compiled) {
-            //console.log('Compiling template: %s', template);
             Flame._templateCache[template] = compiled = Ember.Handlebars.compile(template);
         }
         return compiled;

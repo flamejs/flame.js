@@ -21,10 +21,10 @@ Flame.VerticalStackLayoutManager = Flame.LayoutManager.extend({
         var self = this;
         var top = self.get('topMargin');
         var fluid = false, isFirst = true;
-        var maxHeight = view.getPath('layout.maxHeight');
+        var maxHeight = view.get('layout.maxHeight');
 
         // Filter out views that are not affected by the layout manager
-        var views = view.get('childViews').filter(function(childView) {
+        var views = view.filter(function(childView) {
             return childView.get('ignoreLayoutManager') !== true &&
                 (childView.get('isVisible') || childView.get('isVisible') === null) && // isVisible is initially null
                 childView.get('layout');
@@ -32,7 +32,7 @@ Flame.VerticalStackLayoutManager = Flame.LayoutManager.extend({
         var len = views.get('length');
 
         views.forEach(function(childView, i) {
-            if ('string' === typeof childView) throw 'Child views have not yet been initialized!';
+            if ('string' === typeof childView) throw new Error('Child views have not yet been initialized!');
 
             if (!isFirst) {  // Cannot check the index because some child views may be hidden and must be ignored
                 top += self.get('spacing');
@@ -42,7 +42,7 @@ Flame.VerticalStackLayoutManager = Flame.LayoutManager.extend({
 
             var layout = childView.get('layout');
             childView._resolveLayoutBindings(layout);  // XXX ugly
-            Ember.assert('All child views must define layout when using VerticalStackLayoutManager!', !Ember.none(layout));
+            Ember.assert('All child views must define layout when using VerticalStackLayoutManager!', !Ember.isNone(layout));
 
             top += (layout.topMargin || 0);
             childView.adjustLayout('top', top);  // Use adjustLayout, it checks if the property changes (can trigger a series of layout updates)
@@ -51,10 +51,10 @@ Flame.VerticalStackLayoutManager = Flame.LayoutManager.extend({
             var height = layout.height;
             if ('string' === typeof height) height = parseInt(height, 10);
             if (i < len - 1) {  // XXX should not check the index, this check should only consider visible child views
-                Ember.assert('All child views except last one must define layout.height when using VerticalStackLayoutManager!', !Ember.none(height));
+                Ember.assert('All child views except last one must define layout.height when using VerticalStackLayoutManager!', !Ember.isNone(height));
             }
 
-            if (Ember.none(layout.height)) {
+            if (Ember.isNone(layout.height)) {
                 fluid = true;
             } else {
                 top += height;

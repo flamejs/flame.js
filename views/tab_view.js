@@ -9,31 +9,31 @@ Flame.TabView = Flame.View.extend({
 
     init: function() {
         this._super();
-        //if tabs not set via binding, we need to build the tabs here
-        if (!Ember.none(this.get('tabs'))) {
+        // if tabs not set via binding, we need to build the tabs here
+        if (!Ember.isNone(this.get('tabs'))) {
             this._tabsDidChange();
         }
     },
 
     _tabsWillChange: function() {
         var tabs = this.get('tabs');
-        if (!Ember.none(tabs)) {
+        if (!Ember.isNone(tabs)) {
             this.set('previousTabs', tabs.slice());
         }
-    }.observesBefore('tabs.@each'),
+    }.observesBefore('tabs.[]'),
 
     _tabsDidChange: function() {
         var tabs = this.get('tabs');
-        if (Ember.none(tabs)) {
+        if (Ember.isNone(tabs)) {
             return;
         }
         var previousTabs = this.get('previousTabs');
 
-        if (!Ember.none(previousTabs)) {
+        if (!Ember.isNone(previousTabs)) {
             previousTabs.forEach(function(tab, i) {
-                if (Ember.none(tabs.findProperty('value', tab.value))) {
+                if (Ember.isNone(tabs.findBy('value', tab.value))) {
                     var tabBarView = this.get('tabBarView');
-                    tabBarView.get('childViews').forEach(function(tabView) {
+                    tabBarView.forEach(function(tabView) {
                         if (tabView.get('value') === tab.value) tabBarView.removeChild(tabView);
                     });
                 }
@@ -41,17 +41,15 @@ Flame.TabView = Flame.View.extend({
         }
 
         tabs.forEach(function(tab, i) {
-            if (Ember.none(previousTabs) || Ember.none(previousTabs.findProperty('value', tab.value))) {
+            if (Ember.isNone(previousTabs) || Ember.isNone(previousTabs.findBy('value', tab.value))) {
                 this._addTab(tab, i);
             }
         }, this);
-    }.observes('tabs.@each'),
+    }.observes('tabs.[]'),
 
     _addTab: function(tab, index) {
         var contentView = this.get('contentView');
-        var contentViewChildren = contentView.get('childViews');
         var tabBarView = this.get('tabBarView');
-        var tabBarViewChildren = tabBarView.get('childViews');
         var tabsHeight = this.get('tabsHeight');
         var self = this;
 
@@ -61,7 +59,7 @@ Flame.TabView = Flame.View.extend({
             title: tab.title,
             value: tab.value,
             tabView: this,
-            isSelected: Flame.computed.equals('parentView.parentView.nowShowing', tab.value),
+            isSelected: Ember.computed.equal('parentView.parentView.nowShowing', tab.value),
             action: function() {
               self.set('nowShowing', tab.value);
             }
@@ -71,7 +69,7 @@ Flame.TabView = Flame.View.extend({
             buttonConfig.classNameBindings = ['tabView.%@.%@'.fmt(tab.value, tab.tabClass)];
         }
 
-        tabBarViewChildren.insertAt(index, tabBarView.createChildView(Flame.ButtonView.create(buttonConfig)));
+        tabBarView.insertAt(index, tabBarView.createChildView(Flame.ButtonView.createWithMixins(buttonConfig)));
 
         var view = this.get(tab.value);
         Ember.assert('View for tab %@ not defined!'.fmt(tab.value), !!view);
@@ -81,11 +79,11 @@ Flame.TabView = Flame.View.extend({
                 view = contentView.createChildView(view);
             }
             view.set('isVisible', false);
-            contentViewChildren.addObject(view);
+            contentView.pushObject(view);
             this.set(tab.value, view);
         }
 
-        if (Ember.none(this.get('nowShowing'))) this.set('nowShowing', this.get('tabs').objectAt(0).value);
+        if (Ember.isNone(this.get('nowShowing'))) this.set('nowShowing', this.get('tabs').objectAt(0).value);
     },
 
     _tabWillChange: function() {
@@ -101,12 +99,12 @@ Flame.TabView = Flame.View.extend({
             if (!(view instanceof Ember.View)) {
                 var contentView = this.get('contentView');
                 view = contentView.createChildView(view);
-                contentView.get('childViews').addObject(view);
+                contentView.pushObject(view);
                 this.set(nowShowing, view);
             }
             view.set('isVisible', true);
         }
-    }.observes('nowShowing'),
+    }.observes('nowShowing').on('init'),
 
     tabBarView: Flame.View.extend({
         classNames: ['flame-tab-view-tabs'],
@@ -117,5 +115,4 @@ Flame.TabView = Flame.View.extend({
         classNames: ['flame-tab-view-content'],
         layout: { left: 0, top: 'parentView.tabsHeight', right: 0, bottom: 0 }
     })
-
 });

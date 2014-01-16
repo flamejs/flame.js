@@ -10,11 +10,11 @@ Flame.DisclosureView = Flame.LabelView.extend({
         return this.get('visibilityTarget') ? this.get('imageExpanded') : this.get('imageCollapsed');
     }.property('visibilityTarget', 'imageExpanded', 'imageCollapsed'),
 
-    handlebars: '<img {{bindAttr src="image"}}> {{value}}',
+    handlebars: '<img {{bind-attr src="view.image"}}> {{view.value}}',
 
     action: function() {
-        var value = this.getPath('visibilityTarget');
-        this.setPath('visibilityTarget', !value);
+        var value = this.get('visibilityTarget');
+        this.set('visibilityTarget', !value);
         return true;
     }
 });

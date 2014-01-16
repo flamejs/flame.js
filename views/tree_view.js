@@ -18,9 +18,9 @@
    - allowReordering: Whether user can reorder items by dragging.
    - handlebarsMap: A map of handlebars templates to use for rendering the items, for each different type. For example:
         handlebarsMap: {
-            'App.Folder': '{{content.name}} ({{content.treeItemChildren.length}} reports)',
-            'App.Report': '{{content.name}}',
-            defaultTemplate: '{{content.title}}'
+            'App.Folder': '{{view.content.name}} ({{view.content.treeItemChildren.length}} reports)',
+            'App.Report': '{{view.content.name}}',
+            defaultTemplate: '{{view.content.title}}'
         }
 
   If you don't want to use handlebars templates for the item views, you can alternatively define property
@@ -52,7 +52,7 @@ Flame.TreeView = Flame.ListView.extend({
     },
 
     nestingLevel: function() {
-        return 'level-%@'.fmt(this.getPath('treeLevel'));
+        return 'level-%@'.fmt(this.get('treeLevel'));
     }.property('treeLevel').volatile(),
 
     // Propagates selection to the parent. This way we can make sure that only exactly one of the nested
@@ -70,7 +70,7 @@ Flame.TreeView = Flame.ListView.extend({
     startReordering: function(dragHelper, event) {
         var parentTreeView = this.get('parentTreeView');
         if (parentTreeView) {
-            dragHelper.get('itemPath').insertAt(0, this.getPath('parentView.contentIndex'));
+            dragHelper.get('itemPath').insertAt(0, this.get('parentView.contentIndex'));
             parentTreeView.startReordering(dragHelper, event);
         } else {
             Flame.set('mouseResponderView', this);  // XXX a bit ugly...
@@ -79,15 +79,15 @@ Flame.TreeView = Flame.ListView.extend({
     },
 
     treeLevel: function() {
-        return (this.getPath('parentTreeView.treeLevel') || 0) + 1;
+        return (this.get('parentTreeView.treeLevel') || 0) + 1;
     }.property('parentTreeView.treeLevel').volatile(),
 
     parentTreeView: function() {
-        return this.get('isNested') ? this.getPath('parentView.parentView') : undefined;
+        return this.get('isNested') ? this.get('parentView.parentView') : undefined;
     }.property('isNested', 'parentView.parentView').volatile(),
 
     rootTreeView: function() {
-        return this.getPath('parentTreeView.rootTreeView') || this;
+        return this.get('parentTreeView.rootTreeView') || this;
     }.property('parentTreeView.rootTreeView').volatile()
 
 });

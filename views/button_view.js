@@ -9,13 +9,16 @@ Flame.ButtonView = Flame.View.extend(Flame.ActionSupport, Flame.Statechart, {
     isDisabled: false,
     isDefault: false,  // If true, fires in a panel when user hits enter
     isSticky: false,  // If true, each click (mouseUp to be specific) toggles 'isSelected'
-    initialState: 'idle',
+    initialFlameState: 'idle',
 
-    handlebars: "<label class='flame-button-label'>{{title}}</label>",
+    handlebars: "<label class='flame-button-label'>{{view.title}}</label>",
 
-    render: function(buffer) {
-        var height = this.getPath('layout.height');
-        if (this.get('useAbsolutePosition') && !Ember.none(height)) buffer.style('line-height', (height-2)+'px');  // -2 to account for borders
+    beforeRender: function(buffer) {
+        var height = this.get('layout.height');
+        if (this.get('useAbsolutePosition') &&
+            !Ember.isNone(height)) {
+            buffer.style('line-height', (height - 2) + 'px'); // -2 to account for borders
+        }
         this._super(buffer);
     },
 
@@ -26,17 +29,17 @@ Flame.ButtonView = Flame.View.extend(Flame.ActionSupport, Flame.Statechart, {
 
     idle: Flame.State.extend({
         mouseEnter: function() {
-            this.gotoState('hover');
+            this.gotoFlameState('hover');
             return true;
         },
 
         touchStart: function(event) {
-            this.gotoState('mouseDownInside');
+            this.gotoFlameState('mouseDownInside');
             return true;
         },
 
         simulateClick: function() {
-            this.gotoState('hover');
+            this.gotoFlameState('hover');
             this.get('owner').simulateClick();
             Ember.run.later(this.get('owner'), 'mouseLeave', 150);
         }
@@ -44,13 +47,13 @@ Flame.ButtonView = Flame.View.extend(Flame.ActionSupport, Flame.Statechart, {
 
     hover: Flame.State.extend({
         mouseLeave: function() {
-            this.gotoState('idle');
+            this.gotoFlameState('idle');
             return true;
         },
 
         mouseDown: function() {
-            if (!this.getPath('owner.isDisabled')) {
-                this.gotoState('mouseDownInside');
+            if (!this.get('owner.isDisabled')) {
+                this.gotoFlameState('mouseDownInside');
             }
             return true;
         },
@@ -85,18 +88,18 @@ Flame.ButtonView = Flame.View.extend(Flame.ActionSupport, Flame.Statechart, {
 
         mouseUp: function() {
             this._handleClick();
-            this.gotoState('hover');
+            this.gotoFlameState('hover');
             return true;
         },
 
         touchEnd: function(event) {
             this._handleClick();
-            this.gotoState('idle');
+            this.gotoFlameState('idle');
             return true;
         },
 
         mouseLeave: function() {
-            this.gotoState('mouseDownOutside');
+            this.gotoFlameState('mouseDownOutside');
             return true;
         },
 
@@ -111,12 +114,12 @@ Flame.ButtonView = Flame.View.extend(Flame.ActionSupport, Flame.Statechart, {
 
     mouseDownOutside: Flame.State.extend({
         mouseUp: function() {
-            this.gotoState('idle');
+            this.gotoFlameState('idle');
             return true;
         },
 
         mouseEnter: function() {
-            this.gotoState('mouseDownInside');
+            this.gotoFlameState('mouseDownInside');
             return true;
         }
     })

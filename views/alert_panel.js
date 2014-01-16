@@ -43,7 +43,7 @@ Flame.AlertPanel.reopen({
             titleBinding: '^cancelButtonTitle',
             isVisibleBinding: '^isCancelVisible',
             action: function() {
-                this.getPath('parentView.parentView').onCancel();
+                this.get('parentView.parentView').onCancel();
             }
         }),
 
@@ -53,7 +53,7 @@ Flame.AlertPanel.reopen({
             isVisibleBinding: '^isConfirmVisible',
             isDefault: true,
             action: function() {
-                this.getPath('parentView.parentView').onConfirm();
+                this.get('parentView.parentView').onConfirm();
             }
         })
     }),
@@ -78,14 +78,16 @@ Flame.AlertPanel.reopen({
 Flame.AlertPanel.reopenClass({
     info: function(config) {
         config = jQuery.extend(config || {}, {icon: Flame.AlertPanel.INFO_ICON, isCancelVisible: false});
-        return Flame.AlertPanel.create(config);
+        return Flame.AlertPanel.createWithMixins(config);
     },
+
     warn: function(config) {
         config = jQuery.extend(config || {}, {icon: Flame.AlertPanel.WARN_ICON});
-        return Flame.AlertPanel.create(config);
+        return Flame.AlertPanel.createWithMixins(config);
     },
+
     error: function(config) {
         config = jQuery.extend(config || {}, {icon: Flame.AlertPanel.ERROR_ICON});
-        return Flame.AlertPanel.create(config);
+        return Flame.AlertPanel.createWithMixins(config);
     }
 });

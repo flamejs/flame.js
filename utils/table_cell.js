@@ -16,7 +16,7 @@ Flame.TableCell.prototype.formattedValue = function() {
 };
 
 Flame.TableCell.prototype.editableValue = function() {
-    throw 'Not implemented';
+    throw new Error('Not implemented');
 };
 
 Flame.TableCell.prototype.validate = function(newValue) {
@@ -24,7 +24,7 @@ Flame.TableCell.prototype.validate = function(newValue) {
 };
 
 Flame.TableCell.prototype.formatValueForBackend = function(value) {
-    throw 'Not implemented';
+    throw new Error('Not implemented');
 };
 
 Flame.TableCell.prototype.isEditable = function() {
@@ -37,5 +37,5 @@ Flame.TableCell.prototype.cssClasses = function() {
 };
 
 Flame.TableCell.prototype.cssClassesString = function() {
-    return "";
+    return '';
 };

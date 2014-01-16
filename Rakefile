@@ -49,12 +49,6 @@ task :build => :clean do
   html5 = environment.find_asset('html5.js')
   html5.write_to('build/html5.js')
 
-  # Flame Inspector
-  inspector_js = environment.find_asset('flame_inspector.js')
-  inspector_js.write_to('build/flame_inspector.js')
-  inspector_css = environment.find_asset('flame_inspector.css.scss')
-  inspector_css.write_to('build/stylesheets/flame_inspector.css')
-
   # SCSS files
   css = environment.find_asset('flame.css.scss')
   css.write_to('build/stylesheets/flame.css')

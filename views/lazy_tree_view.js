@@ -19,12 +19,8 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
 
     init: function() {
         this._super();
-        this._rowToItemCache = [];
-        this._itemToRowCache = new Hashtable();
-        this._itemToLevelCache = new Hashtable();
-        this._itemToParentCache = new Hashtable();
-        this._expandedItems = [];
-        this._numberOfCachedRows = 0;
+        this._invalidateRowCache();
+        this._expandedItems = Ember.Set.create();
     },
 
     // override this to temporarily disable re-ordering
@@ -44,14 +40,14 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
 
     loadItemIntoCache: function(item, level, parent) {
         this._rowToItemCache[this._numberOfCachedRows] = item;
-        this._itemToRowCache.put(item, this._numberOfCachedRows);
-        this._itemToLevelCache.put(item, level);
-        if (parent) this._itemToParentCache.put(item, parent);
+        this._itemToRowCache.set(item, this._numberOfCachedRows);
+        this._itemToLevelCache.set(item, level);
+        if (parent) this._itemToParentCache.set(item, parent);
 
         this._numberOfCachedRows++;
 
         // If an item is not expanded, we don't care about its children
-        if (this._expandedItems.indexOf(item) === -1) return;
+        if (!this._expandedItems.contains(item)) return;
         // Handle children
         var children = item.get('treeItemChildren');
         if (children) {
@@ -90,7 +86,7 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
     /** The tree view needs to additionally set the correct indentation level */
     viewForRow: function(row) {
         var item = this.itemForRow(row);
-        var isExpanded = this._expandedItems.indexOf(item) !== -1;
+        var isExpanded = this._expandedItems.contains(item);
         var view = this._super(row, { isExpanded: isExpanded });
         view.set('isExpanded', isExpanded);
         var classNames = view.get('classNames');
@@ -111,9 +107,9 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
 
     _invalidateRowCache: function() {
         this._rowToItemCache = [];
-        if (this._itemToRowCache) this._itemToRowCache.clear();
-        if (this._itemToLevelCache) this._itemToLevelCache.clear();
-        if (this._itemToParentCache) this._itemToParentCache.clear();
+        this._itemToRowCache = Ember.Map.create();
+        this._itemToLevelCache = Ember.Map.create();
+        this._itemToParentCache = Ember.Map.create();
         this._numberOfCachedRows = 0;
     },
 
@@ -122,7 +118,7 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
     },
 
     expandItem: function(item) {
-        this._expandedItems.pushObject(item);
+        this._expandedItems.add(item);
         var row = this.rowForItem(item);
         var view = this.childViewForIndex(row);
         if (view && !view.get('isExpanded')) {
@@ -149,25 +145,24 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
         var item = view.get('content');
         var isExpanded = view.get('isExpanded');
         if (isExpanded) {
-            this._expandedItems.pushObject(item);
+            this._expandedItems.add(item);
         } else {
-            this._expandedItems.removeObject(item);
+            this._expandedItems.remove(item);
         }
         this.numberOfRowsChanged();
 
         // Update rendering
-        var toRemove = [];
         var indices = [];
         var range = this._rowsToRenderRange(this._lastScrollHeight, this._lastScrollTop);
-        this.forEachChildView(function(view) {
+        this.forEach(function(view) {
             var contentIndex = view.get('contentIndex');
             var content = view.get('content');
             var row = this.rowForItem(content);
-            if (row === null && typeof contentIndex !== 'undefined') {
-                toRemove.push(view);
+            if (typeof row === 'undefined' && typeof contentIndex !== 'undefined') {
+                this._recycleView(view);
             } else if (typeof contentIndex !== 'undefined') {
                 indices.push(row);
-                if (contentIndex != row) {
+                if (contentIndex !== row) {
                     view.set('contentIndex', row);
                     var itemHeight = this.itemHeightForRow(row);
                     view.$().css('top', row * itemHeight + 'px');
@@ -176,10 +171,7 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
                     this._recycleView(view);
                 }
             }
-        });
-
-        // Remove views that were used to render a subtree that is now collapsed
-        toRemove.forEach(function(view) { view.destroy(); });
+        }, this);
 
         // Render missing views
         for (var i = range.start; i <= range.end; i++) {
@@ -214,10 +206,10 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
                 }
             } else {
                 // The view is currently not visible, just record the status
-                if (this._expandedItems.indexOf(selection) === -1) {
-                    this._expandedItems.pushObject(selection);
+                if (this._expandedItems.contains(selection)) {
+                    this._expandedItems.remove(selection);
                 } else {
-                    this._expandedItems.removeObject(selection);
+                    this._expandedItems.add(selection);
                 }
                 return true;
             }
@@ -265,16 +257,16 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
             acceptedIndex = proposedIndex;
             toParent = this._itemToParentCache.get(itemBelow);
             toPosition = (toParent && toParent.get('treeItemChildren') || this.get('content')).indexOf(itemBelow);
-        } else if (itemAbove && this.levelForItem(itemAbove) === itemLevel && this._expandedItems.indexOf(itemAbove) === -1) {
+        } else if (itemAbove && this.levelForItem(itemAbove) === itemLevel && !this._expandedItems.contains(itemAbove)) {
             acceptedIndex = proposedIndex;
             toParent = this._itemToParentCache.get(itemAbove);
-            toPosition = toParent ? toParent.getPath('treeItemChildren.length') : this.getPath('content.length');
+            toPosition = toParent ? toParent.get('treeItemChildren.length') : this.get('content.length');
         } else if ((!itemBelow || (itemBelow && this.levelForItem(itemBelow) < itemLevel)) &&
                    itemAbove && this.levelForItem(itemAbove) > itemLevel) {
             acceptedIndex = proposedIndex;
             toParent = this.closestCommonAncestor(itemFrom, itemAbove);
-            toPosition = toParent ? toParent.getPath('treeItemChildren.length') : this.getPath('content.length');
-        } else if (itemAbove && itemLevel - 1 === this.levelForItem(itemAbove) && this._expandedItems.indexOf(itemAbove) !== -1) {
+            toPosition = toParent ? toParent.get('treeItemChildren.length') : this.get('content.length');
+        } else if (itemAbove && itemLevel - 1 === this.levelForItem(itemAbove) && this._expandedItems.contains(itemAbove)) {
             // Dragging into parent item that is currently empty and open
             acceptedIndex = proposedIndex;
             toParent = itemAbove;
@@ -293,14 +285,14 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
         var to = draggingInfo.currentIndex;
         var direction = from < to ? -1 : 1;
         var itemHeight = this.get('itemHeight');
-        this.forEachChildView(function(view) {
+        this.forEach(function(view) {
             var contentIndex = view.get('contentIndex');
             if (contentIndex > from && contentIndex < to ||
                 contentIndex < from && contentIndex >= to) {
                 view.set('contentIndex', contentIndex + direction);
                 view.$().animate({top: view.get('contentIndex') * itemHeight + 'px'});
             }
-        });
+        }, this);
         if (direction < 0) to--;
         movedView.set('contentIndex', to);
         movedView.$().animate({top: to * itemHeight + 'px'});

@@ -1,13 +1,13 @@
-Flame.SplitViewDividerViewBase = Ember.Mixin.create(Flame.Statechart, {                                                         
+Flame.SplitViewDividerViewBase = Ember.Mixin.create(Flame.Statechart, {
     classNames: 'flame-split-view-divider'.w(),
-    initialState: 'idle',
+    initialFlameState: 'idle',
 
     idle: Flame.State.extend({
         mouseDown: function(event) {
-            var parentView = this.getPath('owner.parentView');
+            var parentView = this.get('owner.parentView');
             if (!parentView.get('allowResizing')) return false;
             parentView.startResize(event, this);
-            this.gotoState('resizing');
+            this.gotoFlameState('resizing');
             return true;
         },
 
@@ -18,7 +18,7 @@ Flame.SplitViewDividerViewBase = Ember.Mixin.create(Flame.Statechart, {
         },
 
         doubleClick: function(event) {
-            var parentView = this.getPath('owner.parentView');
+            var parentView = this.get('owner.parentView');
             if (!parentView.get('allowResizing')) return false;
             parentView.toggleCollapse(event);
             return true;
@@ -27,7 +27,7 @@ Flame.SplitViewDividerViewBase = Ember.Mixin.create(Flame.Statechart, {
 
     resizing: Flame.State.extend({
         mouseMove: function(event) {
-            this.getPath('owner.parentView').resize(event);
+            this.get('owner.parentView').resize(event);
             return true;
         },
 
@@ -39,11 +39,11 @@ Flame.SplitViewDividerViewBase = Ember.Mixin.create(Flame.Statechart, {
             return true;
         },
 
-        mouseUp: Flame.State.gotoHandler('idle'),
-        touchEnd: Flame.State.gotoHandler('idle'),
+        mouseUp: Flame.State.gotoFlameState('idle'),
+        touchEnd: Flame.State.gotoFlameState('idle'),
 
         exitState: function() {
-            var parentView = this.getPath('owner.parentView');
+            var parentView = this.get('owner.parentView');
             if (parentView.endResize) {
                 parentView.endResize();
             }
