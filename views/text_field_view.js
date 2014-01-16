@@ -1,21 +1,15 @@
-/**
-  The actual text field is wrapped in another view since browsers like Firefox
-  and IE don't support setting the `right` CSS property (used by LayoutSupport)
-  on input fields.
- */
-
 Flame.TextField = Ember.TextField.extend(Flame.EventManager, Flame.FocusSupport, {
     classNameBindings: ['isInvalid', 'isEditableLabel', 'isFocused'],
     acceptsKeyResponder: true,
     type: Flame.computed.trueFalse('parentView.isPassword', 'password', 'text'),
-    isInvalid: Flame.computed.equals('parentView.isValid', false),
-    valueBinding: '^value',
-    placeholderBinding: '^placeholder',
-    isEditableLabelBinding: '^isEditableLabel',
-    isVisibleBinding: '^isVisible',
-    disabledBinding: '^isDisabled',
+    isInvalid: Ember.computed.equal('parentView.isValid', false),
+    value: Ember.computed.alias('parentView.value'),
+    placeholder: Ember.computed.alias('parentView.placeholder'),
+    isEditableLabel: Ember.computed.alias('parentView.isEditableLabel'),
+    isVisible: Ember.computed.alias('parentView.isVisible'),
+    disabled: Ember.computed.alias('parentView.isDisabled'),
     attributeBindings: ['name', 'disabled'],
-    nameBinding: "^name",
+    name: Ember.computed.alias('parentView.name'),
 
     // Ember.TextSupport (which is mixed in by Ember.TextField) calls interpretKeyEvents on keyUp.
     // Since the event manager already calls interpretKeyEvents on keyDown, the action would be fired
@@ -46,6 +40,11 @@ Flame.TextField = Ember.TextField.extend(Flame.EventManager, Flame.FocusSupport,
     mouseUp: function() { return Flame.ALLOW_BROWSER_DEFAULT_HANDLING; }
 });
 
+/**
+  The actual text field is wrapped in another view since browsers like Firefox
+  and IE don't support setting the `right` CSS property (used by LayoutSupport)
+  on input fields.
+*/
 Flame.TextFieldView = Flame.View.extend(Flame.ActionSupport, {
     classNames: ['flame-text'],
     childViews: ['textField'],
@@ -74,4 +73,3 @@ Flame.TextFieldView = Flame.View.extend(Flame.ActionSupport, {
 
     textField: Flame.TextField
 });
-

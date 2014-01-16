@@ -35,7 +35,7 @@ Flame.TableController = Ember.Object.extend({
         if (dataBatch !== undefined) {
             var headers = this.get('_headers');
             if (!headers) {
-                throw "Can't push data without first setting headers!";
+                throw new Error("Can't push data without first setting headers!");
             }
 
             if (!this._dataBatchIsForCurrentTable(dataBatch)) return;
@@ -160,7 +160,7 @@ Flame.TableController = Ember.Object.extend({
     // When setting headers, resolve refs and record extra information to make rendering easier
     _headersDidChange: function() {
         var headers = this.get('_headers');
-        if (!Ember.none(headers)) {
+        if (!Ember.isNone(headers)) {
             var data = [];
             this.set('dirtyCells', []);
 

@@ -41,25 +41,23 @@ Flame.FormView = Flame.View.extend({
     _propertiesDidChange: function() {
         this.destroyAllChildren();
 
-        var self = this;
-        var childViews = this.get('childViews');
         this.get('properties').forEach(function(descriptor) {
-            var view = self._createLabelAndControl(descriptor);
-            childViews.push(self.createChildView(view));
-        });
+            var view = this._createLabelAndControl(descriptor);
+            this.pushObject(this.createChildView(view));
+        }, this);
 
         var buttons = this.get('buttons');
         if (buttons && buttons.get('length') > 0) {
-            childViews.push(this.createChildView(this._buildButtons(buttons)));
+            this.pushObject(this.createChildView(this._buildButtons(buttons)));
         }
-    }.observes('properties.@each'),
+    }.observes('properties.[]'),
 
     _createLabelAndControl: function(desc) {
-        var descriptor = Ember.Object.create(desc);
+        var descriptor = Ember.Object.createWithMixins(desc);
         var control = descriptor.view || this._buildControl(descriptor);
         var formView = this;
 
-        if (Ember.none(descriptor.label)) {
+        if (Ember.isNone(descriptor.label)) {
             return this._createChildViewWithLayout(control, this, this.get('leftMargin') + this._focusRingMargin, this.get('rightMargin') + this._focusRingMargin);
         }
         if (descriptor.type === 'checkbox') {
@@ -89,8 +87,8 @@ Flame.FormView = Flame.View.extend({
     _createChildViewWithLayout: function(view, parent, leftMargin, rightMargin) {
         var childView = parent.createChildView(view);
         if (!childView.get('layout')) childView.set('layout', {});
-        childView.setPath('layout.left', leftMargin);
-        childView.setPath('layout.right', rightMargin);
+        childView.set('layout.left', leftMargin);
+        childView.set('layout.right', rightMargin);
         return childView;
     },
 
@@ -111,14 +109,12 @@ Flame.FormView = Flame.View.extend({
             layout: { left: this.get('leftMargin'), right: this.get('rightMargin'), topMargin: this.get('buttonSpacing'), height: 30 },
             init: function() {
                 this._super();
-                var childViews = this.get('childViews');
                 var right = formView._focusRingMargin;
-                var self = this;
                 (buttons || []).forEach(function(descriptor) {
-                    var buttonView = self.createChildView(formView._buildButton(descriptor, right));
-                    right += (buttonView.getPath('layout.width') || 0) + 15;
-                    childViews.push(buttonView);
-                });
+                    var buttonView = this.createChildView(formView._buildButton(descriptor, right));
+                    right += (buttonView.get('layout.width') || 0) + 15;
+                    this.pushObject(buttonView);
+                }, this);
             }
         });
     },
@@ -142,7 +138,7 @@ Flame.FormView = Flame.View.extend({
     },
 
     _buildValidationObservers: function(validationMessage) {
-        if (Ember.none(validationMessage)) return {};
+        if (Ember.isNone(validationMessage)) return {};
 
         var self = this;
         return {
@@ -167,7 +163,7 @@ Flame.FormView = Flame.View.extend({
                     var offset = element.offset();
 
                     // This is strictly not necessary, but currently you can save invalid form with enter, which then fails here
-                    if (Ember.none(offset)) return;
+                    if (Ember.isNone(offset)) return;
 
                     var zIndex = Flame._zIndexCounter;
                     var errorMessage = validationMessage;
@@ -198,7 +194,7 @@ Flame.FormView = Flame.View.extend({
         // XXX it would be better to cache this, but since it's only a temporary solution and because it's fast
         // enough even in IE8, it's not worth the effort.
         // Collect all controls that can have keyResponder status
-        var controls = this.get('childViews').mapProperty('childViews').flatten().filter(function(view) {
+        var controls = this.toArray().mapProperty('childViews').flatten().filter(function(view) {
             return view.get('acceptsKeyResponder') && view.get('isVisible');
         });
         // Pick out the next or previous control
@@ -229,8 +225,8 @@ Flame.FormView = Flame.View.extend({
         var settings = {
             layout: { topPadding: 1, bottomPadding: 1, width: this.get('controlWidth') },
             valueBinding: '^object.%@'.fmt(property),
-            isValid: Flame.computed.notEquals('parentView.parentView.object.%@IsValid'.fmt(property), false),
-            isDisabled: descriptor.isDisabled ? descriptor.isDisabled : Flame.computed.equals('parentView.parentView.object.%@IsDisabled'.fmt(property), true)
+            isValid: Ember.computed.notEqual('parentView.parentView.object.%@IsValid'.fmt(property), false),
+            isDisabled: descriptor.isDisabled ? descriptor.isDisabled : Ember.computed.equal('parentView.parentView.object.%@IsDisabled'.fmt(property), true)
         };
 
         if (this.get('defaultFocus') === property) {
@@ -249,7 +245,7 @@ Flame.FormView = Flame.View.extend({
 
         // If a text field (or similar), emulate good old html forms that submit when hitting return by
         // clicking on the default button. This also prevents submitting of disabled forms.
-        if (Ember.none(settings.action) && (type === 'text' || type === 'textarea' || type === 'password')) {
+        if (Ember.isNone(settings.action) && (type === 'text' || type === 'textarea' || type === 'password')) {
             var form = this;
             settings.fireAction = function() {
                 var defaultButton = form.firstDescendantWithProperty('isDefault');
@@ -274,7 +270,7 @@ Flame.FormView = Flame.View.extend({
                 settings.titleBinding = 'value';
                 return Flame.LabelView.extend(settings);
             case 'text':
-                settings.name = Ember.none(descriptor.name) ? descriptor.property : descriptor.name;
+                settings.name = Ember.isNone(descriptor.name) ? descriptor.property : descriptor.name;
                 if (descriptor.isAutocomplete) {
                     settings.autocompleteDelegate = descriptor.autocompleteDelegate;
                     return Flame.AutocompleteTextFieldView.extend(settings);
@@ -285,7 +281,7 @@ Flame.FormView = Flame.View.extend({
                 return Flame.TextAreaView.extend(settings);
             case 'password':
                 settings.isPassword = true;
-                settings.name = Ember.none(descriptor.name) ? descriptor.property : descriptor.name;
+                settings.name = Ember.isNone(descriptor.name) ? descriptor.property : descriptor.name;
                 return Flame.TextFieldView.extend(settings);
             case 'html':
                 return Flame.LabelView.extend(jQuery.extend(settings, {escapeHTML: false, formatter: function(val) {
@@ -316,7 +312,7 @@ Flame.FormView = Flame.View.extend({
                     return Flame.ComboBoxView.extend(settings);
                 }
         }
-        throw 'Invalid control type %@'.fmt(type);
+        throw new Error('Invalid control type %@'.fmt(type));
     },
 
     willDestroyElement: function() {
@@ -324,6 +320,6 @@ Flame.FormView = Flame.View.extend({
     },
 
     isValid: function() {
-        return this.get("_errorViews").length === 0;
-    }.property('_errorViews.@each')
+        return this.get('_errorViews').length === 0;
+    }.property('_errorViews.[]')
 });

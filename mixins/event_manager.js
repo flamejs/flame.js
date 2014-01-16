@@ -91,7 +91,7 @@ Ember.mixin(Flame, {
         },
 
         push: function(view) {
-            if (!Ember.none(view)) {
+            if (!Ember.isNone(view)) {
                 if (view.willBecomeKeyResponder) view.willBecomeKeyResponder();
                 //console.log('View %s became key responder', Ember.guidFor(view));
                 if (view.set && !view.isDestroyed) view.set('isFocused', true);

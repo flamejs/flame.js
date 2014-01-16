@@ -11,7 +11,7 @@ Flame.StringUtil = (function() {
     }
 
     function asBlank(string) {
-        return Ember.none(string) ? "" : string;
+        return Ember.isNone(string) ? "" : string;
     }
 
     function escapeForRegexp(rawString) {

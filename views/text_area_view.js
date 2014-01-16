@@ -22,7 +22,7 @@ Flame.TextAreaView = Flame.View.extend({
         // Start from a non-validated state. 'isValid' being null means that it hasn't been validated at all (perhaps
         // there's no validator attached) so it doesn't make sense to show it as invalid.
         isValid: null,
-        isInvalid: Flame.computed.equals('isValid', false),
+        isInvalid: Ember.computed.equal('isValid', false),
         valueBinding: '^value',
         placeholderBinding: '^placeholder',
         isVisibleBinding: '^isVisible',

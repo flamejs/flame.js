@@ -1,9 +1,9 @@
 //= require ./split_view
 
-/*
- * HotizontalSplitView divides the current view between topView and bottomView using a horizontal
- * dividerView.
- */
+/**
+  HotizontalSplitView divides the current view between topView and bottomView using a horizontal
+  dividerView.
+*/
 Flame.HorizontalSplitView = Flame.SplitView.extend({
     classNames: 'flame-horizontal-split-view'.w(),
     childViews: 'topView dividerView bottomView'.w(),
@@ -25,8 +25,6 @@ Flame.HorizontalSplitView = Flame.SplitView.extend({
 
         if (this.get('flex') === 'bottom') this.bottomHeight = undefined;
         else this.topHeight = undefined;
-
-        this._updateLayout();  // Update layout according to the initial heights
 
         this.addObserver('topHeight', this, this._updateLayout);
         this.addObserver('bottomHeight', this, this._updateLayout);
@@ -58,13 +56,13 @@ Flame.HorizontalSplitView = Flame.SplitView.extend({
         this.set('bottomHeight', bottomHeight);
 
         if (this.get('flex') === 'bottom') {
-            this._setDimensions(topView, 0, topHeight, undefined);
-            this._setDimensions(dividerView, topHeight, dividerThickness, undefined);
-            this._setDimensions(bottomView, topHeight + dividerThickness, undefined, 0);
+            this._setDimensions(topView, 0, topHeight, '');
+            this._setDimensions(dividerView, topHeight, dividerThickness, '');
+            this._setDimensions(bottomView, topHeight + dividerThickness, '', 0);
         } else {
-            this._setDimensions(topView, 0, undefined, bottomHeight + dividerThickness);
-            this._setDimensions(dividerView, undefined, dividerThickness, bottomHeight);
-            this._setDimensions(bottomView, undefined, bottomHeight, 0);
+            this._setDimensions(topView, 0, '', bottomHeight + dividerThickness);
+            this._setDimensions(dividerView, '', dividerThickness, bottomHeight);
+            this._setDimensions(bottomView, '', bottomHeight, 0);
         }
     },
 

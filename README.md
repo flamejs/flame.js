@@ -102,7 +102,7 @@ Using inline handlebars templates can be very handy in some cases. Especially fo
 ```javascript
 someView: Flame.View.extend({
     layout: { left: 20, top: 20, width: 400 },
-    handlebars: 'Player {{player.name}} has {{player.points}} points'
+    handlebars: 'Player {{view.player.name}} has {{view.player.points}} points'
 })
 ```
 

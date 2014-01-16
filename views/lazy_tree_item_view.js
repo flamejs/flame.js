@@ -2,14 +2,14 @@
 
 Flame.LazyTreeItemView = Flame.LazyListItemView.extend({
     classNames: ['flame-tree-item-view'],
-    itemContent: '{{content}}',
+    itemContent: '{{view.content}}',
     isExpanded: false,
 
     collapsedImage: Flame.image('disclosure_triangle_left.png'),
     expandedImage: Flame.image('disclosure_triangle_down.png'),
 
     handlebars: function() {
-        return '{{{unbound disclosureImage}}} <span>' + this.get('itemContent') + '</span>';
+        return '{{{view.disclosureImage}}} <span>' + this.get('itemContent') + '</span>';
     }.property('itemContent'),
 
     isExpandedDidChange: function() {

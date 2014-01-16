@@ -5,6 +5,14 @@
 // top of each other. If they use a static z-index, all the panels would appear on top of all the modal panes.
 Flame._zIndexCounter = 100;
 
+Flame.reopen({
+    POSITION_BELOW:  1 << 0,
+    POSITION_RIGHT:  1 << 1,
+    POSITION_LEFT:   1 << 2,
+    POSITION_ABOVE:  1 << 3,
+    POSITION_MIDDLE: 1 << 4
+});
+
 // A pop-up panel, modal or non-modal. The panel is destroyed on closing by default. If you intend to reuse the same
 // panel instance, set destroyOnClose: false.
 Flame.Panel = Flame.RootView.extend({
@@ -36,8 +44,8 @@ Flame.Panel = Flame.RootView.extend({
         layout: { left: 0, right: 0, height: 26, bottomPadding: 1 },
         classNames: ['flame-panel-title'],
         childViews: ['labelView'],
-        isVisible: Flame.computed.notEquals('parentView.title', null),
-        initialState: 'idle',
+        isVisible: Ember.computed.notEqual('parentView.title', null),
+        initialFlameState: 'idle',
 
         labelView: Flame.LabelView.extend({
             layout: { left: 4, right: 4, top: 2 },
@@ -48,7 +56,7 @@ Flame.Panel = Flame.RootView.extend({
         idle: Flame.State.extend({
             mouseDown: function(event) {
                 var owner = this.get('owner');
-                if (!owner.getPath('parentView.allowMoving')) {
+                if (!owner.get('parentView.allowMoving')) {
                     return true;
                 }
                 owner._pageX = event.pageX;
@@ -56,7 +64,7 @@ Flame.Panel = Flame.RootView.extend({
                 var offset = owner.get('parentView').$().offset();
                 owner._panelX = offset.left;
                 owner._panelY = offset.top;
-                this.gotoState('moving');
+                this.gotoFlameState('moving');
                 return true;
             },
             touchStart: function(event) {
@@ -84,8 +92,8 @@ Flame.Panel = Flame.RootView.extend({
                 this.mouseMove(this.normalizeTouchEvents(event));
                 return true;
             },
-            mouseUp: Flame.State.gotoHandler('idle'),
-            touchEnd: Flame.State.gotoHandler('idle')
+            mouseUp: Flame.State.gotoFlameState('idle'),
+            touchEnd: Flame.State.gotoFlameState('idle')
         })
     }),
 
@@ -94,20 +102,20 @@ Flame.Panel = Flame.RootView.extend({
         ignoreLayoutManager: true,
         classNames: ['flame-resize-thumb'],
         isVisibleBinding: '^isResizable',
-        initialState: 'idle',
+        initialFlameState: 'idle',
 
         idle: Flame.State.extend({
             mouseDown: function(event) {
                 var owner = this.get('owner');
                 var panelElement = owner.get('parentView').$();
-                if (!owner.getPath('parentView.isResizable')) {
+                if (!owner.get('parentView.isResizable')) {
                     return true;
                 }
                 owner._pageX = event.pageX;
                 owner._pageY = event.pageY;
                 owner._startW = panelElement.outerWidth();
                 owner._startH = panelElement.outerHeight();
-                this.gotoState('resizing');
+                this.gotoFlameState('resizing');
                 return true;
             },
             touchStart: function(event) {
@@ -134,8 +142,8 @@ Flame.Panel = Flame.RootView.extend({
                 this.mouseMove(this.normalizeTouchEvents(event));
                 return true;
             },
-            mouseUp: Flame.State.gotoHandler('idle'),
-            touchEnd: Flame.State.gotoHandler('idle')
+            mouseUp: Flame.State.gotoFlameState('idle'),
+            touchEnd: Flame.State.gotoFlameState('idle')
         })
     }),
 
@@ -148,13 +156,13 @@ Flame.Panel = Flame.RootView.extend({
 
             parentPanel: null,
             mouseDown: function() {
-                if (this.getPath('parentPanel.allowClosingByClickingOutside')) {
+                if (this.get('parentPanel.allowClosingByClickingOutside')) {
                     this.get('parentPanel').close();
                 }
                 return true;
             },
             touchStart: function() {
-                if (this.getPath('parentPanel.allowClosingByClickingOutside')) {
+                if (this.get('parentPanel.allowClosingByClickingOutside')) {
                     this.get('parentPanel').close();
                 }
                 return true;
@@ -184,7 +192,7 @@ Flame.Panel = Flame.RootView.extend({
         var anchorElement = anchor instanceof jQuery ? anchor : anchor.$();
         var offset = anchorElement.offset();
 
-        var contentView = this.get('childViews')[0];
+        var contentView = this.objectAt(0);
         if (contentView && contentView.get('layout') && contentView.get('layout').height && (!layout || !layout.height)) {
             layout.height = contentView.get('layout').height;
         }

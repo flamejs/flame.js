@@ -3,7 +3,7 @@ Flame.TableSortSupport = {
     sortDescendingCaption: 'Sort descending...',
 
     sortContent: function(sortDescriptor) {
-        throw 'Not implemented!';
+        throw new Error('Not implemented!');
     },
 
     columnHeaderClicked: function(header, targetElement) {
@@ -11,14 +11,14 @@ Flame.TableSortSupport = {
     },
 
     _showSortMenu: function(header, options, anchorView) {
-        //set width based on longest item title
+        // set width based on longest item title
         var longestTitle = options.map(function(i) { return i.title.length; }).max();
-        var menu = Flame.MenuView.create({
+        var menu = Flame.MenuView.createWithMixins({
             items: options,
             layout: { width: longestTitle * 8 },
             target: this,
             action: 'sortContent',
-            payloadBinding: 'value'
+            payload: Ember.computed.alias('value')
         });
         menu.popup(anchorView);
     },

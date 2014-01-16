@@ -17,9 +17,9 @@ Flame.LazyListViewStates.MouseIsDown = Flame.State.extend({
         if (Math.abs(event.pageY - this.yOffset) < 3) return true;
 
         var offset = owner.$().offset();
-        this.setPath('owner.xOffset', this.xOffset - offset.left);
-        this.setPath('owner.yOffset', this.yOffset - offset.top);
-        this.gotoState('dragging');
+        this.set('owner.xOffset', this.xOffset - offset.left);
+        this.set('owner.yOffset', this.yOffset - offset.top);
+        this.gotoFlameState('dragging');
         return true;
     },
 
@@ -27,14 +27,14 @@ Flame.LazyListViewStates.MouseIsDown = Flame.State.extend({
         var owner = this.get('owner');
         var parentView = owner.get('parentView');
         parentView.selectIndex(owner.get('contentIndex'));
-        this.gotoState('idle');
+        this.gotoFlameState('idle');
         return true;
     }
 });
 
 Flame.LazyListItemView = Flame.ListItemView.extend(Flame.Statechart, {
     layout: { left: 0, right: 0, height: 25 },
-    initialState: 'idle',
+    initialFlameState: 'idle',
 
     init: function() {
         // Don't rerender the item view when the content changes
@@ -59,7 +59,7 @@ Flame.LazyListItemView = Flame.ListItemView.extend(Flame.Statechart, {
 
     idle: Flame.State.extend({
         mouseDown: function() {
-            this.gotoState('mouseIsDown');
+            this.gotoFlameState('mouseIsDown');
         }
     }),
 
@@ -75,18 +75,18 @@ Flame.LazyListItemView = Flame.ListItemView.extend(Flame.Statechart, {
             var listView = owner.get('parentView');
             if (owner.willStartDragging) owner.willStartDragging();
             var listViewElement = listView.$();
-            this.setPath('owner.isDragged', true);
+            this.set('owner.isDragged', true);
             this.scrollViewOffset = listView.get('parentView').$().offset();
             this.clone = this.get('owner').$().safeClone();
             this.clone.addClass('dragged-clone');
-            this.clone.draggingInfo = { currentIndex: this.getPath('owner.contentIndex') };
+            this.clone.draggingInfo = { currentIndex: this.get('owner.contentIndex') };
             this.indicator = jQuery('<div class="indicator"><img src="%@"></div>'.fmt(Flame.image('reorder_indicator.png'))).hide();
             listViewElement.append(this.clone);
             listViewElement.append(this.indicator);
         },
 
         exitState: function() {
-            this.setPath('owner.isDragged', false);
+            this.set('owner.isDragged', false);
             this.finishDragging();
             this.clone.remove();
             this.clone = null;
@@ -106,26 +106,26 @@ Flame.LazyListItemView = Flame.ListItemView.extend(Flame.Statechart, {
         },
 
         mouseUp: function() {
-            this.gotoState('idle');
+            this.gotoFlameState('idle');
             return true;
         },
 
         didDragItem: function(newTop, newLeft) {
-            if (this.getPath('owner.parentView.constrainDragginToXAxis')) {
+            if (this.get('owner.parentView.constrainDragginToXAxis')) {
                 this.clone.css({top: newTop});
             } else {
                 this.clone.css({top: newTop, left: newLeft});
             }
-            var itemHeight = this.getPath('owner.parentView.itemHeight');
+            var itemHeight = this.get('owner.parentView.itemHeight');
             var index = Math.ceil(newTop / itemHeight);
-            this.clone.draggingInfo = this.getPath('owner.parentView').indexForMovedItem(this.clone.draggingInfo, index, this.getPath('owner.contentIndex'));
+            this.clone.draggingInfo = this.get('owner.parentView').indexForMovedItem(this.clone.draggingInfo, index, this.get('owner.contentIndex'));
             var height = this.clone.draggingInfo.currentIndex * itemHeight;
             this.indicator.css({top: height - 1 + 'px'});
             this.indicator.show();
         },
 
         finishDragging: function() {
-            this.getPath('owner.parentView').moveItem(this.getPath('owner.contentIndex'), this.clone.draggingInfo);
+            this.get('owner.parentView').moveItem(this.get('owner.contentIndex'), this.clone.draggingInfo);
         }
     })
 });

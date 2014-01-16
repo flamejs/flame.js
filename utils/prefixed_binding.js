@@ -1,4 +1,4 @@
-/*
+/**
   This stuff solves two recurring problems with bindings:
     1) you often need several bindings to the same controller,
     2) you may want to use bindings to 'configure' views nested deep in the hierarchy.
@@ -51,7 +51,6 @@
   properties of all views).
 */
 
-
 Ember.mixin(Ember.Binding.prototype, {
     connect: function(obj) {
         var m = this._from.match(/^(\^|\$)/);
@@ -64,15 +63,15 @@ Ember.mixin(Ember.Binding.prototype, {
 Flame.reopen({
     // Bind our custom prefixed bindings. This method has to be explicitly called after creating a new child view.
     _bindPrefixedBindings: function(view) {
+        var foundPrefixedBindings = false;
         for (var key in view) {
-            if (key.match(/Binding$/)) {
+            if (/Binding$/.test(key)) {
                 var binding = view[key];
-                if (!(binding instanceof Ember.Binding)) {
-                    throw 'Expected a Ember.Binding!';
-                }
+                Ember.assert('Expected a Ember.Binding!', binding instanceof Ember.Binding);
 
                 var m = binding._from.match(/^(\^|\$)([^.]+)(.*)$/);
                 if (m) {
+                    foundPrefixedBindings = true;
                     var useValue = m[1] === '$';
                     var property = m[2];
                     var suffix = m[3];
@@ -83,7 +82,7 @@ Flame.reopen({
                     } else {
                         prefix = this._lookupPathToProperty(view, property);
                     }
-                    Ember.assert("Property '%@' was not found!".fmt(property), !Ember.none(prefix));
+                    Ember.assert("Property '%@' was not found!".fmt(property), !Ember.isNone(prefix));
 
                     var finalPath = prefix + suffix;
                     // Copy transformations and the ilk.
@@ -96,6 +95,7 @@ Flame.reopen({
                 }
             }
         }
+        return foundPrefixedBindings;
     },
 
     _lookupValueOfProperty: function(view, propertyName) {
@@ -115,8 +115,8 @@ Flame.reopen({
         // Sometimes there's a binding but it hasn't 'kicked in' yet, so also check explicitly for a binding
         var bindingPropertyName = propertyName + 'Binding';
 
-        while (!Ember.none(cur)) {
-            // It seems that earlier (at least 0.9.4) the constructor of the view contained pleothra of properties,
+        while (!Ember.isNone(cur)) {
+            // It seems that earlier (at least 0.9.4) the constructor of the view contained plethora of properties,
             // but nowadays (at least 0.9.6) the properties are there throughout the prototype-chain and not in the
             // last prototype. Thus testing whether current objects prototype has the property does not give correct
             // results.

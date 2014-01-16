@@ -5,8 +5,8 @@ Flame.Popover = Flame.Panel.extend({
     classNames: ['flame-popover'],
     childViews: [],
     dimBackground: false,
-    arrow: 'arrow', // How to use a string literal in bindAttr?
-    handlebars: '<img {{bindAttr class="arrowPosition arrow"}} {{bindAttr src="image"}} />{{view contentView}}',
+    arrow: 'arrow', // How to use a string literal in bind-attr?
+    handlebars: '<img {{bind-attr class="view.arrowPosition view.arrow"}} {{bind-attr src="view.image"}} />{{view view.contentView}}',
     anchor: null,
     position: null,
 
@@ -25,13 +25,13 @@ Flame.Popover = Flame.Panel.extend({
             arrowOffset = offset.left + (anchor.outerWidth() / 2) - (!this.$().css('left') ? 0 : parseInt(this.$().css('left').replace('px', ''), 10)) - 15;
             arrow.css({ left: arrowOffset + 'px' });
             if (position & Flame.POSITION_ABOVE) {
-                arrow.css({ top: this.getPath('layout.height') - 1 + 'px' });
+                arrow.css({ top: this.get('layout.height') - 1 + 'px' });
             }
         } else {
             arrowOffset = offset.top + (anchor.outerHeight() / 2) - parseInt(this.$().css('top').replace('px', ''), 10) - 15;
             arrow.css({ top: arrowOffset + 'px' });
             if (position & Flame.POSITION_LEFT) {
-                arrow.css({ left: this.getPath('layout.width') - 1 + 'px' });
+                arrow.css({ left: this.get('layout.width') - 1 + 'px' });
             }
         }
     },

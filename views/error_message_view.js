@@ -10,5 +10,5 @@ Flame.ErrorMessageView = Flame.LabelView.extend({
     pointToClass: function() {
         return 'points-to-%@'.fmt(this.get('pointTo'));
     }.property('pointTo'),
-    handlebars: '<div class="pointer"></div><div class="error-box">{{value}}</div>'
+    handlebars: '<div class="pointer"></div><div class="error-box">{{view.value}}</div>'
 });

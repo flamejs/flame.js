@@ -1,7 +1,10 @@
-// Support for defining the layout with a hash, e.g. layout: {left: 10, top: 10, width: 100, height: 30}
+/**
+  Support for defining the layout with a hash, e.g. layout: {left: 10, top: 10, width: 100, height: 30}
+*/
 Flame.LayoutSupport = {
     useAbsolutePosition: true,
     concatenatedProperties: ['displayProperties'],
+    classNameBindings: ['useAbsolutePosition:flame-view'],
     layout: {left: 0, right: 0, top: 0, bottom: 0},
     defaultWidth: undefined,
     defaultHeight: undefined,
@@ -20,17 +23,16 @@ Flame.LayoutSupport = {
         this.updateLayout();  // Make sure CSS is up-to-date, otherwise can sometimes get out of sync for some reason
     },
 
-    createChildView: function(view, attrs) {
-        view = this._super(view, attrs);
-        Flame._bindPrefixedBindings(view);
-        return view;
-    },
-
     // When using handlebars templates, the child views are created only upon rendering, not in init.
     // Thus we need to consult the layout manager also at this point.
     didInsertElement: function() {
         this._super();
         this.consultLayoutManager();
+    },
+
+    beforeRender: function(buffer) {
+        this._renderElementAttributes(buffer);
+        this._super(buffer);
     },
 
     childViewsDidChange: function() {
@@ -67,7 +69,7 @@ Flame.LayoutSupport = {
 
         this._cssProperties.forEach(function(prop) {
             var value = cssLayout[prop];
-            if (!Ember.none(value)) {
+            if (!Ember.isNone(value)) {
                 buffer.style(prop, value);
             }
         });
@@ -75,13 +77,6 @@ Flame.LayoutSupport = {
 
         var backgroundColor = this.get('backgroundColor');
         if (backgroundColor !== undefined) buffer.style('background-color', backgroundColor);
-
-        buffer.addClass('flame-view');
-    },
-
-    render: function(buffer) {
-        this._renderElementAttributes(buffer);
-        return this._super(buffer);
     },
 
     _resolveLayoutBindings: function(layout) {
@@ -90,12 +85,12 @@ Flame.LayoutSupport = {
         this._layoutProperties.forEach(function(prop) {
             var value = layout[prop];
             // Does it look like a property path (and not e.g. '50%')?
-            if (!Ember.none(value) && 'string' === typeof value && value !== '' && isNaN(parseInt(value, 10))) {
+            if (!Ember.isNone(value) && 'string' === typeof value && value !== '' && isNaN(parseInt(value, 10))) {
                 // TODO remove the observer when view destroyed?
                 self.addObserver(value, self, function() {
-                    self.adjustLayout(prop, self.getPath(value));
+                    self.adjustLayout(prop, self.get(value));
                 });
-                layout[prop] = self.getPath(value);
+                layout[prop] = self.get(value);
             }
         });
         layout._bindingsResolved = true;
@@ -172,7 +167,9 @@ Flame.LayoutSupport = {
             newValue = value;
         } else if (increment !== undefined) {
             newValue = oldValue + increment;
-        } else throw 'Give either a new value or an increment!';
+        } else {
+            throw new Error('Give either a new value or an increment!');
+        }
 
         if (oldValue !== newValue) {
             layout[property] = newValue;

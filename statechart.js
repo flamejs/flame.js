@@ -1,8 +1,8 @@
 /*jshint loopfunc: true */
 
 Flame.State = Ember.Object.extend({
-    gotoState: function(stateName) {
-        this.get('owner').gotoState(stateName);
+    gotoFlameState: function(stateName) {
+        this.get('owner').gotoFlameState(stateName);
     },
 
     // Touch events sometimes hide useful data in an originalEvent sub-hash.
@@ -39,18 +39,17 @@ Flame.State = Ember.Object.extend({
 });
 
 Flame.State.reopenClass({
-    gotoHandler: function(stateName, returnValue) {
+    gotoFlameState: function(stateName, returnValue) {
         return function() {
-            this.gotoState(stateName);
+            this.gotoFlameState(stateName);
             return returnValue === undefined ? true : returnValue;
         };
     }
 });
 
 Flame.Statechart = {
-    initialState: null,
-    currentState: undefined,
-    _currentStateName: undefined,
+    initialFlameState: null,
+    currentFlameState: undefined,
 
     init: function() {
         this._super();
@@ -60,12 +59,12 @@ Flame.Statechart = {
         for (key in this) {
             var state = this[key];
             if (Flame.State.detect(state)) {
-                this.set(key, state.create({owner: this}));
+                this.set(key, state.create({ owner: this, name: key }));
                 this._setupProxyMethods(this[key]);
             }
         }
-        Ember.assert("No initial state defined for statechart!", !Ember.none(this.get('initialState')));
-        this.gotoState(this.get('initialState'));
+        Ember.assert('No initial state defined for statechart!', !Ember.isNone(this.get('initialFlameState')));
+        this.gotoFlameState(this.get('initialFlameState'));
     },
 
     /**
@@ -88,39 +87,29 @@ Flame.Statechart = {
         }
     },
 
-    gotoState: function(stateName) {
-        Ember.assert("Cannot go to an undefined or null state!", !Ember.none(stateName));
-        var currentState = this.get('currentState');
+    gotoFlameState: function(stateName) {
+        Ember.assert("Cannot go to an undefined or null state!", !Ember.isNone(stateName));
+        var currentFlameState = this.get('currentFlameState');
         var newState = this.get(stateName);
         //do nothing if we are already in the state to go to
-        if (currentState === newState) {
+        if (currentFlameState === newState) {
             return;
         }
-        if (!Ember.none(newState) && newState instanceof Flame.State) {
-            if (!Ember.none(currentState)) {
-                if (currentState.exitState) currentState.exitState();
+        if (!Ember.isNone(newState) && newState instanceof Flame.State) {
+            if (!Ember.isNone(currentFlameState)) {
+                if (currentFlameState.exitState) currentFlameState.exitState();
             }
-            this._currentStateName = stateName;
-            this.set('currentState', newState);
+            this.set('currentFlameState', newState);
             if (newState.enterState) newState.enterState();
         } else {
             throw new Error("%@ is not a state!".fmt(stateName));
         }
     },
 
-    /**
-     * Is this state chart currently in a state with the given name?
-     * @param stateName
-     * @returns {Boolean} is this statechart currently in a state with the given name?
-     */
-    isCurrentlyIn: function(stateName) {
-        return this._currentStateName === stateName;
-    },
-
     invokeStateMethod: function(methodName, args) {
         args = Array.prototype.slice.call(arguments); args.shift();
-        var state = this.get('currentState');
-        Ember.assert("Cannot invoke state method without having a current state!", !Ember.none(state) && state instanceof Flame.State);
+        var state = this.get('currentFlameState');
+        Ember.assert("Cannot invoke state method without having a current state!", !Ember.isNone(state) && state instanceof Flame.State);
         var method = state[methodName];
         if (Ember.typeOf(method) === "function") {
             return method.apply(state, args);
