@@ -43,14 +43,14 @@
         return computed;
     };
 
-    Flame.computed.IS_PATH_REGEX = /[\.]/;
-    Flame.computed.PATH_SPLIT_REGEX = /([^\.]+)(\..*)/;
+    var IS_PATH_REGEX = /[\.]/,
+        PATH_SPLIT_REGEX = /([^\.]+)(\..*)/;
 
     function createProperty(target, propertyName, property, macro) {
         var rest = '';
 
-        if (Flame.computed.IS_PATH_REGEX.test(property)) {
-            var match = property.match(Flame.computed.PATH_SPLIT_REGEX);
+        if (IS_PATH_REGEX.test(property)) {
+            var match = property.match(PATH_SPLIT_REGEX);
             property = match[1];
             rest = match[2];
         }
