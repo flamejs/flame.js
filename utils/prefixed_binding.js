@@ -53,10 +53,7 @@
 
 Ember.mixin(Ember.Binding.prototype, {
     connect: function(obj) {
-        var m = this._from.match(/^(\^|\$)/);
-        if (!m) {  // If not a prefixed binding, connect normally
-            return this._super(obj);
-        }
+        if (!/^(\^|\$)/.test(this._from)) return this._super(obj);
     }
 });
 

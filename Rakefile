@@ -26,7 +26,7 @@ task :build => :clean do
   end
 
   # Used by image-url in sass
-  def image_path(image, options={})
+  def image_path(image, options = {})
     image_path = ENV['image_path'].dup
     image_path << '/' unless image_path =~ /(\/$)|(^$)/
     image_path = '../' if image_path == ''

@@ -81,18 +81,17 @@ Flame.LayoutSupport = {
 
     _resolveLayoutBindings: function(layout) {
         if (layout._bindingsResolved) return;  // Only add the observers once, even if rerendered
-        var self = this;
         this._layoutProperties.forEach(function(prop) {
             var value = layout[prop];
             // Does it look like a property path (and not e.g. '50%')?
             if (!Ember.isNone(value) && 'string' === typeof value && value !== '' && isNaN(parseInt(value, 10))) {
                 // TODO remove the observer when view destroyed?
-                self.addObserver(value, self, function() {
-                    self.adjustLayout(prop, self.get(value));
+                this.addObserver(value, this, function() {
+                    this.adjustLayout(prop, this.get(value));
                 });
-                layout[prop] = self.get(value);
+                layout[prop] = this.get(value);
             }
-        });
+        }, this);
         layout._bindingsResolved = true;
     },
 
