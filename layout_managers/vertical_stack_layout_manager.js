@@ -24,7 +24,7 @@ Flame.VerticalStackLayoutManager = Flame.LayoutManager.extend({
         var maxHeight = view.get('layout.maxHeight');
 
         // Filter out views that are not affected by the layout manager
-        var views = view.filter(function(childView) {
+        var views = view.toArray().filter(function(childView) {
             return childView.get('ignoreLayoutManager') !== true &&
                 (childView.get('isVisible') || childView.get('isVisible') === null) && // isVisible is initially null
                 childView.get('layout');
