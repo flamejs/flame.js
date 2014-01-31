@@ -915,11 +915,11 @@ input[type="password"] {
         col {
             &.level-1 {
                 font-weight: bold;
-                @include gradient(#7CB9E3, #55A4DB);
+                @include gradient-except-ie(#7CB9E3, #55A4DB);
             }
 
             &.level-2 {
-                @include gradient(#8FC9ED, #7BC0EA);
+                @include gradient-except-ie(#8FC9ED, #7BC0EA);
             }
 
             &.level-3 {
