@@ -10,7 +10,6 @@
     background: $second;
     background: -webkit-gradient(linear, left top, left bottom, from($first), to($second));
     background: -moz-linear-gradient(top, $first, $second);
-    background: -ms-linear-gradient(top, $first, $second);
 }
 
 @mixin horizontal-gradient($first, $second) {
@@ -40,7 +39,7 @@
 }
 
 @mixin box-shadow($xOffset, $yOffset, $blurRadius, $color) {
-    box-shadow: #{$xOffset}px #{$yOffset}px #{$blurRadius / 2}px $color;
+    box-shadow: #{$xOffset}px #{$yOffset}px #{$blurRadius}px $color;
     -webkit-box-shadow: #{$xOffset}px #{$yOffset}px #{$blurRadius}px $color;
 }
 
