@@ -2,11 +2,13 @@ Flame.FocusSupport = {
     // To make text fields/areas behave consistently with our concept of key responder, we have to also
     // tell the browser to focus/blur the input field
     didBecomeKeyResponder: function() {
-        this.$().focus();
+        var $element = this.$();
+        if ($element) $element.focus();
     },
 
     didLoseKeyResponder: function() {
-        this.$().blur();
+        var $element = this.$();
+        if ($element) $element.blur();
     },
 
     focusIn: function() {
