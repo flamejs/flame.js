@@ -78,6 +78,14 @@ Flame.LazyListView = Flame.ListView.extend({
         }
     },
 
+    willDestroyElement: function() {
+        this.forEach(function(view) {
+            if (typeof view.get('contentIndex') !== 'undefined') {
+                this._recycleView(view);
+            }
+        }, this);
+    },
+
     numberOfRowsChanged: function() {
         var height = this.numberOfRows() * this.get('itemHeight');
         this.adjustLayout('height', height);
