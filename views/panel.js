@@ -232,7 +232,7 @@ Flame.Panel = Flame.RootView.extend({
             }
 
             if (anchor) {
-                this.set("layout", this._layoutRelativeTo(anchor, position));
+                this.set('layout', this._layoutRelativeTo(anchor, position));
             }
             this.get('layout').zIndex = Flame._zIndexCounter + 10;
             Flame._zIndexCounter += 100;
@@ -241,7 +241,7 @@ Flame.Panel = Flame.RootView.extend({
             this.set('isShown', true);
             this.set('isVisible', true);
             if (this.get('acceptsKeyResponder')) this.becomeKeyResponder(false);
-            this._focusDefaultInput();
+            Ember.run.scheduleOnce('afterRender', this, this._focusDefaultInput);
         }
     },
 
@@ -263,10 +263,7 @@ Flame.Panel = Flame.RootView.extend({
     },
 
     _focusDefaultInput: function() {
-        // Let Ember render the element before we focus it
-        Ember.run.next(this, function() {
-            var defaultFocus = this.firstDescendantWithProperty('isDefaultFocus');
-            if (defaultFocus) { defaultFocus.becomeKeyResponder(); }
-        });
+        var defaultFocus = this.firstDescendantWithProperty('isDefaultFocus');
+        if (defaultFocus) defaultFocus.becomeKeyResponder();
     }
 });
