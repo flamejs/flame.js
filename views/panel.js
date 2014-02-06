@@ -100,7 +100,7 @@ Flame.Panel = Flame.RootView.extend({
         layout: { bottom: 3, right: 3, height: 16, width: 16 },
         ignoreLayoutManager: true,
         classNames: ['flame-resize-thumb'],
-        isVisibleBinding: '^isResizable',
+        isVisibleBinding: 'parentView.isResizable',
         initialFlameState: 'idle',
 
         idle: Flame.State.extend({
