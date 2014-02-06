@@ -65,6 +65,7 @@
         }
 
         Ember.assert("Could not find property '%@' in ancestor views".fmt(property), view);
+        Ember.assert("Don't use Flame.computed.nearest to fetch a property from the parent view", path !== 'parentView');
 
         path += '.' + property + rest;
 

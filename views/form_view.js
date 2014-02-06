@@ -129,7 +129,7 @@ Flame.FormView = Flame.View.extend({
         }
         properties.layout.top = this._focusRingMargin;
 
-        //if an explicit target is set, we don't want the default targetBinding to be used
+        // if an explicit target is set, we don't want the default targetBinding to be used
         if (descriptor.target) {
             delete properties.targetBinding;
         }
@@ -224,7 +224,7 @@ Flame.FormView = Flame.View.extend({
         var object = this.get('object');
         var settings = {
             layout: { topPadding: 1, bottomPadding: 1, width: this.get('controlWidth') },
-            valueBinding: '^object.%@'.fmt(property),
+            valueBinding: 'parentView.parentView.object.%@'.fmt(property),
             isValid: Ember.computed.notEqual('parentView.parentView.object.%@IsValid'.fmt(property), false),
             isDisabled: descriptor.isDisabled ? descriptor.isDisabled : Ember.computed.equal('parentView.parentView.object.%@IsDisabled'.fmt(property), true)
         };

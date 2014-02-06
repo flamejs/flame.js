@@ -23,10 +23,10 @@ Flame.TextAreaView = Flame.View.extend({
         // there's no validator attached) so it doesn't make sense to show it as invalid.
         isValid: null,
         isInvalid: Ember.computed.equal('isValid', false),
-        valueBinding: '^value',
-        placeholderBinding: '^placeholder',
-        isVisibleBinding: '^isVisible',
-        disabledBinding: '^isDisabled',
+        value: Ember.computed.alias('parentView.value'),
+        placeholder: Ember.computed.alias('parentView.placeholder'),
+        isVisible: Ember.computed.alias('parentView.isVisible'),
+        disabled: Ember.computed.alias('parentView.isDisabled'),
 
         keyDown: function() { return false; },
         keyUp: function() {

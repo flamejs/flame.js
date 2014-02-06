@@ -83,6 +83,7 @@ Flame.reopen({
                         prefix = this._lookupPathToProperty(view, property);
                     }
                     Ember.assert("Property '%@' was not found!".fmt(property), !Ember.isNone(prefix));
+                    Ember.assert("Don't use prefixed bindings to bind to a value in the parent view", prefix !== 'parentView.' + property);
 
                     var finalPath = prefix + suffix;
                     // Copy transformations and the ilk.
