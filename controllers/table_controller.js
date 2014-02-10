@@ -129,9 +129,8 @@ Flame.TableController = Ember.Object.extend({
     },
 
     // Translate a path to an index in the 2-dimensional grid of data
-    // see path documentation in table_data.rb for more information
     indexFromPath: function(path) {
-        var mapping = this.get("_indexFromPathMapping");
+        var mapping = this.get('_indexFromPathMapping');
         return mapping[path.row][path.column];
     },
 
@@ -167,7 +166,7 @@ Flame.TableController = Ember.Object.extend({
             // fill this.data with nulls, will be fetched lazily later
             var rowLength = this.get('rowLeafs').length;
             var columnLength = this.get('columnLeafs').length;
-            for (i = 0; i < rowLength; i++) {
+            for (var i = 0; i < rowLength; i++) {
                 data.push([]);
                 for (var j = 0; j < columnLength; j++) {
                     data[i].push(null);
