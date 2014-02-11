@@ -26,6 +26,7 @@ Flame.SelectButtonView = Flame.ButtonView.extend({
     }.observes('items'),
 
     _findItem: function(itemList) {
+        // TODO Rewrite this to return a path to the item or an empty array in case no item can be found.
         if (!itemList) itemList = this.get('items');
         var itemValueKey = this.get('itemValueKey'),
             value = this.get('value'),
