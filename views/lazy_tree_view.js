@@ -16,11 +16,19 @@
 Flame.LazyTreeView = Flame.LazyListView.extend({
     classNames: 'flame-tree-view flame-lazy-tree-view'.w(),
     itemViewClass: Flame.LazyTreeItemView,
+    _rowToItemCache: null,
+    _itemToRowCache: null,
+    _itemToLevelCache: null,
+    _itemToParentCache: null,
+    _expandedItems: null,
+    _numberOfCachedRows: null,
 
     init: function() {
-        this._super();
         this._invalidateRowCache();
         this._expandedItems = Ember.Set.create();
+        // Call the super-constructor last as Flame.ListView constructor calls #_selectionDidChange() which causes
+        // calls to #_setIsSelectedStatus() that calls #rowForItem() which expects the caches to be set up.
+        this._super();
     },
 
     // override this to temporarily disable re-ordering

@@ -52,12 +52,15 @@ Flame.MenuItem.prototype.closeSubMenu = function() {
 };
 
 /**
-  A menu. Can be shown as a "stand-alone" menu or in cooperation with a SelectButtonView.
-
-  MenuView has a property 'subMenuKey'. Should objects based on which the menu is created return null/undefined for
-  that property, the item itself will be selectable. Otherwise if the property has more than zero values, a submenu
-  will be shown.
-*/
+ * A menu. Can be shown as a "stand-alone" menu or in cooperation with a SelectButtonView.
+ *
+ * MenuView has a property 'subMenuKey'. Should objects based on which the menu is created return null/undefined for
+ * that property, the item itself will be selectable. Otherwise if the property has more than zero values, a submenu
+ * will be shown.
+ *
+ * Because of the implementation details, this menu will hold values of undefined or null as the same as not set. Thus,
+ * no selectable menu item must have such value their value.
+ */
 Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     classNames: ['flame-menu'],
     childViews: ['contentView'],
@@ -81,12 +84,13 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     _allItemsDoNotFit: true,
     _anchorElement: null,
     _menuItems: null,
-    highlightIndex: -1, // Currently highlighted index.
-    userHighlightIndex: -1, // User selected highlighted index
+    _highlightIndex: -1, // Currently highlighted index.
+    _userHighlightIndex: -1, // User selected highlighted index
     // Reflects the content item in this menu or the deepest currently open submenu that is currently highlighted,
     // regardless of whether mouse button is up or down. When mouse button is released, this will be set as the real
     // selection on the top-most menu, unless it's undefined (happens if currently on a non-selectable item)
-    internalSelection: undefined,
+    // This is to be handled as a unmodifiable object: always create a new object instead of mutating its properties.
+    _internalSelection: { isSet: false, value: null },
 
     init: function() {
         this._super();
@@ -115,12 +119,13 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
             itemValueKey = this.get("itemValueKey"),
             subMenuKey = this.get("subMenuKey"),
             selectedValue = this.get("value"),
+            valueIsSet = !Ember.isNone(selectedValue),
             menuItems;
         menuItems = (items || []).map(function(item, i) {
             // Only show the selection on the main menu, not in the submenus.
             return new Flame.MenuItem({
                 item: item,
-                isSelected: Ember.get(item, itemValueKey) === selectedValue,
+                isSelected: valueIsSet ? Ember.get(item, itemValueKey) === selectedValue: false,
                 isDisabled: Ember.get(item, itemEnabledKey) === false,
                 isChecked: Ember.get(item, itemCheckedKey),
                 subMenuItems: Ember.get(item, subMenuKey),
@@ -136,7 +141,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
         this.set("_menuItems", menuItems);
         if (Ember.isNone(this.get("parentMenu"))) {
             menuItems.forEach(function(item, i) {
-                if (item.isSelected) this.set("highlightIndex", i);
+                if (item.isSelected) this.set("_highlightIndex", i);
             }, this);
         }
         this.get("contentView").setScrolledView(this._createMenuView());
@@ -165,12 +170,12 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
             parentMenu.makeSelection();
             this.close();
         } else {
-            var internalSelection = this.get('internalSelection');
-            if (typeof internalSelection !== "undefined") {
-                value = Ember.get(internalSelection, this.get("itemValueKey"));
+            var internalSelection = this.get("_internalSelection");
+            if (internalSelection.isSet) {
+                value = Ember.get(internalSelection.value, this.get("itemValueKey"));
                 this.set("value", value);
                 // If we have an action, call it on the selection.
-                action = Ember.get(internalSelection, this.get("itemActionKey")) || this.get('action');
+                action = Ember.get(internalSelection.value, this.get("itemActionKey")) || this.get('action');
             }
             // Sync the values before we tear down all bindings in close() which calls destroy().
             Ember.run.sync();
@@ -202,7 +207,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
         // this menu. Close() sets highlightIndex to -1, _highlightWillChange() will call closeSubMenu() on the item
         // which then calls close() on the menu it depicts and this is continued until no open menus remain under the
         // closed menu.
-        var index = this.get("highlightIndex");
+        var index = this.get("_highlightIndex");
         if (index >= 0) {
             this.get("_menuItems").objectAt(index).closeSubMenu();
         }
@@ -259,7 +264,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
 
     close: function() {
         if (this.isDestroyed) { return; }
-        this.set("highlightIndex", -1);
+        this.set("_highlightIndex", -1);
         this._clearKeySearch();
         this._super();
     },
@@ -326,17 +331,17 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
             return;
         }
 
-        this.set("highlightIndex", index);
+        this.set("_highlightIndex", index);
         // This will currently select the item even if we're not on the the current menu. Will need to figure out how
         // to deselect an item when cursor leaves the menu totally (that is, does not move to a sub-menu).
-        if (this.get('userHighlightIndex') >= 0) {
+        if (this.get("_userHighlightIndex") >= 0) {
             this.makeSelection();
         }
         return true;
     },
 
     mouseEntered: function(index) {
-        this.set("userHighlightIndex", index);
+        this.set("_userHighlightIndex", index);
         this._tryOpenSubmenu(false);
         return true;
     },
@@ -345,11 +350,11 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
         var menuItems = this.get("_menuItems");
         var len = menuItems.get("length");
         var item;
-        var index = this.get("highlightIndex") + increment;
+        var index = this.get("_highlightIndex") + increment;
         for (; index >= 0 && index < len; index += increment) {
             item = menuItems.objectAt(index);
             if (item.isEnabled()) {
-                this.set("highlightIndex", index);
+                this.set("_highlightIndex", index);
                 break;
             }
         }
@@ -365,16 +370,16 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
                 return Ember.get(item, valueKey) === value;
             });
             if (index >= 0) {
-                this.set("highlightIndex", index);
+                this.set("_highlightIndex", index);
             }
         }
     }.observes("value"),
 
     // Propagate internal selection to possible parent
     _internalSelectionDidChange: function() {
-        var selected = this.get('internalSelection');
-        Ember.trySet(this, 'parentMenu.internalSelection', selected);
-    }.observes('internalSelection'),
+        var selected = this.get("_internalSelection");
+        Ember.trySet(this, "parentMenu._internalSelection", selected);
+    }.observes("_internalSelection"),
 
     _findIndex: function(identityFunc) {
         var menuItems = this.get("items");
@@ -401,29 +406,29 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     },
 
     _highlightWillChange: function() {
-        var index = this.get("highlightIndex");
+        var index = this.get("_highlightIndex");
         var lastItem = this.get("_menuItems").objectAt(index);
         if (!Ember.isNone(lastItem)) {
             this._toggleClass("is-selected", index);
             lastItem.isSelected = false;
             lastItem.closeSubMenu();
         }
-    }.observesBefore('highlightIndex'),
+    }.observesBefore("_highlightIndex"),
 
     _highlightDidChange: function() {
-        var index = this.get("highlightIndex");
+        var index = this.get("_highlightIndex");
         var newItem = this.get("_menuItems").objectAt(index);
-        var internalSelection;
+        var internalSelection = { isSet: false, value: null };
         if (!Ember.isNone(newItem)) {
             this._toggleClass("is-selected", index);
             newItem.isSelected = true;
             if (newItem.isSelectable()) {
-                internalSelection = newItem.item;
+                internalSelection = { isSet: true, value: newItem.item };
             }
         }
-        this.set('internalSelection', internalSelection);
+        this.set("_internalSelection", internalSelection);
 
-    }.observes('highlightIndex'),
+    }.observes("_highlightIndex"),
 
     /**
       We only want to allow selecting menu items after the user has moved the mouse. We update
@@ -434,8 +439,8 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
       would be triggered on a menu item, and this would cause the menu to close immediately.
     */
     _userHighlightIndexDidChange: function() {
-        this.set('highlightIndex', this.get('userHighlightIndex'));
-    }.observes("userHighlightIndex"),
+        this.set("_highlightIndex", this.get("_userHighlightIndex"));
+    }.observes("_userHighlightIndex"),
 
     _clearKeySearch: function() {
         if (!Ember.isNone(this._timer)) {
@@ -448,7 +453,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
         this._searchKey = (this._searchKey || "") + key;
         var index = this._findByName(this._searchKey);
         if (index >= 0) {
-            this.set("highlightIndex", index);
+            this.set("_highlightIndex", index);
         }
 
         if (!Ember.isNone(this._timer)) {
@@ -468,7 +473,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     },
 
     _tryOpenSubmenu: function (selectItem) {
-        var index = this.get("highlightIndex");
+        var index = this.get("_highlightIndex");
         var item = this.get("_menuItems").objectAt(index);
         if (!item) {
             return false;
