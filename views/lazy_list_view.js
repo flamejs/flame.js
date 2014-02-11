@@ -65,7 +65,7 @@ Flame.LazyListView = Flame.ListView.extend({
     // Some browsers reset the scroll position when the `block` CSS property has
     // changed without firing a scroll event.
     didInsertElement: function() {
-        Ember.run.scheduleOnce('afterRender', this, this._updateScrollPosition);
+        this._updateScrollPosition();
     },
 
     _updateScrollPosition: function() {
