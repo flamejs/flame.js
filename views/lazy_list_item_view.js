@@ -37,9 +37,9 @@ Flame.LazyListItemView = Flame.ListItemView.extend(Flame.Statechart, {
     initialState: 'idle',
 
     init: function() {
-        this._super();
         // Don't rerender the item view when the content changes
         this.set('displayProperties', []);
+        this._super();
     },
 
     mouseDown: function(event) {
