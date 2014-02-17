@@ -227,7 +227,7 @@ Flame.Validatable = Ember.Mixin.create({
 
         // Standard bailout, either the property wasn't of the form fooIsValid or we don't have property foo in
         // this.validations.
-        if (this._super) return this._super(key);
+        if (this.__nextSuper) return this._super(key);
     },
 
     setUnknownProperty: function(key, value) {
@@ -242,7 +242,7 @@ Flame.Validatable = Ember.Mixin.create({
         }
         // Standard bailout, either the property wasn't of the form fooIsValid or we don't have property foo in
         // this.validations.
-        if (this._super) return this._super(key, value);
+        if (this.__nextSuper) return this._super(key, value);
 
         Ember.defineProperty(this, key);
         return this.set(key, value);
