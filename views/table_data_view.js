@@ -300,7 +300,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             if (!dataCell.showEditor(selectedCell, owner, owner.get('content'))) {
                 // No special editor, use one of the defaults
                 if (options) { // Drop down menu for fields with a fixed set of options
-                    var menu = Flame.MenuView.create({
+                    var menu = Flame.MenuView.createWithMixins({
                         minWidth: selectedCell.outerWidth(),
                         parent: owner, // Reference to the cube table view
                         items: options.map(function(o) {
