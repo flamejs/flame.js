@@ -108,7 +108,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                 var columnDimensions = Flame.measureString(columnDataAsString, 'ember-view');
 
                 var isBold = target.closest('td').css('font-weight') === 'bold';
-                var headerLabelDimensions = Flame.measureString(owner.getLeafHeaderLabel(header), 'ember-view', 'label', isBold ? "font-weight:bold;" : '');
+                var headerLabelDimensions = Flame.measureString(owner.getLeafHeaderLabel(header), 'ember-view', 'label', isBold ? 'font-weight:bold;' : '');
 
                 var width = Math.max(columnDimensions.width, headerLabelDimensions.width) + 40;
 
