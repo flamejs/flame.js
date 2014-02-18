@@ -28,8 +28,8 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
         templateContext: function(key, value) {
             return value !== undefined ? value : Ember.get(this, 'content');
         }.property('content'),
-        templateBinding: "parentView.template",
-        handlebars: "{{view.title}}"
+        templateBinding: 'parentView.template',
+        handlebars: '{{view.title}}'
     }),
 
     selectIndex: function(index) {
@@ -156,7 +156,6 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
             // but only if reordering is generally allowed for this list view and for the particular item
             if (owner.get('allowReordering') && itemIndex !== undefined) {
                 if (owner.allowReorderingItem(itemIndex)) {
-                    //console.log('Drag started on %s, dragging %s items', itemIndex, itemCount);
                     var childView = owner.objectAt(itemIndex);
                     owner.set('dragHelper', Flame.ListViewDragHelper.create({
                         listView: owner,

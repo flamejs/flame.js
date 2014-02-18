@@ -206,13 +206,14 @@ Flame.Panel = Flame.RootView.extend({
         }
 
         // Make sure the panel is still within the viewport horizontally ...
-        var _window = Ember.$(window);
-        if (layout.left + layout.width > _window.width() - 10) {
-            layout.left = _window.width() - layout.width - 10;
+        var $window = Ember.$(window);
+        var windowWidth = $window.width();
+        if (layout.left + layout.width > windowWidth - 10) {
+            layout.left = windowWidth - layout.width - 10;
             layout.movedX = true;
         }
         // ... and vertically
-        if ((position & Flame.POSITION_BELOW && (layout.top + layout.height > _window.height() - 10) && offset.top - layout.height >= 0) ||
+        if ((position & Flame.POSITION_BELOW && (layout.top + layout.height > $window.height() - 10) && offset.top - layout.height >= 0) ||
             (position & Flame.POSITION_ABOVE && (layout.top < 0))) {
             layout.movedY = true;
         } else if (layout.top < 0) {
@@ -246,7 +247,7 @@ Flame.Panel = Flame.RootView.extend({
     },
 
     close: function() {
-        if (this.isDestroyed) { return; }
+        if (this.isDestroyed) return;
         if (this.get('isShown')) {
             if (this.get('isModal')) {
                 this.get('_modalPane').remove();
