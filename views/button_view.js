@@ -40,8 +40,11 @@ Flame.ButtonView = Flame.View.extend(Flame.ActionSupport, Flame.Statechart, {
 
         simulateClick: function() {
             this.gotoFlameState('hover');
-            this.get('owner').simulateClick();
-            Ember.run.later(this.get('owner'), 'mouseLeave', 150);
+            this.get('owner').mouseDown();
+            Ember.run.later(this.get('owner'), function() {
+                this.mouseUp();
+                this.mouseLeave();
+            }, 150);
         }
     }),
 
