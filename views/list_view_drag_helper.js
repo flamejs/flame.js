@@ -120,19 +120,21 @@ Flame.ListViewDragHelper = Ember.Object.extend({
     // to match the current item position in a tree view.
     _updateCss: function() {
         var draggedElement = this.itemPath.getView().$();
-        var rootOffsetLeft = this.clone.offsetParent().offset().left;
+        if (draggedElement) {
+            var rootOffsetLeft = this.clone.offsetParent().offset().left;
 
-        this.clone.attr('class', draggedElement.attr('class') + ' is-dragged-clone');
-        this.clone.css('left', draggedElement.offset().left - rootOffsetLeft);
+            this.clone.attr('class', draggedElement.attr('class') + ' is-dragged-clone');
+            this.clone.css('left', draggedElement.offset().left - rootOffsetLeft);
 
-        var originals = this.itemPath.getView().$().find('.flame-tree-item-view', '.flame-tree-view');
-        var children = this.clone.find('.flame-tree-item-view', '.flame-tree-view');
-        children.each(function(i) {
-            var element = jQuery(this), origElement = jQuery(originals.get(i));
-            element.attr('class', origElement.attr('class'));
-            rootOffsetLeft = element.offsetParent().offset().left;
-            element.css('left', origElement.offset().left - rootOffsetLeft);
-        });
+            var originals = this.itemPath.getView().$().find('.flame-tree-item-view', '.flame-tree-view');
+            var children = this.clone.find('.flame-tree-item-view', '.flame-tree-view');
+            children.each(function(i) {
+                var element = jQuery(this), origElement = jQuery(originals.get(i));
+                element.attr('class', origElement.attr('class'));
+                rootOffsetLeft = element.offsetParent().offset().left;
+                element.css('left', origElement.offset().left - rootOffsetLeft);
+            });
+        }
     },
 
     // Moves the dragged element in the list/tree to a new location, possibly under a new parent
@@ -159,25 +161,24 @@ Flame.ListViewDragHelper = Ember.Object.extend({
         element.detach();
 
         // Then insert them under the new parent, at the correct position
-        var targetIndex = targetView.get('contentIndex');
+        var contentIndex = targetView.get('contentIndex'), targetIndex;
         if (targetPath.position === 'b') {
             element.insertBefore(targetElement);
-            targetParent.insertAt(targetIndex, view);
-            targetContent.insertAt(targetIndex, contentItem);
+            targetIndex = contentIndex;
         } else if (targetPath.position === 'a') {
             element.insertAfter(targetElement);
-            targetParent.insertAt(targetIndex+1, view);
-            targetContent.insertAt(targetIndex+1, contentItem);
+            targetIndex = contentIndex + 1;
         } else if (targetPath.position === 'i') {
             targetElement.find('.flame-list-view').first().prepend(element);
-            targetParent.insertAt(0, view);
-            targetContent.insertAt(0, contentItem);
+            targetIndex = 0;
         } else throw new Error('Invalid insert position ' + targetPath.position);
+        view.set('_parentView', targetParent);
+        targetParent.insertAt(targetIndex, view);
+        targetContent.insertAt(targetIndex, contentItem);
 
         if (sourceContent === targetContent && sourceContent.endMoving) sourceContent.endMoving();
         // We need to do this manually because ListView suppresses the childViews observers while dragging,
         // so that we can do the entire DOM manipulation ourselves here without the list view interfering.
-        view.set('_parentView', targetParent);
         targetParent._updateContentIndexes();
     },
 
