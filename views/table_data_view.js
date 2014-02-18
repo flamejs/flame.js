@@ -6,6 +6,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
     _updateCounter: 0,
     selectedCell: null,
     editValue: null,
+    content: null,
 
     initialFlameState: 'loaded',
 

@@ -38,6 +38,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
 
     tableDataView: Flame.TableDataView.extend({
         dataBinding: '^content._data',
+        content: Ember.computed.alias('parentView.content'),
         dirtyCells: Ember.computed.alias('parentView.content.dirtyCells'),
         areValuesOnRows: Ember.computed.alias('parentView.content.areValuesOnRows'),
         totalRowIds: Ember.computed.alias('parentView.content.totalRowIds'),
