@@ -197,6 +197,8 @@ Flame.FormView = Flame.View.extend({
         var controls = this.toArray().mapProperty('childViews').flatten().filter(function(view) {
             return view.get('acceptsKeyResponder') && view.get('isVisible');
         });
+        if (Ember.isEmpty(controls)) return;
+
         // Pick out the next or previous control
         var index = controls.indexOf(view);
         index += direction;
