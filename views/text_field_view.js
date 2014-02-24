@@ -62,6 +62,12 @@ Flame.TextFieldView = Flame.View.extend(Flame.ActionSupport, {
     isVisible: true,
     isDisabled: false,
     name: null,
+    /**
+      It might be that setting the value is very costly. In that case, instead of
+      setting the value on each key up, when `setValueOnEachKeyUp` is set to false
+      the value is only set after typing has stopped for the value set in `_setValueDelay`.
+    */
+    setValueOnEachKeyUp: true,
 
     becomeKeyResponder: function() {
         this.get('textField').becomeKeyResponder();

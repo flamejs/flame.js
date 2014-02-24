@@ -178,7 +178,7 @@ Flame.FormView = Flame.View.extend({
                         isVisibleBinding: 'parentView.isVisible'
                     }).append();
 
-                    this.set("_errorView", errorView);
+                    this.set('_errorView', errorView);
                     self.get('_errorViews').pushObject(errorView);
                 }
             }.observes("isValid")
@@ -277,6 +277,7 @@ Flame.FormView = Flame.View.extend({
                     settings.autocompleteDelegate = descriptor.autocompleteDelegate;
                     return Flame.AutocompleteTextFieldView.extend(settings);
                 }
+                if (descriptor.setValueOnEachKeyUp === false) settings.setValueOnEachKeyUp = false;
                 return Flame.TextFieldView.extend(settings);
             case 'textarea':
                 settings.layout.height = descriptor.height || 70;

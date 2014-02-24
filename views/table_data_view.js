@@ -400,12 +400,12 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         var scrollTop = scrollable.scrollTop();
         var scrollLeft = scrollable.scrollLeft();
 
-        var offset = jQuery.browser.webkit ? 1 : 2;
+        var offset = jQuery.browser.webkit ? 0 : 1;
         selection.css({
             left: position.left + scrollLeft - offset + 'px',
             top: position.top + scrollTop - offset + 'px',
-            width: selectedCell.outerWidth() - 3 + 'px',
-            height: selectedCell.outerHeight() - 1 + 'px'
+            width: selectedCell.outerWidth() - 5 + 'px',
+            height: selectedCell.outerHeight() - 3 + 'px'
         });
 
         // Ensure the selection is within the visible area of the scrollview
