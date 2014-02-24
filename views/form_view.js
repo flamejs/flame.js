@@ -178,7 +178,7 @@ Flame.FormView = Flame.View.extend({
                         isVisibleBinding: 'parentView.isVisible'
                     }).append();
 
-                    this.set("_errorView", errorView);
+                    this.set('_errorView', errorView);
                     self.get('_errorViews').pushObject(errorView);
                 }
             }.observes("isValid")
@@ -276,6 +276,7 @@ Flame.FormView = Flame.View.extend({
                     settings.isAutocomplete = true;
                     settings.autocompleteDelegate = descriptor.autocompleteDelegate;
                 }
+                if (descriptor.setValueOnEachKeyUp === false) settings.setValueOnEachKeyUp = false;
                 settings.name = Ember.isNone(descriptor.name) ? descriptor.property : descriptor.name;
                 return Flame.TextFieldView.extend(settings);
             case 'textarea':

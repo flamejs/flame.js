@@ -22,6 +22,12 @@ Flame.TextFieldView = Flame.View.extend(Flame.ActionSupport, {
     isAutocomplete: false,
     autocompleteDelegate: null,
     name: null,
+    /**
+      It might be that setting the value is very costly. In that case, instead of
+      setting the value on each key up, when `setValueOnEachKeyUp` is set to false
+      the value is only set after typing has stopped for the value set in `_setValueDelay`.
+    */
+    setValueOnEachKeyUp: true,
 
     becomeKeyResponder: function() {
         this.get('textField').becomeKeyResponder();
@@ -44,15 +50,37 @@ Flame.TextFieldView = Flame.View.extend(Flame.ActionSupport, {
         isAutocomplete: Ember.computed.alias('parentView.isAutocomplete'),
         attributeBindings: ['name', 'disabled'],
         name: Ember.computed.alias('parentView.name'),
+        _setValueDelay: 700,
+        _timer: null,
 
-        // Ember.TextSupport (which is mixed in by Ember.TextField) calls interpretKeyEvents on keyUp.
-        // Since the event manager already calls interpretKeyEvents on keyDown, the action would be fired
-        // twice, both on keyDown and keyUp. So we override the keyUp method and only record the value change.
+        init: function() {
+            this._super();
+            // This would normally call `interpretKeyEvents`, but Flame.EventManager
+            // already does this on `keyDown`.
+            this.off('keyUp');
+            this.off('input');
+            this.on('input', this, this._setValue);
+        },
+
+        _elementValueDidChange: function() {
+            if (this._timer) Ember.run.cancel(this._timer);
+            this._super();
+        },
+
+        _setValue: function() {
+            if (this.get('parentView.setValueOnEachKeyUp')) {
+                this._elementValueDidChange();
+            } else {
+                if (this._timer) Ember.run.cancel(this._timer);
+                this._timer = Ember.run.later(this, function() {
+                    this.set('value', this.$().val());
+                }, this._setValueDelay);
+            }
+        },
+
         keyUp: function(event) {
-            this._elementValueDidChange();
             if ((event.which === 8 || event.which > 31) && this.get('isAutocomplete')) {
                 this.get('parentView')._fetchAutocompleteResults();
-                return true;
             }
             return false;
         },

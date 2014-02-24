@@ -18,7 +18,7 @@ Flame.StringUtil = (function() {
         return rawString.replace(/[\^$*+?.(){}\[\]|]/g, "\\$&");
     }
 
-    return  {
+    return {
         compare: compare,
         /**
          * Compare two strings in case-insensitive way:
