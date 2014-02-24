@@ -19,6 +19,7 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
     selection: undefined,
     initialState: 'idle',
     reorderDelegate: null,
+    _minimumDeltaToStartDrag: 4,
     init: function() {
         this._super();
         this._selectionDidChange();
@@ -130,13 +131,13 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
 
     childViewsWillChange: function() {
         if (!this.getPath('rootTreeView.isDragging')) {
-            return this._super.apply(this, arguments);
+            this._super.apply(this, arguments);
         }
     },
 
     childViewsDidChange: function() {
         if (!this.getPath('rootTreeView.isDragging')) {
-            return this._super.apply(this, arguments);
+            this._super.apply(this, arguments);
         }
     },
 
@@ -162,6 +163,7 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
                     owner.set('dragHelper', Flame.ListViewDragHelper.create({
                         listView: owner,
                         lastPageX: evt.pageX,
+                        lastPageY: evt.pageY,
                         yOffset: evt.pageY - childView.$().offset().top,
                         itemPath: [itemIndex]
                     }));
@@ -179,6 +181,18 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
         }
     }),
 
+    _shouldStartDragging: function(event) {
+        var dragHelper = this.get('dragHelper');
+        if (dragHelper) {
+            // Only enter reordering state if it was allowed, indicated by the presence of dragHelper and then only if
+            // we've moved the mouse enough from the start.
+            var deltaX = Math.abs(dragHelper.get("lastPageX") - event.pageX);
+            var deltaY = Math.abs(dragHelper.get("lastPageY") - event.pageY);
+            return deltaX > this._minimumDeltaToStartDrag || deltaY > this._minimumDeltaToStartDrag;
+        }
+        return false;
+    },
+
     // This is here so that we can override the behaviour in tree views
     startReordering: function(dragHelper, event) {
         dragHelper.set('listView', this);
@@ -193,8 +207,8 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
 
         mouseMove: function(event) {
             var owner = this.get('owner');
-            if (owner.get('dragHelper')) {  // Only enter reordering state if it was allowed, indicated by the presence of dragHelper
-                var dragHelper = owner.get('dragHelper');
+            var dragHelper = owner.get('dragHelper');
+            if (owner._shouldStartDragging(event)) {
                 this.gotoState('idle');
                 owner.startReordering(dragHelper, event);
             }
