@@ -115,7 +115,10 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
 
                 if (width < owner.MIN_COLUMN_WIDTH) width = owner.MIN_COLUMN_WIDTH;
                 owner.setColumnWidth(header.leafIndex, width);
-
+                var resizeDelegate = owner.get('tableViewDelegate');
+                if (resizeDelegate) {
+                    resizeDelegate.columnResized(index, width);
+                }
                 return true;
             }
             return false;

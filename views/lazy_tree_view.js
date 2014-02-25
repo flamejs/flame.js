@@ -187,6 +187,7 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
                 this.viewForRow(i);
             }
         }
+        this._hideRecycledViews();
     },
 
     moveRight: function() {
