@@ -221,6 +221,10 @@ body {
         border-radius: 0px 3px 3px 0px;
         @include gradient(#dddddd, #bbbbbb);
     }
+
+    &.is-disabled > div > img {
+        @include opacity(0.4);
+    }
 }
 
 .flame-combo-box-view {
@@ -503,12 +507,6 @@ body {
 
 .align-center {
     text-align: center;
-}
-
-.flame-select-button-arrow {
-    position: absolute;
-    right: 6px;
-    top: 1px;
 }
 
 .flame-disclosure-view span {
