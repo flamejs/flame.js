@@ -12,7 +12,7 @@ Flame.RadioButtonView = Flame.CheckboxView.extend({
         return this.get('value') === this.get('targetValue');
     }.property('targetValue', 'value'),
 
-    renderCheckMark: function(context) {
-        context.push("<div class='flame-view flame-checkbox-checkmark' style='top:8px;left:8px;width:6px;height:6px;'></div>");
+    renderCheckMark: function(buffer) {
+        buffer.push('<div class="flame-view flame-checkbox-checkmark" style="top:8px;left:8px;width:6px;height:6px;"></div>');
     }
 });
