@@ -11,7 +11,7 @@ Flame.ButtonView = Flame.View.extend(Flame.ActionSupport, Flame.Statechart, {
     isSticky: false,  // If true, each click (mouseUp to be specific) toggles 'isSelected'
     initialFlameState: 'idle',
 
-    handlebars: "<label class='flame-button-label'>{{view.title}}</label>",
+    handlebars: '<label class="flame-button-label">{{view.title}}</label>',
 
     beforeRender: function(buffer) {
         var height = this.get('layout.height');
