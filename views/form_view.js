@@ -57,14 +57,23 @@ Flame.FormView = Flame.View.extend({
         var control = descriptor.view || this._buildControl(descriptor);
         var formView = this;
 
+        var view;
         if (Ember.isNone(descriptor.label)) {
-            return this._createChildViewWithLayout(control, this, this.get('leftMargin') + this._focusRingMargin, this.get('rightMargin') + this._focusRingMargin);
+            view = this._createChildViewWithLayout(control, this, this.get('leftMargin') + this._focusRingMargin, this.get('rightMargin') + this._focusRingMargin);
         }
         if (descriptor.type === 'checkbox') {
-            return this._createChildViewWithLayout(control, this, this.get('leftMargin') + this.labelWidth + this.columnSpacing - 4, this._focusRingMargin);
+            view = this._createChildViewWithLayout(control, this, this.get('leftMargin') + this.labelWidth + this.columnSpacing - 4, this._focusRingMargin);
+        }
+        if (view) {
+            // The FormView expects all controls to be within another view
+            return Flame.View.extend({
+                layoutManager: Flame.VerticalStackLayoutManager.create({ topMargin: this._focusRingMargin, spacing: 0, bottomMargin: this._focusRingMargin }),
+                childViews: ['control'],
+                control: view
+            });
         }
 
-        var view = {
+        view = {
             layout: { left: this.get('leftMargin'), right: this.get('rightMargin') },
             layoutManager: Flame.VerticalStackLayoutManager.create({ topMargin: this._focusRingMargin, spacing: 0, bottomMargin: this._focusRingMargin }),
             childViews: ['label', 'control'],
@@ -292,8 +301,8 @@ Flame.FormView = Flame.View.extend({
                 }}));
             case 'checkbox':
                 settings.title = descriptor.label;
-                settings.isSelectedBinding = settings.valueBinding;
-                delete settings.valueBinding;
+                settings.isSelected = settings.value;
+                delete settings.value;
                 return Flame.CheckboxView.extend(settings);
             case 'select':
                 settings.itemValueKey = descriptor.itemValueKey || "value";
