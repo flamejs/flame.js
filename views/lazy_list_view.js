@@ -53,11 +53,12 @@ Flame.LazyListView = Flame.ListView.extend({
     /** Do a full rerender of the ListView */
     fullRerender: function() {
         // Recycle any currently rendered views
-        this.forEach(function(view) {
+        var self = this;
+        this.forEachChildView(function(view) {
             if (typeof view.get('contentIndex') !== 'undefined') {
-                this._recycleView(view);
+                self._recycleView(view);
             }
-        }, this);
+        });
         this.numberOfRowsChanged();
         this.didScroll(this._lastScrollHeight, this._lastScrollTop);
     },
@@ -109,7 +110,9 @@ Flame.LazyListView = Flame.ListView.extend({
 
         var range = this._rowsToRenderRange(scrollHeight, scrollTop);
         var min = range.end, max = range.start;
-        this.forEach(function(view) {
+        var i, childViews = this._childViews, len = childViews.length;
+        for (i = 0; i < len; i++) {
+            var view = childViews[i];
             var contentIndex = view.get('contentIndex');
             if (typeof contentIndex !== 'undefined') {
                 if (contentIndex < range.start || contentIndex > range.end) {
@@ -120,10 +123,9 @@ Flame.LazyListView = Flame.ListView.extend({
                     max = Math.max(max, contentIndex);
                 }
             }
-        }, this);
+        }
 
         // Fill up empty gap on top
-        var i;
         if (min === range.end) min++;
         for (i = range.start; i < min; i++) {
             this.viewForRow(i);
@@ -198,13 +200,16 @@ Flame.LazyListView = Flame.ListView.extend({
             view = this.createChildView(viewClass, jQuery.extend({ useAbsolutePosition: true }, attributes || {}));
             this.pushObject(view);
         }
+        view.beginPropertyChanges();
         if (item === this.get('selection')) {
             view.set('isSelected', true);
         }
         view.set('content', item);
         view.set('contentIndex', row);
-        view.adjustLayout('top', row * itemHeight);
+        view.layout.top = row * itemHeight;
+        view.updateLayout();
         view.set('isVisible', true);
+        view.endPropertyChanges();
         return view;
     },
 
@@ -216,7 +221,8 @@ Flame.LazyListView = Flame.ListView.extend({
                     var viewArray = views[key];
                     var length = viewArray.length;
                     for (var i = 0; i < length; i++) {
-                        if (viewArray[i].get('isVisible')) viewArray[i].set('isVisible', false);
+                        var view = viewArray[i];
+                        if (view.get('isVisible')) view.set('isVisible', false);
                     }
                 }
             }

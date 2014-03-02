@@ -97,18 +97,13 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
         var isExpanded = this._expandedItems.contains(item);
         var view = this._super(row, { isExpanded: isExpanded });
         view.set('isExpanded', isExpanded);
-        var classNames = view.get('classNames');
-        var level = 'level-' + (this._itemToLevelCache.get(item) + 1);
+        var level = this._itemToLevelCache.get(item);
         // Check if we already have the correct indentation level
-        if (classNames.indexOf(level) === -1) {
-            // Remove old indentation level
-            classNames.forEach(function(className) {
-                if (/^level/.test(className)) {
-                    classNames.removeObject(className);
-                }
-            });
-            // Set correct indentation level
-            classNames.pushObject(level);
+        if (view._indentationLevel !== level) {
+            var classNames = view.get('classNames');
+            classNames.removeObject('level-' + (view._indentationLevel + 1));
+            classNames.pushObject('level-' + (level + 1));
+            view._indentationLevel = level;
         }
         return view;
     },
@@ -294,14 +289,14 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
         var to = draggingInfo.currentIndex;
         var direction = from < to ? -1 : 1;
         var itemHeight = this.get('itemHeight');
-        this.forEach(function(view) {
+        this.forEachChildView(function(view) {
             var contentIndex = view.get('contentIndex');
             if (contentIndex > from && contentIndex < to ||
                 contentIndex < from && contentIndex >= to) {
                 view.set('contentIndex', contentIndex + direction);
                 view.$().animate({top: view.get('contentIndex') * itemHeight + 'px'});
             }
-        }, this);
+        });
         if (direction < 0) to--;
         movedView.set('contentIndex', to);
         movedView.$().animate({top: to * itemHeight + 'px'});

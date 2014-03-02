@@ -37,8 +37,10 @@ Flame.ScrollView = Flame.View.extend({
         var scrollTop = this.lastScrollY;
         this.isScrolling = false;
         // Notify childViews the scrollview has scrolled
-        this.forEach(function(view) {
+        var i, childViews = this._childViews, len = childViews.length;
+        for (i = 0; i < len; i++) {
+            var view = childViews[i];
             if (view.didScroll) view.didScroll(height, scrollTop);
-        });
+        }
     }
 });
