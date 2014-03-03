@@ -52,8 +52,9 @@ Flame.ArrayTableController = Flame.DataTableController.extend(Flame.TableSortSup
                 // add observer for in-place cell refreshing
                 var propertyName = Ember.get(column, 'property');
                 var observerMethod = function() {
+                    var propertyName = Ember.get(column, 'property');
                     return function(sender, key, value) {
-                        self.pushDataBatch([{path: {row: [i], column: [j]}, value: value}]);
+                        self.pushDataBatch([{path: {row: [i], column: [j]}, value: sender.get(propertyName)}]);
                     };
                 }();
                 self._setPropertyObserver(object, propertyName, observerMethod);
