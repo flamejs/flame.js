@@ -88,16 +88,19 @@ Flame.LazyListView = Flame.ListView.extend({
     },
 
     numberOfRowsChanged: function() {
-        var height = this.numberOfRows() * this.get('itemHeight');
-        this.adjustLayout('height', height);
-
-        // In case the LazyListView has `useAbsolutePosition` set to false, `adjustLayout` will not work
-        // and we need to set the height manually.
         Ember.run.scheduleOnce('afterRender', this, this._updateHeight);
     },
 
     _updateHeight: function() {
-        if (this.$()) this.$().css('height', this.numberOfRows() * this.get('itemHeight') + 'px');
+        var height = this.numberOfRows() * this.get('itemHeight');
+        if (this.get('useAbsolutePosition')) {
+            this.adjustLayout('height', height);
+        } else {
+            // In case the LazyListView has `useAbsolutePosition` set to false, `adjustLayout` will not work
+            // and we need to set the height manually.
+            if (this.$()) this.$().css('height', height + 'px');
+            this.get('layout').height = height;
+        }
     },
 
     numberOfRows: function() {
