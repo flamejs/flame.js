@@ -657,7 +657,7 @@ input[type="password"] {
         line-height: 21px\9;
     }
 
-    & > input[disabled="disabled"] {
+    & > input[disabled="disabled"], & > [disabled] {
         color: #777;
         background-color: #ddd;
     }
