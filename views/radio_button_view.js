@@ -5,7 +5,7 @@ Flame.RadioButtonView = Flame.CheckboxView.extend({
         this.set('targetValue', this.get('value'));
     },
 
-    isSelected: function() {
+    isSelected: function(key, value) {
         if (Ember.typeOf(this.get('value')) === 'undefined' || Ember.typeOf(this.get('targetValue')) === 'undefined') {
             return false;
         }

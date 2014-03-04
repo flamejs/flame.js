@@ -85,7 +85,7 @@ Flame.ButtonView = Flame.View.extend(Flame.ActionSupport, Flame.Statechart, {
             var owner = this.get('owner');
             owner.fireAction();
             if (owner.get('isSticky')) {
-                owner.set('isSelected', !owner.get('isSelected'));
+                owner.toggleProperty('isSelected');
             }
         },
 

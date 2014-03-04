@@ -1,6 +1,6 @@
 //= require ./button_view
 
-// A checkbox. The state of the checkbox is indicated by the isSelected property
+// A checkbox. The state of the checkbox is indicated by the isSelected property.
 Flame.CheckboxView = Flame.ButtonView.extend({
     classNames: ['flame-checkbox-view'],
     isSticky: true,
