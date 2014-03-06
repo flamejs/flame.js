@@ -234,8 +234,7 @@ Flame.LazyListView = Flame.ListView.extend({
 
     /** Prepare a view to be recycled at a later point */
     _recycleView: function(view) {
-        view.set('contentIndex', undefined);
-        view.set('isSelected', false);
+        view.setProperties({ contentIndex: undefined, isSelected: false });
         var itemClass = view.get('content').constructor.toString();
         if (!this._recycledViews[itemClass]) this._recycledViews[itemClass] = [];
         this._recycledViews[itemClass].push(view);
