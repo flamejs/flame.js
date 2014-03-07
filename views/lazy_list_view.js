@@ -63,9 +63,18 @@ Flame.LazyListView = Flame.ListView.extend({
         this.didScroll(this._lastScrollHeight, this._lastScrollTop);
     },
 
-    // Some browsers reset the scroll position when the `block` CSS property has
-    // changed without firing a scroll event.
+    // Some browsers reset the scroll position when the `display` CSS property
+    // has changed without firing a scroll event.
     didInsertElement: function() {
+        this._updateScrollPosition();
+    },
+
+    // Normally the scroll position is updated in `didInsertElement`, however
+    // the element might be inserted with `display: none` in which case the
+    // height of the visible area is not known.
+    // Therefore we need to again update the scroll position once the view
+    // becomes visible.
+    becameVisible: function() {
         this._updateScrollPosition();
     },
 
