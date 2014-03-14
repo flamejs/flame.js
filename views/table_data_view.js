@@ -524,21 +524,24 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                 var cell = data[i][j];
                 var cssClassesString = '';
                 var titleValue = '';
+                var styles = '';
                 if (cell) {
                     content = cell.content();
                     content = (Ember.none(content) ? '' : content);
                     cssClassesString = cell.cssClassesString();
+                    styles = (cell.styles && cell.styles() ? cell.styles() : '');
                     titleValue = (cell.titleValue && cell.titleValue() ? 'title="%@"'.fmt(cell.titleValue()) : '');
                 } else {
                     content = '<span style="color: #999">...</span>';
                 }
                 cellWidth = columnLeafs[j].get('render_width') || defaultCellWidth;
                 // Surround the content with a relatively positioned div to make absolute positioning of content work with Firefox
-                buffer.push('<td data-index="%@" class="%@" style="width: %@px;" %@><div class="content-container">%@</div></td>'.fmt(
+                buffer.push('<td data-index="%@" class="%@" style="width: %@px;" %@><div class="content-container" style="%@">%@</div></td>'.fmt(
                         j,
                         (cssClassesString + (j % 2 === 0 ? " even-col" : " odd-col")),
                         cellWidth,
                         titleValue,
+                        styles,
                         content));
             }
             buffer.push("</tr>");
@@ -564,8 +567,9 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             var cssClassesString = (cell ? cell.cssClassesString() : "") + (isEvenColumn ? " even-col" : " odd-col");
             var content = cell.content();
             var titleValue = cell.titleValue && cell.titleValue();
+            var styles = (cell.styles && cell.styles() ? cell.styles() : '');
             element.className = cssClassesString;
-            element.innerHTML = Ember.none(content) ? "" : '<div class="content-container">' + content + '</div>';
+            element.innerHTML = Ember.none(content) ? "" : '<div class="content-container" style="%@">%@</div>'.fmt(styles, content);
             if (titleValue) {
                 element.title = titleValue;
             }

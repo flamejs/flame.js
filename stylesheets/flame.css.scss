@@ -844,8 +844,6 @@ input[type="password"] {
             overflow: hidden;
             border: 1px solid #CFD6E3;
             margin: 0; padding: 0;
-            padding-left: 2px;
-            padding-right: 2px;
             line-height: 21px;
 
             &.is-total {
@@ -948,6 +946,7 @@ input[type="password"] {
 
     .content-container {
         position: relative;
+        padding: 0 2px 0 2px;
     }
 }
 
