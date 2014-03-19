@@ -6,18 +6,18 @@ Flame.SelectButtonView = Flame.ButtonView.extend({
     itemTitleKey: 'title',
     itemValueKey: 'value',
     itemActionKey: 'action',
-    subMenuKey: "subMenu",
+    subMenuKey: 'subMenu',
 
     handlebars: function() {
         var itemTitleKey = this.get('itemTitleKey');
         return '<label {{bind-attr title="view._selectedMenuItem.%@"}}>{{view._selectedMenuItem.%@}}</label><div><img src="%@"></div>'.fmt(itemTitleKey, itemTitleKey, Flame.image('select_button_arrow.png'));
-    }.property("value", "_selectedMenuItem"),
+    }.property('_selectedMenuItem', 'itemTitleKey'),
 
     _selectedMenuItem: function() {
         if (this.get('value') === undefined) return undefined;
         var selectedItem = this._findItem();
         return selectedItem;
-    }.property("value", "itemValueKey", "subMenuKey", "items"),
+    }.property('value', 'itemValueKey', 'subMenuKey', 'items'),
 
     itemsDidChange: function() {
         if (this.get('items') && this.get('items.length') > 0 && !this._findItem()) {
@@ -34,9 +34,10 @@ Flame.SelectButtonView = Flame.ButtonView.extend({
             foundItem;
         if (Ember.isNone(itemList)) return foundItem;
         itemList.forEach(function(item) {
-            if (Ember.get(item, subMenuKey)) {
-                var possiblyFound = this._findItem(Ember.get(item, subMenuKey));
-                if (!Ember.isNone(possiblyFound)) { foundItem = possiblyFound; }
+            var subMenu = Ember.get(item, subMenuKey);
+            if (subMenu) {
+                var possiblyFound = this._findItem(subMenu);
+                if (!Ember.isNone(possiblyFound)) foundItem = possiblyFound;
             } else if (Ember.get(item, itemValueKey) === value) {
                 foundItem = item;
             }
