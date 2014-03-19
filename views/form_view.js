@@ -275,7 +275,6 @@ Flame.FormView = Flame.View.extend({
                 return Flame.LabelView.extend(settings);
             case 'text':
                 if (descriptor.isAutocomplete) {
-                    settings.isAutocomplete = true;
                     settings.autocompleteDelegate = descriptor.autocompleteDelegate;
                 }
                 settings.name = Ember.none(descriptor.name) ? descriptor.property : descriptor.name;

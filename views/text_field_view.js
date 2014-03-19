@@ -19,8 +19,10 @@ Flame.TextFieldView = Flame.View.extend(Flame.ActionSupport, {
     isEditableLabel: false,
     isVisible: true,
     isDisabled: false,
-    isAutocomplete: false,
     autocompleteDelegate: null,
+    isAutocomplete: function() {
+        return !Ember.empty(this.get('autocompleteDelegate'));
+    }.property('autocompleteDelegate'),
     name: null,
 
     becomeKeyResponder: function() {
