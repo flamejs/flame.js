@@ -14,6 +14,7 @@ Flame.Panel = Flame.RootView.extend({
     acceptsKeyResponder: true,
     isModal: true,
     allowClosingByClickingOutside: true,
+    allowClosingByCancelButton: true,
     allowMoving: false,
     dimBackground: true,
     title: null,
@@ -169,6 +170,13 @@ Flame.Panel = Flame.RootView.extend({
         return true;
     },
 
+    cancel: function(event) {
+        if (this.get('allowClosingByCancelButton')) {
+            this.close();
+        }
+        return true;
+    },
+
     _layoutRelativeTo: function(anchor, position) {
         position = position || Flame.POSITION_BELOW;
 
@@ -219,7 +227,9 @@ Flame.Panel = Flame.RootView.extend({
                 var modalPane = this.get('modalPane');
                 modalPane.set('parentPanel', this);
                 modalPane.get('layout').zIndex = Flame._zIndexCounter;
-                modalPane.append();
+                Ember.run(function() {
+                    modalPane.append();
+                });
                 this.set('_modalPane', modalPane);
             }
 
