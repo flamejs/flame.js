@@ -102,7 +102,8 @@ Flame.ListViewDragHelper = Ember.Object.extend({
             var view = this.itemPath.getView();
             this._moveItem(this.itemPath, newPath);
             this.itemPath = this._resolvePath(view);
-            this._updateCss();
+            // CSS can only be updated once all the rendering has been done
+            Ember.run.scheduleOnce('afterRender', this, this._updateCss);
             this.lastPageX = evt.pageX;  // Reset the reference point for horizontal movement every time the item is moved
         }
 
