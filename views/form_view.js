@@ -274,10 +274,11 @@ Flame.FormView = Flame.View.extend({
                 settings.titleBinding = 'value';
                 return Flame.LabelView.extend(settings);
             case 'text':
+                settings.name = Ember.none(descriptor.name) ? descriptor.property : descriptor.name;
                 if (descriptor.isAutocomplete) {
                     settings.autocompleteDelegate = descriptor.autocompleteDelegate;
+                    return Flame.AutocompleteTextFieldView.extend(settings);
                 }
-                settings.name = Ember.none(descriptor.name) ? descriptor.property : descriptor.name;
                 return Flame.TextFieldView.extend(settings);
             case 'textarea':
                 settings.layout.height = descriptor.height || 70;

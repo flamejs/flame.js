@@ -255,6 +255,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
             layout.set("width", menuWidth);
         }
         this.set("layout", layout);
+        this.notifyPropertyChange('layout');
         this.get("contentView").set("needScrolling", needScrolling);
     },
 

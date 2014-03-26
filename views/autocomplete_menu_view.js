@@ -3,6 +3,10 @@ Flame.AutocompleteMenuView = Flame.MenuView.extend({
     keyPress: function(event) {
         return false;
     },
+    deleteBackward: function() {
+        // Prevent backspace doing native action (go back in history in Chrome) if user is midst of selecting items
+        if (this.get('highlightIndex') >= 0) return true;
+    },
     insertTab: function() {
         this.close();
         return false;
@@ -24,5 +28,8 @@ Flame.AutocompleteMenuView = Flame.MenuView.extend({
         this._super();
         // See above
         this.get('textField').didBecomeKeyResponder();
-    }
+    },
+    itemsWillBeChanged: function() {
+        this.set('highlightIndex', -1);
+    }.observesBefore('items')
 });
