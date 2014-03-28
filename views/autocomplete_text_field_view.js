@@ -6,22 +6,13 @@ Flame.AutocompleteTextFieldView = Flame.TextFieldView.extend(Flame.Statechart, F
     autocompleteDelegate: null,
     initialState: 'idle',
 
-    isAutocomplete: function() {
-        return !Ember.empty(this.get('autocompleteDelegate'));
-    }.property('autocompleteDelegate'),
-
     textField: Flame.TextField.extend({
-        isAutocompleteBinding: '^isAutocomplete',
-
         keyUp: function(event) {
             this._super();
-            if (this.get('isAutocomplete')) {
-                return this.autocompleteAction(event);
-            }
-            return false;
+            return this.autocompleteAction(event);
         },
 
-        autocompleteAction: function() {
+        autocompleteAction: function(event) {
             if ((event.which === 8 || event.which > 31)) {
                 // Don't want to wait until the value has synced, so just grab the raw val from input
                 var query = this.get('parentView').$('input').val();

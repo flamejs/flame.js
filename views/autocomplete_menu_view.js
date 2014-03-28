@@ -28,8 +28,5 @@ Flame.AutocompleteMenuView = Flame.MenuView.extend({
         this._super();
         // See above
         this.get('textField').didBecomeKeyResponder();
-    },
-    itemsWillBeChanged: function() {
-        this.set('highlightIndex', -1);
-    }.observesBefore('items')
+    }
 });
