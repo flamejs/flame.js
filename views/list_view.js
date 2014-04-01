@@ -149,7 +149,7 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
         moveUp: function() { return this.get('owner').changeSelection(-1); },
         moveDown: function() { return this.get('owner').changeSelection(1); },
 
-        mouseDownOnItem: function(itemIndex, evt) {
+        mouseDownOnItem: function(itemIndex, event) {
             var owner = this.get('owner');
             owner.selectIndex(itemIndex);
 
@@ -160,9 +160,9 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
                     var childView = owner.objectAt(itemIndex);
                     owner.set('dragHelper', Flame.ListViewDragHelper.create({
                         listView: owner,
-                        lastPageX: evt.pageX,
-                        lastPageY: evt.pageY,
-                        yOffset: evt.pageY - childView.$().offset().top,
+                        lastPageX: event.pageX,
+                        lastPageY: event.pageY,
+                        yOffset: event.pageY - childView.$().offset().top,
                         itemPath: [itemIndex]
                     }));
                 }
@@ -222,8 +222,8 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
     }),
 
     reordering: Flame.State.extend({
-        mouseMove: function(evt, view, scheduled) {
-            return this.get('owner').get('dragHelper').updateDisplay(evt);
+        mouseMove: function(event, view, scheduled) {
+            return this.get('owner.dragHelper').updateDisplay(event);
         },
 
         mouseUp: Flame.State.gotoFlameState('idle'),

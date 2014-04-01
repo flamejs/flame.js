@@ -90,13 +90,13 @@ Flame.ListViewDragHelper = Ember.Object.extend({
     },
 
     // Moves the clone to match the current mouse position and moves the dragged item in the list/tree if needed
-    updateDisplay: function(evt, scheduled) {
+    updateDisplay: function(event, scheduled) {
         // This logic discards mouseMove events scheduled by the scrolling logic in case there's been a real mouseMove event since scheduled
         if (scheduled === undefined) this.mouseMoveCounter++;
         else if (scheduled < this.mouseMoveCounter) return false;
 
-        this._updateDraggingCloneAndScrollPosition(evt);
-        var newPath = this._resolveNewPath(evt.pageX, evt.pageY);
+        this._updateDraggingCloneAndScrollPosition(event);
+        var newPath = this._resolveNewPath(event.pageX, event.pageY);
 
         if (newPath && !this.itemPath.equals(newPath)) {
             var view = this.itemPath.getView();
@@ -104,7 +104,7 @@ Flame.ListViewDragHelper = Ember.Object.extend({
             this.itemPath = this._resolvePath(view);
             // CSS can only be updated once all the rendering has been done
             Ember.run.scheduleOnce('afterRender', this, this._updateCss);
-            this.lastPageX = evt.pageX;  // Reset the reference point for horizontal movement every time the item is moved
+            this.lastPageX = event.pageX;  // Reset the reference point for horizontal movement every time the item is moved
         }
 
         return true;
@@ -305,12 +305,12 @@ Flame.ListViewDragHelper = Ember.Object.extend({
         return Flame.ListViewDragHelper.Path.create({array: pathArray, root: this.listView});
     },
 
-    _updateDraggingCloneAndScrollPosition: function(evt) {
+    _updateDraggingCloneAndScrollPosition: function(event) {
         var domParent = this.get('listView').$();
         if (domParent.hasClass('is-nested')) domParent = domParent.offsetParent();  // If nested list in a tree, grab the topmost
         var scrollTop = domParent.scrollTop();
         var parentHeight = domParent.innerHeight();
-        var newTop = evt.pageY - this.yOffset - domParent.offset().top + scrollTop;
+        var newTop = event.pageY - this.yOffset - domParent.offset().top + scrollTop;
 
         // Check top and bottom limits to disallow moving beyond the content area of the list view
         if (newTop < 0) newTop = 0;
@@ -332,16 +332,16 @@ Flame.ListViewDragHelper = Ember.Object.extend({
             }
             if (topDiff > 0 || bottomDiff > 0) {  // If scrolled, schedule an artificial mouseMove event to keep scrolling
                 var currentCounter = this.mouseMoveCounter;
-                Ember.run.next(this, function() { this.updateDisplay(evt, currentCounter); });
+                Ember.run.scheduleOnce('afterRender', this, this.updateDisplay, event, currentCounter);
             }
         }
     }
 });
 
-/*
+/**
   A helper class for the drag helper, represents a potential insert location in a list/tree.
   See docs for ListViewDragHelper above for details.
- */
+*/
 Flame.ListViewDragHelper.Path = Ember.Object.extend({
     array: [],
     position: 'i',
@@ -360,7 +360,7 @@ Flame.ListViewDragHelper.Path = Ember.Object.extend({
     },
 
     getNestedListView: function() {
-        return this.getView().get("childListView");
+        return this.getView().get('childListView');
     },
 
     up: function() {
