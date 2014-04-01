@@ -14,7 +14,7 @@ Flame.Panel = Flame.RootView.extend({
     acceptsKeyResponder: true,
     isModal: true,
     allowClosingByClickingOutside: true,
-    allowClosingByCancelButton: true,
+    allowClosingByCancelButton: false,
     allowMoving: false,
     dimBackground: true,
     title: null,
