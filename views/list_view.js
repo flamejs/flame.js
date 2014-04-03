@@ -223,7 +223,9 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
 
     reordering: Flame.State.extend({
         mouseMove: function(event, view, scheduled) {
-            return this.get('owner.dragHelper').updateDisplay(event);
+            var dragHelper = this.get('owner.dragHelper');
+            Ember.run.scheduleOnce('afterRender', dragHelper, 'updateDisplay', event);
+            return true;
         },
 
         mouseUp: Flame.State.gotoFlameState('idle'),

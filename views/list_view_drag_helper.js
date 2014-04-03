@@ -93,7 +93,7 @@ Flame.ListViewDragHelper = Ember.Object.extend({
     updateDisplay: function(event, scheduled) {
         // This logic discards mouseMove events scheduled by the scrolling logic in case there's been a real mouseMove event since scheduled
         if (scheduled === undefined) this.mouseMoveCounter++;
-        else if (scheduled < this.mouseMoveCounter) return false;
+        else if (scheduled < this.mouseMoveCounter) return;
 
         this._updateDraggingCloneAndScrollPosition(event);
         var newPath = this._resolveNewPath(event.pageX, event.pageY);
@@ -106,8 +106,6 @@ Flame.ListViewDragHelper = Ember.Object.extend({
             Ember.run.scheduleOnce('afterRender', this, this._updateCss);
             this.lastPageX = event.pageX;  // Reset the reference point for horizontal movement every time the item is moved
         }
-
-        return true;
     },
 
     finishReorder: function() {
@@ -318,7 +316,7 @@ Flame.ListViewDragHelper = Ember.Object.extend({
         var scrollHeight = domParent[0].scrollHeight;  // See http://www.yelotofu.com/2008/10/jquery-how-to-tell-if-youre-scroll-to-bottom/
         if (newTop + height > scrollHeight) newTop = scrollHeight - height;
 
-        this.clone.css({position: 'absolute', right: 0, top: newTop});
+        this.clone.css({ position: 'absolute', right: 0, top: newTop });
 
         // See if we should scroll the list view either up or down (don't scroll if overflow is not auto, can cause undesired tiny movement)
         if (domParent.css('overflow') === 'auto') {
@@ -331,8 +329,7 @@ Flame.ListViewDragHelper = Ember.Object.extend({
                 domParent.scrollTo('+=%@px'.fmt(Math.max(bottomDiff / 5, 1)));
             }
             if (topDiff > 0 || bottomDiff > 0) {  // If scrolled, schedule an artificial mouseMove event to keep scrolling
-                var currentCounter = this.mouseMoveCounter;
-                Ember.run.scheduleOnce('afterRender', this, this.updateDisplay, event, currentCounter);
+                Ember.run.scheduleOnce('afterRender', this, this.updateDisplay, event, this.mouseMoveCounter);
             }
         }
     }
