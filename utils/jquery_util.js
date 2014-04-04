@@ -13,14 +13,6 @@ jQuery.fn.selectRange = function(start, end) {
     });
 };
 
-jQuery.fn.replaceClasses = function(newClasses) {
-    this.removeAttr('class');
-    if (newClasses) {
-        this.attr('class', newClasses);
-    }
-    return this;
-};
-
 /** Clone an element, removing metamorph binding tags and ember metadata */
 jQuery.fn.safeClone = function() {
     var clone = jQuery(this).clone();
@@ -34,8 +26,8 @@ jQuery.fn.safeClone = function() {
         var length = $this[0].attributes.length;
         for (i = 0; i < length; i++) {
             attribute = $this[0].attributes[i];
-            if (attribute && attribute.name.match(/^data-(bindattr|ember)/)) {
-                $this.removeAttr(attr.name);
+            if (attribute && /^data-(bindattr|ember)/.test(attribute.name)) {
+                $this.removeAttr(attribute.name);
             }
         }
     });
