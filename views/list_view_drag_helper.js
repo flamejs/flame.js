@@ -74,7 +74,7 @@ Flame.ListViewDragHelper = Ember.Object.extend({
 
         clone.css('opacity', 0.8);
 
-        this.set('clone', clone);
+        this.clone = clone;
         this._updateCss();
 
         // As the clone is not linked to any Ember view, we have to add custom event handlers on it
@@ -112,7 +112,12 @@ Flame.ListViewDragHelper = Ember.Object.extend({
         var itemPathView = this.itemPath.getView();
         this.get('listView').didReorderContent(itemPathView.get('parentView.content'));
         itemPathView.set("isDragged", false);
-        this.clone.remove();  // Remove the clone holding the clones from the DOM
+        var clone = this.clone;
+        Ember.run.schedule('afterRender', function() {
+            // We can't remove the clone right away, we still need to get its
+            // position earlier on in the afterRender queue.
+            if (clone) clone.remove(); // Remove the clone holding the clones from the DOM
+        });
     },
 
     // Updates the css classes and 'left' property of the clone and its children, needed for fixing indentation
@@ -138,6 +143,11 @@ Flame.ListViewDragHelper = Ember.Object.extend({
 
     // Moves the dragged element in the list/tree to a new location, possibly under a new parent
     _moveItem: function(sourcePath, targetPath) {
+        // This is really hacky, we need to make sure that when we alter the content
+        // array, the array observers do nothing (since we also manually remove the childView).
+        var isDragging = this.get('listView.isDragging');
+        this.set('listView.isDragging', true);
+
         var view = sourcePath.getView();
         var contentItem = view.get('content');
         var sourceParent = view.get('parentView');
@@ -179,6 +189,8 @@ Flame.ListViewDragHelper = Ember.Object.extend({
         // We need to do this manually because ListView suppresses the childViews observers while dragging,
         // so that we can do the entire DOM manipulation ourselves here without the list view interfering.
         targetParent._updateContentIndexes();
+
+        this.set('listView.isDragging', isDragging);
     },
 
     isTree: function() {
