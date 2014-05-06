@@ -4,7 +4,7 @@ Flame.AutocompleteTextFieldView = Flame.TextFieldView.extend(Flame.Statechart, F
     _autocompleteView: null,
     _lastQueuedQuery: null,
     autocompleteDelegate: null,
-    initialState: 'idle',
+    initialFlameState: 'idle',
 
     textField: Flame.TextField.extend({
         keyUp: function(event) {
@@ -13,7 +13,7 @@ Flame.AutocompleteTextFieldView = Flame.TextFieldView.extend(Flame.Statechart, F
         },
 
         autocompleteAction: function(event) {
-            if ((event.which === 8 || event.which > 31)) {
+            if (event.which === 8 || event.which > 31) {
                 // Don't want to wait until the value has synced, so just grab the raw val from input
                 var query = this.get('parentView').$('input').val();
                 this.get('parentView').doAutocompleteRequest(query);
@@ -24,19 +24,19 @@ Flame.AutocompleteTextFieldView = Flame.TextFieldView.extend(Flame.Statechart, F
 
     idle: Flame.State.extend({
         enterState: function() {
-            var lastQuery = this.getPath('owner._lastQueuedQuery');
+            var lastQuery = this.get('owner._lastQueuedQuery');
             if (lastQuery) {
-                this.setPath('owner._lastQueuedQuery', null);
+                this.set('owner._lastQueuedQuery', null);
                 this.doAutocompleteRequest(lastQuery);
             }
         },
 
         doAutocompleteRequest: function(query) {
-            if (!this.getPath('owner.autocompleteDelegate')) return;
+            if (!this.get('owner.autocompleteDelegate')) return;
 
             if (query) {
-                this.getPath('owner.autocompleteDelegate').fetchAutocompleteResults(query, this.get('owner'));
-                this.gotoState("requesting");
+                this.get('owner.autocompleteDelegate').fetchAutocompleteResults(query, this.get('owner'));
+                this.gotoFlameState('requesting');
             } else {
                 this.get('owner')._closeAutocompleteMenu();
             }
@@ -49,11 +49,11 @@ Flame.AutocompleteTextFieldView = Flame.TextFieldView.extend(Flame.Statechart, F
         },
 
         doAutocompleteRequest: function(query) {
-            if (query) this.setPath('owner._lastQueuedQuery', query);
+            if (query) this.set('owner._lastQueuedQuery', query);
         },
 
         didFinishAutocompleteRequest: function() {
-            this.gotoState("idle");
+            this.gotoFlameState('idle');
         },
 
         didFetchAutocompleteResults: function(options) {
@@ -63,7 +63,7 @@ Flame.AutocompleteTextFieldView = Flame.TextFieldView.extend(Flame.Statechart, F
             }
 
             // Do not bother to show this result as it's going to be replaced anyway soon with _lastQueuedtQuery results
-            if (this.getPath('owner._lastQueuedQuery') === null) {
+            if (this.get('owner._lastQueuedQuery') === null) {
                 this.get('owner')._showAutocompleteMenu(options);
             }
         }
@@ -85,7 +85,7 @@ Flame.AutocompleteTextFieldView = Flame.TextFieldView.extend(Flame.Statechart, F
     },
 
     _selectAutocompleteItem: function(id) {
-        this.set('value', this._autocompleteMenu.get('items').findProperty('value', id).title);
+        this.set('value', this._autocompleteMenu.get('items').findBy('value', id).title);
     },
 
     _closeAutocompleteMenu: function() {
@@ -95,4 +95,3 @@ Flame.AutocompleteTextFieldView = Flame.TextFieldView.extend(Flame.Statechart, F
         }
     }
 });
-

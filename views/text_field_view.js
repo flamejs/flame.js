@@ -9,14 +9,32 @@ Flame.TextField = Ember.TextField.extend(Flame.EventManager, Flame.FocusSupport,
     isVisible: Ember.computed.alias('parentView.isVisible'),
     disabled: Ember.computed.alias('parentView.isDisabled'),
     attributeBindings: ['name', 'disabled'],
-    name: Ember.computed.alias('parentView.name'),
+    _setValueDelay: 700,
+    _timer: null,ame: Ember.computed.alias('parentView.name'),
 
-    // Ember.TextSupport (which is mixed in by Ember.TextField) calls interpretKeyEvents on keyUp.
-    // Since the event manager already calls interpretKeyEvents on keyDown, the action would be fired
-    // twice, both on keyDown and keyUp. So we override the keyUp method and only record the value change.
-    keyUp: function(event) {
-        this._elementValueDidChange();
-        return false;
+    init: function() {
+        this._super();
+        // This would normally call `interpretKeyEvents`, but Flame.EventManager
+        // already does this on `keyDown`.
+        this.off('keyUp');
+        this.off('input');
+        this.on('input', this, this._setValue);
+    },
+
+    _elementValueDidChange: function() {
+        if (this._timer) Ember.run.cancel(this._timer);
+        this._super();
+    },
+
+    _setValue: function() {
+        if (this.get('parentView.setValueOnEachKeyUp')) {
+            this._elementValueDidChange();
+        } else {
+            if (this._timer) Ember.run.cancel(this._timer);
+            this._timer = Ember.run.later(this, function() {
+                this.set('value', this.$().val());
+            }, this._setValueDelay);
+        }
     },
 
     // Trigger a value change notification also when inserting a new line. Otherwise the action could be fired
