@@ -379,7 +379,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
             var widths = this.get('content').rowHeaderWidths ? this.get('content').rowHeaderWidths() : null;
             for (i = 0; i < (headers.maxDepth || 1); i++) {
                 var width = (widths && widths[i]) ? widths[i] : defaultColumnWidth;
-                buffer.push('<col style="width: %@px;" class="level-%@" />'.fmt(width, i + 1));
+                buffer.push('<col style="width: %@px;" class="level-%@">'.fmt(width, i + 1));
             }
         } else {
             var l = this.get('content.columnLeafs').length;

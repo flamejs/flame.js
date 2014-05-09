@@ -93,7 +93,7 @@ Flame.ListViewDragHelper = Ember.Object.extend({
     updateDisplay: function(event, scheduled) {
         // This logic discards mouseMove events scheduled by the scrolling logic in case there's been a real mouseMove event since scheduled
         if (scheduled === undefined) this.mouseMoveCounter++;
-        else if (scheduled < this.mouseMoveCounter) return;
+        else if (scheduled <= this.mouseMoveCounter) return;
 
         this._updateDraggingCloneAndScrollPosition(event);
         var newPath = this._resolveNewPath(event.pageX, event.pageY);
@@ -111,7 +111,7 @@ Flame.ListViewDragHelper = Ember.Object.extend({
     finishReorder: function() {
         var itemPathView = this.itemPath.getView();
         this.get('listView').didReorderContent(itemPathView.get('parentView.content'));
-        itemPathView.set("isDragged", false);
+        itemPathView.set('isDragged', false);
         var clone = this.clone;
         Ember.run.schedule('afterRender', function() {
             // We can't remove the clone right away, we still need to get its
@@ -219,13 +219,11 @@ Flame.ListViewDragHelper = Ember.Object.extend({
         var len = itemElements.length;
         var newIndex = startIndex;
 
-        //console.log('startIndex %s, currentDy %s, len %s, i %s', startIndex, currentDy, len, i);
         while (i >= 0 && i < len) {
             var testElement = jQuery(itemElements[i]);
             if (testElement.closest('.is-dragged-clone').length > 0) break;  // Ignore the clone
             if (testElement.is(':visible') && testElement.closest(draggedElement).length === 0) {
                 var thresholdY = testElement.offset().top + testElement.outerHeight() * (0.5 + direction * 0.2);
-                //console.log('cloneTop %s, cloneBottom %s, i %s, test top %s, thresholdY', cloneTop, cloneBottom, i, testElement.offset().top, thresholdY);
 
                 if ((direction > 0 && cloneBottom > thresholdY) || (direction < 0 && cloneTop < thresholdY)) {
                     newIndex = i;

@@ -6,7 +6,7 @@ Flame.Popover = Flame.Panel.extend({
     childViews: [],
     dimBackground: false,
     arrow: 'arrow', // How to use a string literal in bind-attr?
-    handlebars: '<img {{bind-attr class="view.arrowPosition view.arrow"}} {{bind-attr src="view.image"}} />{{view view.contentView}}',
+    handlebars: '<img {{bind-attr class="view.arrowPosition view.arrow"}} {{bind-attr src="view.image"}}>{{view view.contentView}}',
     anchor: null,
     position: null,
 
