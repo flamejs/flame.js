@@ -37,6 +37,36 @@ Flame.View = Ember.ContainerView.extend(Flame.ViewSupport, Flame.LayoutSupport, 
     displayProperties: [],
     isFocused: false, // Does this view currently have key focus?
 
+    init: function() {
+        this._super();
+
+        // Remove classNames up to FlameView to make it easier to define custom
+        // styles for buttons, checkboxes etc..
+        // We only want to do this in the init of class that sets the flag
+        if (this.__proto__.resetClassNames) {
+            var superClassNames = this._collectSuperClassNames();
+            var classNames = this.get('classNames').removeObjects(superClassNames);
+            this.set('classNames', classNames);
+        }
+    },
+
+    // Collects the classNames that were defined in super classes, but not
+    // classNames in Flame.View or superclasses that are above it in the
+    // class hierarchy
+    _collectSuperClassNames: function() {
+        var superClassNames = [];
+        var superClass = this.__proto__.__proto__;
+        while (superClass && superClass.constructor !== Flame.View) {
+            superClassNames.pushObjects(superClass.classNames || []);
+            superClass = superClass.__proto__;
+        }
+        // Add back the classNames from Flame.View and deeper
+        if (superClass.constructor === Flame.View) {
+            superClassNames.removeObjects(superClass.classNames);
+        }
+        return superClassNames;
+    },
+
     render: function(buffer) {
         // If a template is defined, render that, otherwise use ContainerView's rendering (render childViews)
         var get = Ember.get;
