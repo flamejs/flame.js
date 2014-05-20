@@ -111,8 +111,12 @@ Flame.Panel = Flame.RootView.extend({
         classNames: ['flame-resize-thumb'],
         isVisibleBinding: 'parentView.isResizable',
         initialFlameState: 'idle',
+        isResizing: false,
 
         idle: Flame.State.extend({
+            enterState: function(event) {
+                this.set('owner.isResizing', false);
+            },
             mouseDown: function(event) {
                 var owner = this.get('owner');
                 var panelElement = owner.get('parentView').$();
@@ -133,6 +137,9 @@ Flame.Panel = Flame.RootView.extend({
             }
         }),
         resizing: Flame.State.extend({
+            enterState: function(event) {
+                this.set('owner.isResizing', true);
+            },
             mouseMove: function(event) {
                 var owner = this.get('owner');
                 var parentView = owner.get('parentView');
