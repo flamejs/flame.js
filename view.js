@@ -43,7 +43,7 @@ Flame.View = Ember.ContainerView.extend(Flame.ViewSupport, Flame.LayoutSupport, 
         // Remove classNames up to FlameView to make it easier to define custom
         // styles for buttons, checkboxes etc..
         // We only want to do this in the init of class that sets the flag
-        if (this.__proto__.resetClassNames) {
+        if (Object.getPrototypeOf && Object.getPrototypeOf(this).resetClassNames) {
             var superClassNames = this._collectSuperClassNames();
             var classNames = this.get('classNames').removeObjects(superClassNames);
             this.set('classNames', classNames);
@@ -55,10 +55,10 @@ Flame.View = Ember.ContainerView.extend(Flame.ViewSupport, Flame.LayoutSupport, 
     // class hierarchy
     _collectSuperClassNames: function() {
         var superClassNames = [];
-        var superClass = this.__proto__.__proto__;
+        var superClass = Object.getPrototypeOf(Object.getPrototypeOf(this))
         while (superClass && superClass.constructor !== Flame.View) {
             superClassNames.pushObjects(superClass.classNames || []);
-            superClass = superClass.__proto__;
+            superClass = Object.getPrototypeOf(superClass);
         }
         // Add back the classNames from Flame.View and deeper
         if (superClass.constructor === Flame.View) {
