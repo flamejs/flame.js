@@ -81,7 +81,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
             if (target.is('div.resize-handle')) {
                 this.gotoFlameState('resizing');
                 var owner = this.get('owner');
-                var cell = target.parents("td").first();
+                var cell = target.closest('td').first();
                 owner.set('resizingCell', cell);
                 owner.set('dragStartX', event.pageX);
                 owner.set('startX', parseInt(target.parent().css('width'), 10));
@@ -142,7 +142,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                         var cell = target.closest('td');
                         index = parseInt(cell.attr('data-index'), 10);
                         header = this.get('owner.content._headers.rowHeaders')[index];
-                        if (!header) { return false; }
+                        if (!header) return false;
                         clickDelegate.rowHeaderClicked(header, target, index);
                     }
                     return true;
@@ -158,7 +158,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
             var cell = this.get('owner.resizingCell');
             var deltaX = event.pageX - this.get('owner.dragStartX');
             var cellWidth = this.get('owner.startX') + deltaX;
-            if (cellWidth < this.get('owner.MIN_COLUMN_WIDTH')) { cellWidth = this.get('owner.MIN_COLUMN_WIDTH'); }
+            if (cellWidth < this.get('owner.MIN_COLUMN_WIDTH')) cellWidth = this.get('owner.MIN_COLUMN_WIDTH');
             var leafIndex;
             // Adjust size of the cell
             if (this.get('owner.type') === 'column') { // Update data table column width
@@ -249,7 +249,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     },
 
     _getBrowserSpecificTableCellWidth: function(width) {
-        return width +3;
+        return width + 3;
     },
 
     willInsertElement: function() {

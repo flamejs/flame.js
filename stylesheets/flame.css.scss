@@ -151,12 +151,17 @@ body {
         border: none;
 
         .flame-checkbox-label {
-          color: #999
+            color: #999;
         }
 
         .flame-checkbox-box {
             @include no-gradient();
             background: #EEE;
+            border: 1px solid #AAA;
+        }
+
+        .flame-checkbox-checkmark {
+            @include opacity(0.4);
         }
     }
 
@@ -343,9 +348,11 @@ body {
     }
 }
 
-.flame-list-view {
+.flame-collection-view {
     overflow: auto;
+}
 
+.flame-list-view {
     & .flame-list-item-view.is-selected, & .flame-tree-item-view-container.is-selected {
         color: #fff;
         border-color: #5499c7;
@@ -794,13 +801,21 @@ input[type="password"] {
         position: absolute;
         z-index: 2;
         font-size: 12px;
+        pointer-events: none;
+    }
 
-        /* Make sure we can receive click events in IE */
-        .table-selection-background {
-            width: 100%;
-            height: 100%;
-            background-color: black;
-            @include opacity(0.001);
+    div.clipboard-container {
+        position: absolute;
+        width: 0px;
+        height: 0px;
+        z-index: 100;
+        display: none;
+        opacity: 0;
+
+        textarea {
+            width: 1px;
+            height: 1px;
+            padding: 0px;
         }
     }
 

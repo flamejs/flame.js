@@ -5,6 +5,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
     updateBatchSize: 500,
     _updateCounter: 0,
     selectedCell: null,
+    selectionEnd: null,
     editValue: null,
     content: null,
 
@@ -14,7 +15,8 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         mouseDown: function(event) {
             var owner = this.get('owner');
             if (owner.selectCell(owner._cellForTarget(event.target))) {
-                this.gotoFlameState('selected');
+                owner.get('selection').show();
+                this.gotoFlameState('mouseIsDown');
                 return true;
             } else {
                 return false;
@@ -28,19 +30,148 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         }
     }),
 
+    mouseIsDown: Flame.State.extend({
+        lastTarget: null,
+
+        mouseMove: function(event) {
+            if (event.target !== this.lastTarget) {
+                var owner = this.get('owner');
+                var cell = owner._cellForTarget(event.target);
+                if (cell && owner.isCellSelectable(cell)) {
+                    owner.set('selectionEnd', cell);
+                }
+                this.lastTarget = event.target;
+            }
+            return true;
+        },
+
+        mouseUp: function(event) {
+            this.gotoFlameState('selected');
+            return this.get('owner').invokeStateMethod('mouseUp', event);
+        }
+    }),
+
     selected: Flame.State.extend({
+        cellUp: function(cell) {
+            return jQuery(cell.parent().prev().children()[cell.attr('data-index')]);
+        },
+
+        cellDown: function(cell) {
+            return jQuery(cell.parent().next().children()[cell.attr('data-index')]);
+        },
+
+        modifySelection: function(cell) {
+            var owner = this.get('owner');
+            if (owner.isCellSelectable(cell)) {
+                owner.set('selectionEnd', cell);
+                return true;
+            }
+            return false;
+        },
+
+        paste: function(value) {
+            value = value.replace(/\r\n|\r/g, '\n').trim();
+            var owner = this.get('owner');
+            var data = owner.get('data');
+            var selectedCell = this.get('owner.selectedCell');
+            var rowIndex = owner.rowIndex(selectedCell);
+            var columnIndex = owner.columnIndex(selectedCell);
+
+            var pasteFailed = function(pastedValue) {
+                var tableViewDelegate = owner.get('tableViewDelegate');
+                if (tableViewDelegate && tableViewDelegate.pasteDidFail) tableViewDelegate.pasteDidFail(pastedValue);
+            };
+
+            // If only one value is in the clipboard and a range is selected,
+            // copy that value to all selected cells.
+            if (!/\n|\t/.test(value) && selectedCell !== this.get('owner.selectionEnd')) {
+                this._forEachSelectedCell(function(i, j, dataCell) {
+                    if (dataCell.isEditable() && dataCell.isPastable()) {
+                        var cell = owner.$('tr[data-index=%@]'.fmt(i)).find('td[data-index=%@]'.fmt(j)).first();
+                        if (!owner._validateAndSet(value, cell)) pasteFailed(value);
+                    }
+                });
+                return;
+            }
+
+            var rows = selectedCell.parent().add(selectedCell.parent().nextAll());
+            value.split('\n').forEach(function(line, i) {
+                line.split('\t').forEach(function(field, j) {
+                    var cell = rows[i] && rows.eq(i).children().eq(columnIndex + j);
+                    if (!cell) return;
+                    var dataCell = data[rowIndex + i][columnIndex + j];
+                    if (dataCell.isEditable() && dataCell.isPastable()) {
+                        if (dataCell.options()) {
+                            var option = dataCell.options().findBy('title', field);
+                            if (!option) {
+                                pasteFailed(field);
+                                return;
+                            }
+                            field = option.value;
+                        }
+                        if (!owner._validateAndSet(field, cell)) pasteFailed(field);
+                    }
+                });
+            });
+        },
+
+        /**
+          For the current selection, get a value that can be pasted to another
+          TableView or spreadsheet.
+        */
+        valueForCopy: function() {
+            var value = [];
+            var row;
+            this._forEachSelectedCell(function(i, j, cell, newLine) {
+                if (newLine) {
+                    if (!Ember.isEmpty(row)) value.push(row.join('\t'));
+                    row = [];
+                }
+                row.push(cell.isCopyable() ? cell.editableValue() : '');
+            });
+            if (!Ember.isEmpty(row)) value.push(row.join('\t'));
+            return value.join('\n');
+        },
+
+        _forEachSelectedCell: function(callback) {
+            var owner = this.get('owner');
+            var selectedCell = owner.get('selectedCell');
+            var selectionEnd = owner.get('selectionEnd');
+            var minRow = Math.min(owner.rowIndex(selectedCell), owner.rowIndex(selectionEnd));
+            var maxRow = Math.max(owner.rowIndex(selectedCell), owner.rowIndex(selectionEnd));
+            var minCol = Math.min(owner.columnIndex(selectedCell), owner.columnIndex(selectionEnd));
+            var maxCol = Math.max(owner.columnIndex(selectedCell), owner.columnIndex(selectionEnd));
+
+            var data = owner.get('data');
+            for (var i = minRow; i <= maxRow; i++) {
+                var newLine = true;
+                for (var j = minCol; j <= maxCol; j++) {
+                    callback(i, j, data[i][j], newLine);
+                    newLine = false;
+                }
+            }
+        },
+
         mouseDown: function(event) {
             var owner = this.get('owner');
             // If a cell is clicked that was already selected and it's a cell
             // with fixed options, start editing it.
             var selectedDataCell = owner.get('selectedDataCell');
-            if (!Ember.isNone(selectedDataCell) && selectedDataCell.options && selectedDataCell.options() && jQuery(event.target).hasClass('table-selection-background')) {
+            if (!Ember.isNone(selectedDataCell) && selectedDataCell.options && selectedDataCell.options() && owner._cellForTarget(event.target)[0] === owner.get('selectedCell')[0]) {
                 this.startEdit();
                 return true;
             }
 
             var target = owner._cellForTarget(event.target);
-            return !!owner.selectCell(target);
+            if (event.shiftKey && owner.isCellSelectable(target)) {
+                owner.set('selectionEnd', target);
+                return true;
+            } else {
+                this.gotoFlameState('loaded');
+                owner.set('selectedCell', null);
+                owner.set('selectionEnd', null);
+                return owner.invokeStateMethod('mouseDown', event);
+            }
         },
 
         mouseUp: function(event) {
@@ -61,6 +192,65 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             }
         },
 
+        keyDown: function(event, view) {
+            var owner = this.get('owner');
+            var selectedDataCell = owner.get('selectedDataCell');
+            if ((event.ctrlKey || event.metaKey) && !Ember.isNone(selectedDataCell)) {
+                var position = owner.get('selectedCell').position();
+                var scrollable = owner.get('parentView.scrollable');
+                var $container = owner.$('.clipboard-container');
+                $container.css({ left: position.left + scrollable.scrollLeft(), top: position.top + scrollable.scrollTop() });
+                $container.empty().show();
+                var $textarea = jQuery('<textarea></textarea>')
+                    .val(this.valueForCopy())
+                    .appendTo($container)
+                    .focus()
+                    .select();
+
+                var self = this;
+                $textarea.on('paste', function (e) {
+                    var clipboardData = e.originalEvent.clipboardData || window.clipboardData;
+                    var pastedValue = clipboardData.getData('Text');
+                    // IE11 doesn't allow AJAX requests from the paste event,
+                    // this is how we work around it.
+                    Ember.run.later(self, function() {
+                        this.paste(pastedValue);
+                    }, 100);
+                });
+
+                // Make sure that control/command + <other key> combinations will still be handled by the browser
+                return false;
+            }
+
+            return !owner._handleKeyEvent('keyDown', event, view);
+        },
+
+        keyUp: function(event) {
+            if (jQuery(event.target).is('.clipboard-container textarea')) {
+                var $container = this.get('owner').$('.clipboard-container');
+                $container.empty().hide();
+                return true;
+            }
+            return false;
+        },
+
+        // We need to use the keyPress event, as some browsers don't report the character pressed correctly with keyDown
+        keyPress: function(event) {
+            if (event.ctrlKey || event.metaKey) return false;
+            var dataCell = this.get('owner.selectedDataCell');
+            if (Ember.isNone(dataCell) || !dataCell.isEditable()) {
+                return false;
+            }
+            var key = String.fromCharCode(event.which);
+            if (/[a-zA-Z0-9+*\-\[\/\=]/.test(key)) {
+                var owner = this.get('owner');
+                owner.set('editValue', key);
+                this.startEdit();
+                return true;
+            }
+            return false;
+        },
+
         insertNewline: function(event) {
             return this.startEdit();
         },
@@ -72,6 +262,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
         deleteForward: function(event) {
             this.wipeCell();
+            return true;
         },
 
         wipeCell: function() {
@@ -94,9 +285,12 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             if (Ember.isNone(dataCell)) {
                 return;
             }
+            var owner = this.get('owner');
             if (dataCell.isEditable()) {
+                owner.set('selectionEnd', owner.get('selectedCell'));
                 this.gotoFlameState('editing');
             } else if (!dataCell.options()) {
+                owner.set('selectionEnd', owner.get('selectedCell'));
                 this.gotoFlameState('selectingReadOnly');
             }
         },
@@ -107,27 +301,39 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         },
 
         moveLeft: function(event) {
-            var selectedCell = this.get('owner.selectedCell');
-            this.get('owner').selectCell(selectedCell.prev());
+            this.get('owner').selectCell(this.get('owner.selectedCell').prev());
             return true;
+        },
+
+        moveLeftAndModifySelection: function(event) {
+            return this.modifySelection(this.get('owner.selectionEnd').prev());
         },
 
         moveRight: function(event) {
-            var selectedCell = this.get('owner.selectedCell');
-            this.get('owner').selectCell(selectedCell.next());
+            this.get('owner').selectCell(this.get('owner.selectedCell').next());
             return true;
+        },
+
+        moveRightAndModifySelection: function(event) {
+            return this.modifySelection(this.get('owner.selectionEnd').next());
         },
 
         moveDown: function(event) {
-            var selectedCell = this.get('owner.selectedCell');
-            this.get('owner').selectCell(jQuery(selectedCell.parent().next().children()[selectedCell.attr('data-index')]));
+            this.get('owner').selectCell(this.cellDown(this.get('owner.selectedCell')));
             return true;
         },
 
+        moveDownAndModifySelection: function(event) {
+            return this.modifySelection(this.cellDown(this.get('owner.selectionEnd')));
+        },
+
         moveUp: function(event) {
-            var selectedCell = this.get('owner.selectedCell');
-            this.get('owner').selectCell(jQuery(selectedCell.parent().prev().children()[selectedCell.attr('data-index')]));
+            this.get('owner').selectCell(this.cellUp(this.get('owner.selectedCell')));
             return true;
+        },
+
+        moveUpAndModifySelection: function(event) {
+            return this.modifySelection(this.cellUp(this.get('owner.selectionEnd')));
         },
 
         insertTab: function(event) {
@@ -140,25 +346,10 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             return true;
         },
 
-        // We need to use the keyPress event, as some browsers don't report the character pressed correctly with keyDown
-        keyPress: function(event) {
-            var dataCell = this.get('owner.selectedDataCell');
-            if (Ember.isNone(dataCell) || (dataCell && !dataCell.isEditable())) {
-                return false;
-            }
-            var key = String.fromCharCode(event.which);
-            if (event.metaKey) { return false; }
-            if (key.match(/[a-zA-Z0-9+*\-\[\/\=]/)) {
-                var owner = this.get('owner');
-                owner.set('editValue', key);
-                this.startEdit();
-                return true;
-            }
-            return false;
-        },
-
-        enterState: function() {
-            this.get('owner.selection').show();
+        exitState: function() {
+            if (this.get('state') !== 'inDOM') return;
+            var clipboardContainer = this.get('owner').$('.clipboard-container');
+            if (clipboardContainer) clipboardContainer.empty().hide();
         }
     }),
 
@@ -227,7 +418,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
         exitState: function() {
             var selection = this.get('owner.selection');
-            selection.html('<div class="table-selection-background"></div>');
+            selection.empty();
             selection.removeClass('read-only is-selectable');
         },
 
@@ -363,14 +554,25 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
     },
 
     willLoseKeyResponder: function() {
+        this.setProperties({
+            selectedCell: null,
+            selectionEnd: null
+        });
         this.gotoFlameState('loaded');
-        this.set('selectedCell', null);
+    },
+
+    columnIndex: function(cell) {
+        return parseInt(cell.attr('data-index'), 10);
+    },
+
+    rowIndex: function(cell) {
+        return parseInt(cell.parent().attr('data-index'), 10);
     },
 
     // Get the Cell instance that corresponds to the selected cell in the view
     selectedDataCell: function() {
         var selectedCell = this.get('selectedCell');
-        return this.get('data')[selectedCell.parent().attr('data-index')][selectedCell.attr('data-index')];
+        return this.get('data')[this.rowIndex(selectedCell)][this.columnIndex(selectedCell)];
     }.property().volatile(),
 
     editableValue: function(dataCell, readOnly) {
@@ -379,7 +581,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             return editValue;
         } else {
             editValue = readOnly ? dataCell.formattedValue() : dataCell.editableValue();
-            return !Ember.isNone(editValue)? editValue : '';
+            return !Ember.isNone(editValue) ? editValue : '';
         }
     },
 
@@ -389,6 +591,10 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
     },
 
     _selectionDidChange: function() {
+        Ember.run.once(this, this._updateSelection);
+    }.observes('selectedCell', 'selectionEnd'),
+
+    _updateSelection: function() {
         var selectedCell = this.get('selectedCell');
         if (!selectedCell) {
             return;
@@ -400,13 +606,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         var scrollTop = scrollable.scrollTop();
         var scrollLeft = scrollable.scrollLeft();
 
-        var offset = jQuery.browser.webkit ? 0 : 1;
-        selection.css({
-            left: position.left + scrollLeft - offset + 'px',
-            top: position.top + scrollTop - offset + 'px',
-            width: selectedCell.outerWidth() - 5 + 'px',
-            height: selectedCell.outerHeight() - 3 + 'px'
-        });
+        selection.css(this._selectionCSS(this.get('selectedCell'), this.get('selectionEnd'), scrollTop, scrollLeft, position));
 
         // Ensure the selection is within the visible area of the scrollview
         if (position.top < 0) {
@@ -421,7 +621,29 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             scrollable.scrollLeft(left + scrollLeft + 17);
         }
         selectedCell.addClass('active-cell');
-    }.observes('selectedCell'),
+    },
+
+    _selectionCSS: function(startCell, endCell, scrollTop, scrollLeft, position) {
+        var offset = jQuery.browser.webkit ? 0 : 1;
+        endCell = endCell || startCell;
+        var startPosition = position;
+        var endPosition = startCell === endCell ? position : endCell.position();
+
+        var minLeft = Math.min(startPosition.left, endPosition.left);
+        var minTop = Math.min(startPosition.top, endPosition.top);
+        var maxLeft = Math.max(startPosition.left, endPosition.left);
+        var maxTop = Math.max(startPosition.top, endPosition.top);
+
+        var cellWidth = startPosition.left < endPosition.left ? endCell.outerWidth() : startCell.outerWidth();
+        var cellHeight = startPosition.top < endPosition.top ? endCell.outerHeight() : startCell.outerHeight();
+
+        return {
+            left: minLeft + scrollLeft - offset,
+            top: minTop + scrollTop - offset,
+            width: maxLeft + cellWidth - minLeft - 5,
+            height: maxTop + cellHeight - minTop - 3
+        };
+    },
 
     _selectionWillChange: function() {
         var selectedCell = this.get('selectedCell');
@@ -432,15 +654,19 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
     _confirmEdit: function() {
         var newValue = this.get('editField').val();
-        return this._validateAndSet(newValue);
+        if (!this._validateAndSet(newValue)) {
+            this.get('editField').addClass('invalid');
+            return false;
+        }
+        return true;
     },
 
     // Returns true if cell valid, or false otherwise
-    _validateAndSet: function(newValue) {
+    _validateAndSet: function(newValue, cell) {
         var data = this.get('data');
-        var selectedCell = this.get('selectedCell');
-        var columnIndex = parseInt(selectedCell.attr('data-index'), 10);
-        var rowIndex = parseInt(selectedCell.parent().attr('data-index'), 10);
+        var selectedCell = cell || this.get('selectedCell');
+        var columnIndex = this.columnIndex(selectedCell);
+        var rowIndex = this.rowIndex(selectedCell);
         var dataCell = data[rowIndex][columnIndex];
 
         // Skip saving if value has not been changed
@@ -459,7 +685,6 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
             return true;
         } else {
-            this.get('editField').addClass('invalid');
             return false;
         }
     },
@@ -478,7 +703,10 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
     selectCell: function(newSelection) {
         if (this.get('parentView.allowSelection') && this.isCellSelectable(newSelection)) {
-            this.set('selectedCell', newSelection);
+            this.setProperties({
+                selectedCell: newSelection,
+                selectionEnd: newSelection
+            });
             return true;
         }
         return false;
@@ -540,7 +768,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                 // Surround the content with a relatively positioned div to make absolute positioning of content work with Firefox
                 buffer.push('<td data-index="%@" class="%@" style="width: %@px;" %@><div class="content-container" style="%@">%@</div></td>'.fmt(
                         j,
-                        (cssClassesString + (j % 2 === 0 ? " even-col" : " odd-col")),
+                        (cssClassesString + (j % 2 === 0 ? ' even-col' : ' odd-col')),
                         cellWidth,
                         titleValue,
                         styles,
@@ -551,22 +779,19 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         buffer.pushClosingTag(); // table
 
         // Selection indicator
-        buffer.push('<div class="table-selection">');
-        // This div serves as the "invisible" (very transparent) background for the table selection div.
-        // Without this, the table selection div would be totally transparent and render only a border.
-        // This causes inconsistencies in IE; when the table selection div is clicked, it's unclear which
-        // element will receive the event.
-        buffer.push('<div class="table-selection-background"></div>');
-        buffer.push('</div>');
+        buffer.push('<div class="table-selection"></div>');
 
         // Edit field (text)
         buffer.push('<input type="text" class="table-edit-field">');
+
+        // Container that will hold the textarea used for copy/pasting cells
+        buffer.push('<div class="clipboard-container"></div>');
     },
 
     // Update dirty cells
     _cellsDidChange: function() {
         this.manipulateCells(this.get('dirtyCells'), function(cell, element, isEvenColumn) {
-            var cssClassesString = (cell ? cell.cssClassesString() : "") + (isEvenColumn ? " even-col" : " odd-col");
+            var cssClassesString = (cell ? cell.cssClassesString() : '') + (isEvenColumn ? " even-col" : " odd-col");
             var content = cell.content();
             var titleValue = cell.titleValue && cell.titleValue();
             var styles = (cell.styles && cell.styles() ? cell.styles() : '');
@@ -584,10 +809,10 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             if (cell.pending) {
                 // Cell isn't loaded yet, insert a placeholder value
                 cell.pending.isUpdating = true;
-                element.className += (isEvenColumn ? " even-col" : " odd-col");
+                element.className += (isEvenColumn ? ' even-col' : ' odd-col');
             } else {
                 cell.isUpdating = true;
-                var cssClassesString = cell.cssClassesString() + (isEvenColumn ? " even-col" : " odd-col");
+                var cssClassesString = cell.cssClassesString() + (isEvenColumn ? ' even-col' : ' odd-col');
                 element.className = cssClassesString;
             }
         });

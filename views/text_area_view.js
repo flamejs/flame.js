@@ -10,7 +10,8 @@ Flame.TextAreaView = Flame.View.extend({
     placeholder: null,
     isValid: null,
     isVisible: true,
-    isDisabled: true,
+    isDisabled: false,
+    readonly: false,
 
     becomeKeyResponder: function() {
         this.get('textArea').becomeKeyResponder();
@@ -27,6 +28,7 @@ Flame.TextAreaView = Flame.View.extend({
         placeholder: Ember.computed.alias('parentView.placeholder'),
         isVisible: Ember.computed.alias('parentView.isVisible'),
         disabled: Ember.computed.alias('parentView.isDisabled'),
+        readonly: Ember.computed.alias('parentView.readonly'),
 
         keyDown: function() { return false; },
         keyUp: function() {
@@ -35,4 +37,3 @@ Flame.TextAreaView = Flame.View.extend({
         }
     })
 });
-

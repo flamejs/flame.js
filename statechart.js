@@ -59,7 +59,7 @@ Flame.Statechart = {
         for (key in this) {
             var state = this[key];
             if (Flame.State.detect(state)) {
-                this.set(key, state.create({ owner: this, name: key }));
+                this[key] = state.create({ owner: this, name: key });
                 this._setupProxyMethods(this[key]);
             }
         }
@@ -74,8 +74,8 @@ Flame.Statechart = {
     */
     _setupProxyMethods: function(state) {
         for (var property in state) {
-            if (state.constructor.prototype.hasOwnProperty(property) && Ember.typeOf(state[property]) === "function" &&
-                !this[property] && property !== "enterState" && property !== "exitState") {
+            if (state.constructor.prototype.hasOwnProperty(property) && Ember.typeOf(state[property]) === 'function' &&
+                !this[property] && property !== 'enterState' && property !== 'exitState') {
                 this[property] = function(methodName) {
                     return function(args) {
                         args = Array.prototype.slice.call(arguments);
@@ -88,10 +88,10 @@ Flame.Statechart = {
     },
 
     gotoFlameState: function(stateName) {
-        Ember.assert("Cannot go to an undefined or null state!", !Ember.isNone(stateName));
+        Ember.assert('Cannot go to an undefined or null state!', !Ember.isNone(stateName));
         var currentFlameState = this.get('currentFlameState');
         var newState = this.get(stateName);
-        //do nothing if we are already in the state to go to
+        // do nothing if we are already in the state to go to
         if (currentFlameState === newState) {
             return;
         }
@@ -102,17 +102,20 @@ Flame.Statechart = {
             this.set('currentFlameState', newState);
             if (newState.enterState) newState.enterState();
         } else {
-            throw new Error("%@ is not a state!".fmt(stateName));
+            throw new Error('%@ is not a state!'.fmt(stateName));
         }
     },
 
     invokeStateMethod: function(methodName, args) {
         args = Array.prototype.slice.call(arguments); args.shift();
         var state = this.get('currentFlameState');
-        Ember.assert("Cannot invoke state method without having a current state!", !Ember.isNone(state) && state instanceof Flame.State);
+        Ember.assert('Cannot invoke state method without having a current state!', !Ember.isNone(state) && state instanceof Flame.State);
         var method = state[methodName];
-        if (Ember.typeOf(method) === "function") {
+        if (Ember.typeOf(method) === 'function') {
             return method.apply(state, args);
+        } else if (methodName === 'keyDown') {
+            args.unshift(methodName);
+            return !this._handleKeyEvent.apply(this, args);
         }
     }
 };

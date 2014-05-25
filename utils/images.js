@@ -9,4 +9,3 @@ Ember.mixin(Flame, {
       }
     }
 });
-

@@ -34,7 +34,6 @@ Flame.reopen({
 // Ember.View for rendering a template or Ember.ContainerView to render child views. But we want to support both here, so
 // that we can use e.g. Flame.ListItemView for items in list views, and the app can decide whether to use a template or not.
 Flame.View = Ember.ContainerView.extend(Flame.ViewSupport, Flame.LayoutSupport, Flame.EventManager, {
-    displayProperties: [],
     isFocused: false, // Does this view currently have key focus?
 
     init: function() {

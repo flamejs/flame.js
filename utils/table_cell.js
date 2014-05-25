@@ -31,6 +31,14 @@ Flame.TableCell.prototype.isEditable = function() {
     return false;
 };
 
+Flame.TableCell.prototype.isCopyable = function() {
+    return true;
+};
+
+Flame.TableCell.prototype.isPastable = function() {
+    return true;
+};
+
 // Returns an array of CSS classes for this cell
 Flame.TableCell.prototype.cssClasses = function() {
     return [];

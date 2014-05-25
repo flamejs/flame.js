@@ -78,16 +78,16 @@ Flame.AlertPanel.reopen({
 Flame.AlertPanel.reopenClass({
     info: function(config) {
         config = jQuery.extend(config || {}, {icon: Flame.AlertPanel.INFO_ICON, isCancelVisible: false});
-        return Flame.AlertPanel.createWithMixins(config);
+        return this.createWithMixins(config);
     },
 
     warn: function(config) {
         config = jQuery.extend(config || {}, {icon: Flame.AlertPanel.WARN_ICON});
-        return Flame.AlertPanel.createWithMixins(config);
+        return this.createWithMixins(config);
     },
 
     error: function(config) {
         config = jQuery.extend(config || {}, {icon: Flame.AlertPanel.ERROR_ICON});
-        return Flame.AlertPanel.createWithMixins(config);
+        return this.createWithMixins(config);
     }
 });

@@ -1,4 +1,7 @@
 Flame.ViewSupport = {
+    concatenatedProperties: ['displayProperties'],
+    displayProperties: [],
+
     init: function() {
         this._super();
 
