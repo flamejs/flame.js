@@ -30,41 +30,13 @@ Flame.reopen({
     FOCUS_RING_MARGIN: 3
 });
 
-// Base class for Flame views. Can be used to hold child views or render a template. In Ember, you normally either use
-// Ember.View for rendering a template or Ember.ContainerView to render child views. But we want to support both here, so
-// that we can use e.g. Flame.ListItemView for items in list views, and the app can decide whether to use a template or not.
+/**
+  Base class for Flame views. Can be used to hold child views or render a template. In Ember, you normally either use
+  Ember.View for rendering a template or Ember.ContainerView to render child views. But we want to support both here, so
+  that we can use e.g. Flame.ListItemView for items in list views, and the app can decide whether to use a template or not.
+*/
 Flame.View = Ember.ContainerView.extend(Flame.ViewSupport, Flame.LayoutSupport, Flame.EventManager, {
     isFocused: false, // Does this view currently have key focus?
-
-    init: function() {
-        this._super();
-
-        // Remove classNames up to FlameView to make it easier to define custom
-        // styles for buttons, checkboxes etc..
-        // We only want to do this in the init of class that sets the flag
-        if (Object.getPrototypeOf && Object.getPrototypeOf(this).resetClassNames) {
-            var superClassNames = this._collectSuperClassNames();
-            var classNames = this.get('classNames').removeObjects(superClassNames);
-            this.set('classNames', classNames);
-        }
-    },
-
-    // Collects the classNames that were defined in super classes, but not
-    // classNames in Flame.View or superclasses that are above it in the
-    // class hierarchy
-    _collectSuperClassNames: function() {
-        var superClassNames = [];
-        var superClass = Object.getPrototypeOf(Object.getPrototypeOf(this))
-        while (superClass && superClass.constructor !== Flame.View) {
-            superClassNames.pushObjects(superClass.classNames || []);
-            superClass = Object.getPrototypeOf(superClass);
-        }
-        // Add back the classNames from Flame.View and deeper
-        if (superClass.constructor === Flame.View) {
-            superClassNames.removeObjects(superClass.classNames);
-        }
-        return superClassNames;
-    },
 
     render: function(buffer) {
         // If a template is defined, render that, otherwise use ContainerView's rendering (render childViews)

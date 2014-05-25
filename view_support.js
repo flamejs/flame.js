@@ -1,6 +1,7 @@
 Flame.ViewSupport = {
     concatenatedProperties: ['displayProperties'],
     displayProperties: [],
+    resetClassNames: false,
 
     init: function() {
         this._super();
@@ -11,6 +12,15 @@ Flame.ViewSupport = {
             var property = properties[i];
             this.addObserver(property, this, this.rerender);
         }
+
+        // Remove classNames up to Flame.View to make it easier to define custom
+        // styles for buttons, checkboxes etc...
+        // We only want to do this in the init of class that sets the flag
+        if (this.get('resetClassNames') && Object.getPrototypeOf) {
+            var superClassNames = this._collectSuperClassNames();
+            var classNames = this.get('classNames').removeObjects(superClassNames);
+            this.set('classNames', classNames);
+        }
     },
 
     createChildView: function(view, attrs) {
@@ -19,5 +29,24 @@ Flame.ViewSupport = {
             Ember.finishChains(view);
         }
         return view;
+    },
+
+    /**
+     Collects the classNames that were defined in super classes, but not
+     classNames in Flame.View or superclasses that are above it in the
+     class hierarchy.
+     */
+    _collectSuperClassNames: function() {
+        var superClassNames = [];
+        var superClass = Object.getPrototypeOf(Object.getPrototypeOf(this));
+        while (superClass && superClass.constructor !== Flame.View) {
+            superClassNames.pushObjects(superClass.classNames || []);
+            superClass = Object.getPrototypeOf(superClass);
+        }
+        // Add back the classNames from Flame.View and deeper
+        if (superClass.constructor === Flame.View) {
+            superClassNames.removeObjects(superClass.classNames);
+        }
+        return superClassNames;
     }
 };
