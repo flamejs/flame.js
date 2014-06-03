@@ -54,7 +54,7 @@ Flame.View = Ember.ContainerView.extend(Flame.ViewSupport, Flame.LayoutSupport, 
     // class hierarchy
     _collectSuperClassNames: function() {
         var superClassNames = [];
-        var superClass = Object.getPrototypeOf(Object.getPrototypeOf(this))
+        var superClass = Object.getPrototypeOf(Object.getPrototypeOf(this));
         while (superClass && superClass.constructor !== Flame.View) {
             superClassNames.pushObjects(superClass.classNames || []);
             superClass = Object.getPrototypeOf(superClass);
