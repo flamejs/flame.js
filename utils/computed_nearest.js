@@ -26,7 +26,7 @@
           __foo_bar: Ember.computed.empty('parentView.parentView.parentView.foo.bar')
     */
     Flame.computed.nearest = function(key, macro) {
-        var propertyName = '__' + key.replace('.', '_');
+        var propertyName = '__' + key.replace(/\./g, '_');
 
         var computed = Ember.computed(propertyName, function(k, value) {
             if (this[propertyName] === undefined) {
