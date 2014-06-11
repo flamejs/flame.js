@@ -10,7 +10,9 @@ Flame.AlertPanel.WARN_ICON = Flame.image('warn_icon.png');
 Flame.AlertPanel.ERROR_ICON = Flame.image('error_icon.png');
 
 Flame.AlertPanel.reopen({
-    layout: { centerX: 0, centerY: -50, width: 400, height: 155 },
+    layout: { centerX: 0, centerY: -50, width: 400 },
+
+    layoutManager: Flame.VerticalStackLayoutManager.create({}),
     classNames: 'flame-alert-panel'.w(),
     icon: Flame.AlertPanel.INFO_ICON,
     isModal: true,
@@ -26,36 +28,35 @@ Flame.AlertPanel.reopen({
 
     contentView: Flame.View.extend({
         layout: { left: 15, right: 15, top: 36, bottom: 15 },
-        childViews: 'iconView messageView cancelButtonView okButtonView'.w(),
+        layoutManager: Flame.VerticalStackLayoutManager.create({ topMargin: 20, bottomMargin: 20, spacing: 10 }),
+        childViews: 'alertView confirmView'.w(),
 
-        iconView: Flame.ImageView.extend({
-            layout: { left: 10, top: 10 },
-            valueBinding: '^icon'
+        alertView: Flame.AlertPanelAlertView,
+
+        confirmView: Flame.View.extend({
+            layout: { width: 200, right: 0, height: 30 },
+            childViews: 'cancelButtonView okButtonView'.w(),
+
+            cancelButtonView: Flame.ButtonView.extend({
+                layout: { width: 90, bottom: 2, right: 110 },
+                titleBinding: '^cancelButtonTitle',
+                isVisibleBinding: '^isCancelVisible',
+                action: function() {
+                    this.get('parentView.parentView.parentView').onCancel();
+                }
+            }),
+
+            okButtonView: Flame.ButtonView.extend({
+                layout: { width: 90, bottom: 2, right: 2 },
+                titleBinding: '^confirmButtonTitle',
+                isVisibleBinding: '^isConfirmVisible',
+                isDefault: true,
+                action: function() {
+                    this.get('parentView.parentView.parentView').onConfirm();
+                }
+            })
         }),
 
-        messageView: Flame.LabelView.extend({
-            layout: { left: 75, top: 10, right: 2, bottom: 30 },
-            valueBinding: '^message'
-        }),
-
-        cancelButtonView: Flame.ButtonView.extend({
-            layout: { width: 90, bottom: 2, right: 110 },
-            titleBinding: '^cancelButtonTitle',
-            isVisibleBinding: '^isCancelVisible',
-            action: function() {
-                this.get('parentView.parentView').onCancel();
-            }
-        }),
-
-        okButtonView: Flame.ButtonView.extend({
-            layout: { width: 90, bottom: 2, right: 2 },
-            titleBinding: '^confirmButtonTitle',
-            isVisibleBinding: '^isConfirmVisible',
-            isDefault: true,
-            action: function() {
-                this.get('parentView.parentView').onConfirm();
-            }
-        })
     }),
 
     // Key event handler for ESC
@@ -74,6 +75,33 @@ Flame.AlertPanel.reopen({
     }
 });
 
+Flame.AlertPanelAlertView = Flame.View.extend({
+    layout: { left: 10, right: 2, height: 'measuredHeight'},
+    childViews: 'iconView messageView'.w(),
+    messageViewHeight: 0,
+    measuredHeight: function() {
+        var width  = "width: %@px;".fmt(this.get('messageViewHeight'));
+        var parentClasses = this.get('parentView.parentView.classNames').join(' ');
+        var elementClasses = this.get('messageView.classNames').join(' ');
+        var computedMessageViewHeight = Flame.measureString(this.get('message'), parentClasses, elementClasses, width).height;
+        return Math.max(Math.min(computedMessageViewHeight, 600), 50);
+    }.property('message', 'messageViewHeight'),
+    message: Flame.computed.nearest('message'),
+
+    iconView: Flame.ImageView.extend({
+        layout: { left: 10 },
+        value: Flame.computed.nearest('icon')
+    }),
+
+    messageView: Flame.LabelView.extend({
+        layout: { left: 75, right: 2, height: null },
+        didInsertElement: function() {
+            this.set('parentView.messageViewHeight', this.$().width());
+        },
+        allowWrapping: true,
+        value: Ember.computed.alias('parentView.message')
+    }),
+});
 
 Flame.AlertPanel.reopenClass({
     info: function(config) {
