@@ -46,14 +46,14 @@ Flame.AlertPanelButtonView = Flame.View.extend({
 Flame.AlertPanelMessageView = Flame.View.extend({
     layout: { left: 10, right: 2, height: 'measuredHeight'},
     childViews: 'iconView messageView'.w(),
-    messageViewHeight: 0,
+    messageViewWidth: 0,
     measuredHeight: function() {
-        var width  = "width: %@px;".fmt(this.get('messageViewHeight'));
+        var width  = "width: %@px;".fmt(this.get('messageViewWidth'));
         var parentClasses = this.get('parentView.parentView.classNames').join(' ');
         var elementClasses = this.get('messageView.classNames').join(' ');
         var computedMessageViewHeight = Flame.measureString(this.get('message'), parentClasses, elementClasses, width).height;
         return Math.max(Math.min(computedMessageViewHeight, 600), 50);
-    }.property('message', 'messageViewHeight'),
+    }.property('message', 'messageViewWidth'),
     message: null,
 
     iconView: Flame.ImageView.extend({
@@ -64,7 +64,7 @@ Flame.AlertPanelMessageView = Flame.View.extend({
     messageView: Flame.LabelView.extend({
         layout: { left: 75, right: 2, height: null },
         didInsertElement: function() {
-            this.set('parentView.messageViewHeight', this.$().width());
+            this.set('parentView.messageViewWidth', this.$().width());
         },
         allowWrapping: true,
         value: Ember.computed.alias('parentView.message')
