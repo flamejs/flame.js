@@ -537,12 +537,10 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         exitState: function() {
             var owner = this.get('owner');
             var editField = owner.get('editField');
-
-            var selectedCell = owner.get('selectedCell');
-            selectedCell.removeClass('editing');
-
             editField.hide();
             editField.removeClass('invalid');
+
+            owner.get('selectedCell').removeClass('editing');
         }
     }),
 
@@ -554,11 +552,14 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
     },
 
     willLoseKeyResponder: function() {
+        // We first change the state so that the current state can do any
+        // required cleanup before we set the selected cell to null.
+        this.gotoFlameState('loaded');
+
         this.setProperties({
             selectedCell: null,
             selectionEnd: null
         });
-        this.gotoFlameState('loaded');
     },
 
     columnIndex: function(cell) {
