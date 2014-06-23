@@ -21,9 +21,9 @@ Flame.TextField = Ember.TextField.extend(Flame.EventManager, Flame.FocusSupport,
         this.on('input', this, this._setValue);
     },
 
-    _elementValueDidChange: function() {
+    willDestroyElement: function() {
         if (this._timer) Ember.run.cancel(this._timer);
-        this._super();
+        this._elementValueDidChange();
     },
 
     _setValue: function() {
@@ -32,7 +32,7 @@ Flame.TextField = Ember.TextField.extend(Flame.EventManager, Flame.FocusSupport,
         } else {
             if (this._timer) Ember.run.cancel(this._timer);
             this._timer = Ember.run.later(this, function() {
-                this.set('value', this.$().val());
+                this._elementValueDidChange();
             }, this._setValueDelay);
         }
     },
