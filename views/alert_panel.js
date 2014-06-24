@@ -90,7 +90,7 @@ Flame.AlertPanel.reopen({
 
     contentView: Flame.View.extend({
         layout: { left: 15, right: 15, top: 36, bottom: 15 },
-        layoutManager: Flame.VerticalStackLayoutManager.create({ topMargin: 20, bottomMargin: 20, spacing: 10 }),
+        layoutManager: Flame.VerticalStackLayoutManager.create({ topMargin: 20, bottomMargin: 17, spacing: 10 }),
         childViews: 'messageView buttonView'.w(),
 
         messageView: Flame.AlertPanelMessageView.extend({
