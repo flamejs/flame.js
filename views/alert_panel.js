@@ -44,12 +44,12 @@ Flame.AlertPanelButtonView = Flame.View.extend({
 });
 
 Flame.AlertPanelMessageView = Flame.View.extend({
-    layout: { left: 10, right: 2, height: 'measuredHeight'},
+    layout: { left: 10, right: 2, height: 'measuredHeight' },
     childViews: 'iconView messageView'.w(),
     messageViewWidth: 0,
     measuredHeight: function() {
         var width  = "width: %@px;".fmt(this.get('messageViewWidth'));
-        var parentClasses = this.get('parentView.parentView.classNames').join(' ');
+        var parentClasses = this.nearestOfType(Flame.AlertPanel).get('classNames').join(' ');
         var elementClasses = this.get('messageView.classNames').join(' ');
         var computedMessageViewHeight = Flame.measureString(this.get('message'), parentClasses, elementClasses, width).height;
         return Math.max(Math.min(computedMessageViewHeight, 600), 50);
