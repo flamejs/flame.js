@@ -64,19 +64,16 @@ Flame.FormView = Flame.View.extend({
         if (descriptor.type === 'checkbox') {
             view = this._createChildViewWithLayout(control, this, this.get('leftMargin') + this.labelWidth + this.columnSpacing - 4, this._focusRingMargin);
         }
-
         if (view) {
             // The FormView expects all controls to be within another view
             return Flame.View.extend({
                 layoutManager: Flame.VerticalStackLayoutManager.create({ topMargin: this._focusRingMargin, spacing: 0, bottomMargin: this._focusRingMargin }),
                 childViews: ['control'],
-                isVisible: desc.isVisible === undefined ? true : desc.isVisible,
                 control: view
             });
         }
 
-        // The View returned in the end has both a label and a control
-        var viewProperties = {
+        view = {
             layout: { left: this.get('leftMargin'), right: this.get('rightMargin') },
             layoutManager: Flame.VerticalStackLayoutManager.create({ topMargin: this._focusRingMargin, spacing: 0, bottomMargin: this._focusRingMargin }),
             childViews: ['label', 'control'],
@@ -89,12 +86,11 @@ Flame.FormView = Flame.View.extend({
             }.property()
         };
         if (descriptor.get('isVisibleBinding')) {
-            delete viewProperties.isVisible;
-            viewProperties.isVisibleBinding = descriptor.get('isVisibleBinding');
+            delete view.isVisible;
+            view.isVisibleBinding = descriptor.get('isVisibleBinding');
         }
 
-        return Flame.View.extend(viewProperties);
-
+        return Flame.View.extend(view);
     },
 
     _createChildViewWithLayout: function(view, parent, leftMargin, rightMargin) {
