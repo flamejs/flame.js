@@ -10,7 +10,8 @@ Flame.TextField = Ember.TextField.extend(Flame.EventManager, Flame.FocusSupport,
     disabled: Ember.computed.alias('parentView.isDisabled'),
     attributeBindings: ['name', 'disabled'],
     _setValueDelay: 700,
-    _timer: null,ame: Ember.computed.alias('parentView.name'),
+    _timer: null,
+    name: Ember.computed.alias('parentView.name'),
 
     init: function() {
         this._super();
