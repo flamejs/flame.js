@@ -1,46 +1,44 @@
-(function() {
-    var eventHandlers = {
-        interpretKeyEvents: function(event) {
-            var mapping = event.shiftKey ? Flame.MODIFIED_KEY_BINDINGS : Flame.KEY_BINDINGS;
-            var eventName = mapping[event.keyCode];
-            if (eventName && this[eventName]) {
-                var handler = this[eventName];
-                if (Ember.typeOf(handler) === 'function') {
-                    return handler.call(this, event, this);
-                }
+var eventHandlers = {
+    interpretKeyEvents: function(event) {
+        var mapping = event.shiftKey ? Flame.MODIFIED_KEY_BINDINGS : Flame.KEY_BINDINGS;
+        var eventName = mapping[event.keyCode];
+        if (eventName && this[eventName]) {
+            var handler = this[eventName];
+            if (Ember.typeOf(handler) === 'function') {
+                return handler.call(this, event, this);
             }
-            return false;
-        },
-
-        handleKeyEvent: function(event, view) {
-            var emberEvent = null;
-            switch (event.type) {
-                case 'keydown': emberEvent = 'keyDown'; break;
-                case 'keypress': emberEvent = 'keyPress'; break;
-            }
-            var handler = emberEvent ? this.get(emberEvent) : null;
-            if (handler) {
-                // Note that in jQuery, the contract is that event handler should return
-                // true to allow default handling, false to prevent it. But in Ember, event handlers return true if they handled the event,
-                // false if they didn't, so we want to invert that return value here.
-                return !handler.call(Flame.keyResponderStack.current(), event, Flame.keyResponderStack.current());
-            }
-            return this._handleKeyEvent(emberEvent, event, view);
-        },
-
-        _handleKeyEvent: function(eventName, event, view) {
-            if (eventName === 'keyDown' && this.interpretKeyEvents(event)) { // Try to hand down the event to a more specific key event handler
-                return false;
-            } else if (this.get('parentView')) {
-                return this.get('parentView').handleKeyEvent(event, view);
-            }
-            return true;
         }
-    };
+        return false;
+    },
 
-    Ember.View.reopen(eventHandlers);
-    Ember.TextSupport.reopen(eventHandlers);
-}());
+    handleKeyEvent: function(event, view) {
+        var emberEvent = null;
+        switch (event.type) {
+            case 'keydown': emberEvent = 'keyDown'; break;
+            case 'keypress': emberEvent = 'keyPress'; break;
+        }
+        var handler = emberEvent ? this.get(emberEvent) : null;
+        if (handler) {
+            // Note that in jQuery, the contract is that event handler should return
+            // true to allow default handling, false to prevent it. But in Ember, event handlers return true if they handled the event,
+            // false if they didn't, so we want to invert that return value here.
+            return !handler.call(Flame.keyResponderStack.current(), event, Flame.keyResponderStack.current());
+        }
+        return this._handleKeyEvent(emberEvent, event, view);
+    },
+
+    _handleKeyEvent: function(eventName, event, view) {
+        if (eventName === 'keyDown' && this.interpretKeyEvents(event)) { // Try to hand down the event to a more specific key event handler
+            return false;
+        } else if (this.get('parentView')) {
+            return this.get('parentView').handleKeyEvent(event, view);
+        }
+        return true;
+    }
+};
+
+Ember.View.reopen(eventHandlers);
+Ember.TextSupport.reopen(eventHandlers);
 
 Flame.KEY_BINDINGS = {
     8: 'deleteBackward',

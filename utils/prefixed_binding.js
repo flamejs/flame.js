@@ -51,14 +51,12 @@
   properties of all views).
 */
 
-(function() {
-    var IS_PREFIXED_BINDING = /^[\^\$]/;
-    Ember.mixin(Ember.Binding.prototype, {
-        connect: function(obj) {
-            if (!IS_PREFIXED_BINDING.test(this._from)) return this._super(obj);
-        }
-    });
-})();
+var IS_PREFIXED_BINDING = /^[\^\$]/;
+Ember.mixin(Ember.Binding.prototype, {
+    connect: function(obj) {
+        if (!IS_PREFIXED_BINDING.test(this._from)) return this._super(obj);
+    }
+});
 
 Flame.reopen({
     // Bind our custom prefixed bindings. This method has to be explicitly called after creating a new child view.
