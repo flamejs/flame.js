@@ -23,8 +23,8 @@ Flame.TextField = Ember.TextField.extend(Flame.EventManager, Flame.FocusSupport,
     },
 
     willDestroyElement: function() {
-        if (!this.get('parentView.setValueOnEachKeyUp')) {
-            if (this._timer) Ember.run.cancel(this._timer);
+        if (this._timer) {
+            Ember.run.cancel(this._timer);
             this._elementValueDidChange();
         }
     },
