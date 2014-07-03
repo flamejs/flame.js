@@ -327,7 +327,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     mouseClicked: function(index) {
         // If we're just handling a mouseUp that is part of the click that opened this menu, do nothing.
         // When the mouseUp follows within 100ms of opening the menu, we know that's the case.
-        if (Ember.isNone(this.get('parentMenu')) && new Date().getTime() - this._openedAt < 100) {
+        if (Ember.isNone(this.get('parentMenu')) && new Date().getTime() - this._openedAt < 300) {
             return;
         }
 
