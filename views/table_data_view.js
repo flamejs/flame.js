@@ -608,7 +608,11 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         var scrollTop = scrollable.scrollTop();
         var scrollLeft = scrollable.scrollLeft();
 
-        selection.css(this._selectionCSS(this.get('selectedCell'), this.get('selectionEnd'), scrollTop, scrollLeft, position));
+        selectedCell.addClass('active-cell');
+        selection.css(this._selectionCSS(selectedCell, this.get('selectionEnd'), scrollTop, scrollLeft, position));
+
+        if (flameState === "resizing")
+            return; // Scrolling the viewport used to mess up resizing columns when the selected cell was not in view
 
         // Ensure the selection is within the visible area of the scrollview
         if (position.top < 0) {
@@ -618,11 +622,10 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             scrollable.scrollTop(top + scrollTop + 17);
         } else if (position.left < 0) {
             scrollable.scrollLeft(scrollLeft + position.left);
-        } else if (flameState !== "resizing" && position.left + selectedCell.outerWidth() > scrollable.outerWidth()) {
+        } else if (position.left + selectedCell.outerWidth() > scrollable.outerWidth()) {
             var left = position.left + selectedCell.outerWidth() - scrollable.outerWidth();
             scrollable.scrollLeft(left + scrollLeft + 17);
         }
-        selectedCell.addClass('active-cell');
     },
 
     _selectionCSS: function(startCell, endCell, scrollTop, scrollLeft, position) {
