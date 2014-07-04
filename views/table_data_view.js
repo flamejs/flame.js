@@ -597,11 +597,12 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
     _updateSelection: function() {
         var selectedCell = this.get('selectedCell');
-        if (!selectedCell) {
+        if (!selectedCell)
             return;
-        }
+
         var selection = this.get('selection');
         var scrollable = this.get('parentView.scrollable');
+        var flameState = this.get('parentView.currentFlameState.name');
 
         var position = selectedCell.position();
         var scrollTop = scrollable.scrollTop();
@@ -617,7 +618,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             scrollable.scrollTop(top + scrollTop + 17);
         } else if (position.left < 0) {
             scrollable.scrollLeft(scrollLeft + position.left);
-        } else if (position.left + selectedCell.outerWidth() > scrollable.outerWidth()) {
+        } else if (flameState !== "resizing" && position.left + selectedCell.outerWidth() > scrollable.outerWidth()) {
             var left = position.left + selectedCell.outerWidth() - scrollable.outerWidth();
             scrollable.scrollLeft(left + scrollLeft + 17);
         }
