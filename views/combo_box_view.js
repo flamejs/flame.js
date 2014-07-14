@@ -4,12 +4,12 @@
 Flame.ComboBoxView = Flame.SelectButtonView.extend({
     classNames: ['flame-combo-box-view'],
     childViews: 'textView buttonView'.w(),
-    handlebars: undefined,
+    handlebars: null,
     acceptsKeyResponder: false,
 
     textView: Flame.TextFieldView.extend({
         layout: { left: 0, right: 3 },
-        valueBinding: 'parentView.value'
+        value: Ember.computed.alias('parentView.value')
     }),
 
     insertSpace: function() { return false; },
