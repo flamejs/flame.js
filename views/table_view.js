@@ -83,8 +83,8 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                 var owner = this.get('owner');
                 // If a table cell is being edited at this point, its 'editField' would get displaced by the resizing operation, so we just turn the editing off
                 var tableDataView = owner.get('tableDataView');
-                if (tableDataView.get('currentFlameState').get('name') === "editing")
-                    tableDataView._cancelEditingOrSelecting();
+                if (tableDataView.get('currentFlameState.name') === "editing")
+                    tableDataView.cancel();
                 var cell = target.closest('td').first();
                 owner.set('resizingCell', cell);
                 owner.set('dragStartX', event.pageX);
