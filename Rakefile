@@ -36,7 +36,6 @@ task :build => :clean do
 
   environment = Sprockets::Environment.new
   environment.append_path('.')
-  environment.append_path('vendor')
   environment.append_path('stylesheets')
 
   environment.register_postprocessor('application/javascript', :anon_wrap) do |context, data|
@@ -49,9 +48,6 @@ task :build => :clean do
   flame = File.open('build/flame.min.js', 'w')
   flame.write(Uglifier.compile(File.read('build/flame.js').gsub(%r{^(\s)+Ember\.assert\((.*)\).*$}, '')))
   flame.close
-
-  html5 = environment.find_asset('html5.js')
-  html5.write_to('build/html5.js')
 
   # SCSS files
   css = environment.find_asset('flame.css.scss')
@@ -68,9 +64,7 @@ end
 
 desc "Run JSHint on Flame.js"
 task :jshint do
-  files = Rake::FileList.new('**/*.js').
-      exclude('build/**/*.js').
-      exclude('vendor/**/*.js')
+  files = Rake::FileList.new('**/*.js').exclude('build/**/*.js')
 
   sh "jshint #{files.join(' ')}" do |ok, res|
     fail 'JSHint found errors.' unless ok

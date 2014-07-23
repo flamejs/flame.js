@@ -4,7 +4,7 @@ Flame.js is a widget/UI library for Ember.js. It's aimed at implementing desktop
 
 Flame.js is designed to bring some of the features of SproutCore 1.x to Ember world, and in fact originally came to be as a byproduct of porting a large SC 1.x application to Ember. While it's not 1:1 compatible with SproutCore 1.x, porting an existing SC1 app to Ember+Flame should be fairly straightforward.
 
-Flame.js has been tested & works on Chrome, Safari, Firefox 8+ and IE8+.
+Flame.js has been tested & works on Chrome, Safari, Firefox and IE9+.
 
 
 ## Getting Started
