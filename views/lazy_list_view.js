@@ -292,5 +292,10 @@ Flame.LazyListView = Flame.ListView.extend({
 
     childViewForIndex: function(index) {
         return this.findBy('contentIndex', index);
+    },
+
+    // override this to temporarily disable re-ordering
+    disableReordering: function(event) {
+        return false;
     }
 });
