@@ -58,7 +58,7 @@ Flame.Panel = Flame.RootView.extend({
         labelView: Flame.LabelView.extend({
             layout: { left: 4, right: 4, top: 2 },
             textAlign: Flame.ALIGN_CENTER,
-            valueBinding: 'parentView.parentView.title'
+            value: Ember.computed.alias('parentView.parentView.title')
         }),
 
         idle: Flame.State.extend({
@@ -109,7 +109,7 @@ Flame.Panel = Flame.RootView.extend({
         layout: { bottom: 3, right: 3, height: 16, width: 16 },
         ignoreLayoutManager: true,
         classNames: ['flame-resize-thumb'],
-        isVisibleBinding: 'parentView.isResizable',
+        isVisible: Ember.computed.alias('parentView.isResizable'),
         initialFlameState: 'idle',
         isResizing: false,
 
