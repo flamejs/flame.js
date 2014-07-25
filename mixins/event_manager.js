@@ -14,8 +14,12 @@ var eventHandlers = {
     handleKeyEvent: function(event, view) {
         var emberEvent = null;
         switch (event.type) {
-            case 'keydown': emberEvent = 'keyDown'; break;
-            case 'keypress': emberEvent = 'keyPress'; break;
+            case 'keydown':
+                emberEvent = 'keyDown';
+                break;
+            case 'keypress':
+                emberEvent = 'keyPress';
+                break;
         }
         var handler = emberEvent ? this.get(emberEvent) : null;
         if (handler) {

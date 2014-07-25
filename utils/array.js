@@ -5,10 +5,10 @@ Ember.mixin(Array.prototype, {
 
     isEqual: function(ary) {
         if (!ary) return false ;
-        if (ary == this) return true;
+        if (ary === this) return true;
 
         var loc = ary.get('length') ;
-        if (loc != this.get('length')) return false ;
+        if (loc !== this.get('length')) return false ;
 
         while(--loc >= 0) {
             if (!Ember.isEqual(ary.objectAt(loc), this.objectAt(loc))) return false ;

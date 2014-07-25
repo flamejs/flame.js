@@ -107,7 +107,8 @@ Flame.Statechart = {
     },
 
     invokeStateMethod: function(methodName, args) {
-        args = Array.prototype.slice.call(arguments); args.shift();
+        args = Array.prototype.slice.call(arguments);
+        args.shift();
         var state = this.get('currentFlameState');
         Ember.assert('Cannot invoke state method without having a current state!', !Ember.isNone(state) && state instanceof Flame.State);
         var method = state[methodName];
