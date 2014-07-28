@@ -64,14 +64,8 @@ Flame.LayoutSupport = {
 
         var layout = this.get('layout') || {};
         this._resolveLayoutBindings(layout);
-        var cssLayout = this._translateLayout(layout);
+        this._translateLayout(layout, buffer);
 
-        this._cssProperties.forEach(function(prop) {
-            var value = cssLayout[prop];
-            if (!Ember.isNone(value)) {
-                buffer.style(prop, value);
-            }
-        });
         if (layout.zIndex !== undefined) buffer.style('z-index', layout.zIndex);
 
         var backgroundColor = this.get('backgroundColor');
@@ -79,7 +73,7 @@ Flame.LayoutSupport = {
     },
 
     _resolveLayoutBindings: function(layout) {
-        if (layout._bindingsResolved) return;  // Only add the observers once, even if rerendered
+        if (layout._bindingsResolved) return; // Only add the observers once, even if rerendered
         this._layoutProperties.forEach(function(prop) {
             var value = layout[prop];
             // Does it look like a property path (and not e.g. '50%')?
@@ -94,8 +88,9 @@ Flame.LayoutSupport = {
         layout._bindingsResolved = true;
     },
 
-    // Given a layout hash, translates possible centerX and centerY to appropriate CSS properties
-    _translateLayout: function(layout) {
+    // Given a layout hash, translates possible centerX and centerY to appropriate CSS properties.
+    // If a buffer is given, renders the CSS styles to that buffer.
+    _translateLayout: function(layout, buffer) {
         var cssLayout = {};
 
         if (layout.maxHeight !== undefined) {
@@ -120,13 +115,19 @@ Flame.LayoutSupport = {
             cssLayout['margin-top'] = (-((layout.height || 0) / 2) + layout.centerY) + 'px';
         }
 
-        this._cssProperties.forEach(function(prop) {
+        var i, length = this._cssProperties.length;
+        for (i = 0; i < length; i++) {
+            var prop = this._cssProperties[i];
             var value = cssLayout[prop];
             // If a number or a string containing only a number, append 'px'
             if (value !== undefined && ('number' === typeof value || parseInt(value, 10).toString() === value)) {
-                cssLayout[prop] = value+'px';
+                cssLayout[prop] = value += 'px';
             }
-        });
+
+            if (buffer && !Ember.isNone(value)) {
+                buffer.style(prop, value);
+            }
+        }
 
         return cssLayout;
     },
@@ -211,4 +212,3 @@ Flame.LayoutSupport = {
         });
     }.observesBefore('isVisible')
 };
-
