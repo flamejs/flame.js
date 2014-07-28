@@ -55,8 +55,8 @@ Flame.SelectButtonView = Flame.ButtonView.extend({
             itemValueKey: this.get('itemValueKey'),
             itemActionKey: this.get('itemActionKey'),
             subMenuKey: this.get('subMenuKey'),
-            itemsBinding: 'selectButtonView.items',
-            valueBinding: 'selectButtonView.value',
+            items: Ember.computed.alias('selectButtonView.items'),
+            value: Ember.computed.alias('selectButtonView.value'),
             minWidth: this.get('layout.width') || this.$().width(),
             close: function() {
                 self.gotoFlameState('idle');
