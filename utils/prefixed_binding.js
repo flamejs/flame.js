@@ -58,40 +58,50 @@ Ember.mixin(Ember.Binding.prototype, {
     }
 });
 
+var IS_BINDING = /Binding$/;
+var PREFIXED_BINDING = /^(\^|\$)([^.]+)(.*)$/;
 Flame.reopen({
     // Bind our custom prefixed bindings. This method has to be explicitly called after creating a new child view.
     _bindPrefixedBindings: function(view) {
         var foundPrefixedBindings = false;
         for (var key in view) {
-            if (/Binding$/.test(key)) {
-                var binding = view[key];
-                Ember.assert('Expected a Ember.Binding!', binding instanceof Ember.Binding);
+            if (this._bindPrefixed(key, view)) {
+                foundPrefixedBindings = true;
+            }
+        }
+        return foundPrefixedBindings;
+    },
 
-                var m = binding._from.match(/^(\^|\$)([^.]+)(.*)$/);
-                if (m) {
-                    foundPrefixedBindings = true;
-                    var useValue = m[1] === '$';
-                    var property = m[2];
-                    var suffix = m[3];
-                    var prefix;
+    _bindPrefixed: function(key, view) {
+        var foundPrefixedBindings = false;
+        if (IS_BINDING.test(key)) {
+            var binding = view[key];
+            Ember.assert('Expected an Ember.Binding!', binding instanceof Ember.Binding);
 
-                    if (useValue) {
-                        prefix = this._lookupValueOfProperty(view, property);
-                    } else {
-                        prefix = this._lookupPathToProperty(view, property);
-                    }
-                    Ember.assert("Property '%@' was not found!".fmt(property), !Ember.isNone(prefix));
-                    // Ember.assert("Don't use prefixed bindings to bind to a value in the parent view", prefix !== 'parentView.' + property);
+            var m = binding._from.match(PREFIXED_BINDING);
+            if (m) {
+                foundPrefixedBindings = true;
+                var useValue = m[1] === '$';
+                var property = m[2];
+                var suffix = m[3];
+                var prefix;
 
-                    var finalPath = prefix + suffix;
-                    // Copy transformations and the ilk.
-                    var newBinding = binding.copy();
-                    newBinding._from = finalPath;
-                    newBinding.connect(view);
-                    // Make debugging easier
-                    binding._resolved_form = newBinding._resolved_form = newBinding._from;
-                    binding._unresolved_form = newBinding._unresolved_form = binding._from;
+                if (useValue) {
+                    prefix = this._lookupValueOfProperty(view, property);
+                } else {
+                    prefix = this._lookupPathToProperty(view, property);
                 }
+                Ember.assert("Property '%@' was not found!".fmt(property), !Ember.isNone(prefix));
+                // Ember.assert("Don't use prefixed bindings to bind to a value in the parent view", prefix !== 'parentView.' + property);
+
+                var finalPath = prefix + suffix;
+                // Copy transformations and the ilk.
+                var newBinding = binding.copy();
+                newBinding._from = finalPath;
+                newBinding.connect(view);
+                // Make debugging easier
+                binding._resolved_form = newBinding._resolved_form = newBinding._from;
+                binding._unresolved_form = newBinding._unresolved_form = binding._from;
             }
         }
         return foundPrefixedBindings;
