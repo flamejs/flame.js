@@ -20,22 +20,22 @@ Flame.LabelView = Flame.View.extend(Flame.ActionSupport, {
         this._super(buffer);
     },
 
-    mouseDown: function(evt) {
+    mouseDown: function(event) {
         return this.fireAction();
     },
 
     // We should never let mouseUp propagate. If we handled mouseDown, we will receive mouseUp and obviously
     // it shouldn't be propagated. If we didn't handle mouseDown (there was no action), it was propagated up
     // and the mouse responder logic will relay mouseUp directly to the view that handler mouseDown.
-    mouseUp: function(evt) {
+    mouseUp: function(event) {
         return true;
     },
 
     // Apply the same logic to touchStart and touchEnd
-    touchStart: function(evt) {
+    touchStart: function(event) {
         return this.fireAction();
     },
-    touchEnd: function(evt) {
+    touchEnd: function(event) {
         return true;
     }
 });
