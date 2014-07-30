@@ -19,9 +19,12 @@ Flame.ScrollView = Flame.View.extend({
     isScrolling: false,
 
     didInsertElement: function() {
-        this._super();
-        this.$().scroll(jQuery.proxy(this.didScroll, this));
+        this.$().on('scroll', jQuery.proxy(this.didScroll, this));
         this._update();
+    },
+
+    willDestroyElement: function() {
+        this.$().off('scroll');
     },
 
     didScroll: function(event) {
