@@ -1,10 +1,9 @@
 /**
-  Support for defining the layout with a hash, e.g. layout: {left: 10, top: 10, width: 100, height: 30}
+  Support for defining the layout with a hash, e.g. layout: { left: 10, top: 10, width: 100, height: 30 }
 */
 Flame.LayoutSupport = {
     useAbsolutePosition: true,
-    classNameBindings: ['useAbsolutePosition:flame-view'],
-    layout: {left: 0, right: 0, top: 0, bottom: 0},
+    layout: { left: 0, right: 0, top: 0, bottom: 0 },
     defaultWidth: undefined,
     defaultHeight: undefined,
     layoutManager: undefined,
@@ -14,12 +13,25 @@ Flame.LayoutSupport = {
     _cssProperties: ['left', 'right', 'top', 'bottom', 'width', 'height', 'margin-left', 'margin-top', 'overflow'],
     _layoutChangeInProgress: false,
     _layoutSupportInitialized: false,
+    _layoutObservers: null,
 
     init: function() {
+        if (this.useAbsolutePosition) {
+            this.classNames = this.get('classNames').concat(['flame-view']);
+        }
         this._super();
         this._initLayoutSupport();
         this.consultLayoutManager();
         this.updateLayout();  // Make sure CSS is up-to-date, otherwise can sometimes get out of sync for some reason
+    },
+
+    willDestroy: function() {
+        if (this._layoutObservers) {
+            var length = this._layoutObservers.length;
+            for (var i = 0; i < length; i++) {
+                this.removeObserver(this._layoutObservers[i]);
+            }
+        }
     },
 
     // When using handlebars templates, the child views are created only upon rendering, not in init.
@@ -41,7 +53,7 @@ Flame.LayoutSupport = {
 
     _initLayoutSupport: function() {
         // Do this initialization even if element is not currently using absolute positioning, just in case
-        var layout = Ember.Object.create(Ember.copy(this.get('layout')));  // Clone layout for each instance in case it's mutated (happens with split view)
+        var layout = Ember.Object.create(this.get('layout')); // Clone layout for each instance in case it's mutated (happens with split view)
 
         if (layout.width === undefined && layout.right === undefined && this.get('defaultWidth') !== undefined) {
             layout.width = this.get('defaultWidth');
@@ -51,9 +63,6 @@ Flame.LayoutSupport = {
         }
 
         this.set('layout', layout);
-
-        // For changes to the layout it's enough to update the DOM
-        this.addObserver('layout', this, this.updateLayout);
 
         this._layoutSupportInitialized = true;
     },
@@ -74,14 +83,16 @@ Flame.LayoutSupport = {
 
     _resolveLayoutBindings: function(layout) {
         if (layout._bindingsResolved) return; // Only add the observers once, even if rerendered
+        this._layoutObservers = [];
         this._layoutProperties.forEach(function(prop) {
             var value = layout[prop];
             // Does it look like a property path (and not e.g. '50%')?
             if (!Ember.isNone(value) && 'string' === typeof value && value !== '' && isNaN(parseInt(value, 10))) {
-                // TODO remove the observer when view destroyed?
                 this.addObserver(value, this, function() {
                     this.adjustLayout(prop, this.get(value));
                 });
+                // Keep track of the observers we add so they can be removed later
+                this._layoutObservers.push(value);
                 layout[prop] = this.get(value);
             }
         }, this);
@@ -139,15 +150,14 @@ Flame.LayoutSupport = {
         // that several views might be sharing the layout property. So just ignore the call if not initialized.
         if (!this._layoutSupportInitialized) return;
 
-        // This if needed to prevent endless loop as the layout manager is likely to update the children, causing this method to be called again
+        var layoutManager = this.get('layoutManager');
+        if (!layoutManager) return;
+
+        // This is needed to prevent endless loop as the layout manager is likely to update the children, causing this method to be called again
         if (!this._layoutChangeInProgress) {
             this._layoutChangeInProgress = true;
-            try {
-                var layoutManager = this.get('layoutManager');
-                if (layoutManager !== undefined) layoutManager.setupLayout(this);
-            } finally {
-                this._layoutChangeInProgress = false;
-            }
+            layoutManager.setupLayout(this);
+            this._layoutChangeInProgress = false;
         }
     },
 
@@ -195,20 +205,8 @@ Flame.LayoutSupport = {
 
         var parentView = this.get('parentView');
         if (parentView && parentView.layoutDidChangeFor) parentView.layoutDidChangeFor(this);
-    }.observes('isVisible'),
+    }.observes('isVisible', 'layout'),
 
     // XXX: isVisible property doesn't seem to always get set properly, so make sure it is true
-    isVisible: true,
-
-    _isVisibleWillChange: function() {
-        var callback;
-        if (!this.get('isVisible')) {
-            callback = 'willBecomeVisible';
-        } else {
-            callback = 'willBecomeHidden';
-        }
-        this.invokeRecursively(function(view) {
-            if (view[callback]) view[callback].apply(view);
-        });
-    }.observesBefore('isVisible')
+    isVisible: true
 };
