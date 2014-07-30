@@ -23,13 +23,8 @@ Flame.HorizontalSplitView = Flame.SplitView.extend({
         Ember.assert('Flame.HorizontalSplitView needs topView and bottomView!', !!this.get('topView') && !!this.get('bottomView'));
         this._super();
 
-        if (this.get('flex') === 'bottom') this.bottomHeight = undefined;
-        else this.topHeight = undefined;
-
-        this.addObserver('topHeight', this, this._updateLayout);
-        this.addObserver('bottomHeight', this, this._updateLayout);
-        this.addObserver('minTopHeight', this, this._updateLayout);
-        this.addObserver('minBottomHeight', this, this._updateLayout);
+        if (this.get('flex') === 'bottom') this.set('bottomHeight', undefined);
+        else this.set('topHeight', undefined);
     },
 
     _updateLayout: function() {
@@ -64,16 +59,16 @@ Flame.HorizontalSplitView = Flame.SplitView.extend({
             this._setDimensions(dividerView, '', dividerThickness, bottomHeight);
             this._setDimensions(bottomView, '', bottomHeight, 0);
         }
-    },
+    }.observes('topHeight', 'bottomHeight', 'minTopHeight', 'minBottomHeight'),
 
     _setDimensions: function(view, top, height, bottom) {
-        var layout = view.get('layout');
-        layout.set('left', 0);
-        layout.set('height', height);
-        layout.set('right', 0);
-        layout.set('top', top);
-        layout.set('bottom', bottom);
-
+        view.get('layout').setProperties({
+            left: 0,
+            height: height,
+            right: 0,
+            top: top,
+            bottom: bottom
+        });
         view.updateLayout();
     },
 

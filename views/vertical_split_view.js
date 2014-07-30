@@ -23,13 +23,8 @@ Flame.VerticalSplitView = Flame.SplitView.extend({
         Ember.assert('Flame.VerticalSplitView needs leftView and rightView!', !!this.get('leftView') && !!this.get('rightView'));
         this._super();
 
-        if (this.get('flex') === 'right') this.rightWidth = undefined;
-        else this.leftWidth = undefined;
-
-        this.addObserver('leftWidth', this, this._updateLayout);
-        this.addObserver('rightWidth', this, this._updateLayout);
-        this.addObserver('minLeftWidth', this, this._updateLayout);
-        this.addObserver('minRightWidth', this, this._updateLayout);
+        if (this.get('flex') === 'right') this.set('rightWidth', undefined);
+        else this.set('leftWidth', undefined);
     },
 
     _updateLayout: function() {
@@ -64,16 +59,16 @@ Flame.VerticalSplitView = Flame.SplitView.extend({
             this._setDimensions(dividerView, '', dividerThickness, rightWidth);
             this._setDimensions(rightView, '', rightWidth, 0);
         }
-    },
+    }.observes('leftWidth', 'rightWidth', 'minLeftWidth', 'minRightWidth'),
 
     _setDimensions: function(view, left, width, right) {
-        var layout = view.get('layout');
-        layout.set('left', left);
-        layout.set('width', width);
-        layout.set('right', right);
-        layout.set('top', 0);
-        layout.set('bottom', 0);
-
+        view.get('layout').setProperties({
+            left: left,
+            width: width,
+            right: right,
+            top: 0,
+            bottom: 0
+        });
         view.updateLayout();
     },
 
