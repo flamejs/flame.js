@@ -32,6 +32,8 @@ Flame.Panel = Flame.RootView.extend({
     // Default minimum size for the resized panel
     minHeight: 52,
     minWidth: 100,
+    // When given a unique id, the panel's layout (so far only position) will be persisted
+    layoutPersistenceKey: null,
 
     _keyResponderOnPopup: undefined,
 
@@ -88,9 +90,9 @@ Flame.Panel = Flame.RootView.extend({
                 var newX = owner._panelX + (event.pageX - owner._pageX);
                 var newY = owner._panelY + (event.pageY - owner._pageY);
                 var element = owner.get('parentView').$();
-                newX = Math.max(5, Math.min(newX, Ember.$(window).width() - element.outerWidth() - 5));  // Constrain inside window
-                newY = Math.max(5, Math.min(newY, Ember.$(window).height() - element.outerHeight() - 5));
-                element.css({left: newX, top: newY, right: '', bottom: '', marginLeft: '', marginTop: ''});
+                this.newX = Math.max(5, Math.min(newX, Ember.$(window).width() - element.outerWidth() - 5));  // Constrain inside window
+                this.newY = Math.max(5, Math.min(newY, Ember.$(window).height() - element.outerHeight() - 5));
+                element.css({left: this.newX, top: this.newY, right: '', bottom: '', marginLeft: '', marginTop: ''});
                 return true;
             },
             touchMove: function(event) {
@@ -101,7 +103,18 @@ Flame.Panel = Flame.RootView.extend({
                 return true;
             },
             mouseUp: Flame.State.gotoFlameState('idle'),
-            touchEnd: Flame.State.gotoFlameState('idle')
+            touchEnd: Flame.State.gotoFlameState('idle'),
+            exitState: function() {
+                // Save panel layout
+                var layoutPersistenceKey = this.get('owner').nearestOfType(Flame.Panel).get('layoutPersistenceKey');
+                if (layoutPersistenceKey) {
+                    var panelLayouts = JSON.parse(localStorage.getItem('panelLayouts')) || {};
+                    panelLayouts[layoutPersistenceKey] = {
+                        position: { left: this.newX, top: this.newY }
+                    };
+                    localStorage.setItem('panelLayouts', JSON.stringify(panelLayouts));
+                }
+            }
         })
     }),
 
@@ -267,6 +280,18 @@ Flame.Panel = Flame.RootView.extend({
             this.set('isShown', true);
             this.set('isVisible', true);
             if (this.get('acceptsKeyResponder')) this.becomeKeyResponder(false);
+            // Try to restore panel layout
+            var layoutPersistenceKey = this.get('layoutPersistenceKey');
+            if (layoutPersistenceKey) {
+                var panelLayouts = JSON.parse(localStorage.getItem('panelLayouts')) || {};
+                if (panelLayouts[layoutPersistenceKey]) {
+                    var layout = this.get('layout');
+                    layout.top = panelLayouts[layoutPersistenceKey].position.top;
+                    layout.left = panelLayouts[layoutPersistenceKey].position.left;
+                    layout.centerX = undefined;
+                    layout.centerY = undefined;
+                }
+            }
             Ember.run.scheduleOnce('afterRender', this, this._focusDefaultInput);
         }
     },
