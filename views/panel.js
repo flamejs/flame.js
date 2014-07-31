@@ -33,7 +33,7 @@ Flame.Panel = Flame.RootView.extend({
     minHeight: 52,
     minWidth: 100,
     // When given a unique id, the panel's layout (so far only position) will be persisted
-    persistLayout: null,
+    layoutPersistenceKey: null,
 
     _keyResponderOnPopup: undefined,
 
@@ -106,10 +106,10 @@ Flame.Panel = Flame.RootView.extend({
             touchEnd: Flame.State.gotoFlameState('idle'),
             exitState: function() {
                 // Save panel layout
-                var persistLayout = this.get('owner').nearestOfType(Flame.Panel).get('persistLayout');
-                if (persistLayout) {
+                var layoutPersistenceKey = this.get('owner').nearestOfType(Flame.Panel).get('layoutPersistenceKey');
+                if (layoutPersistenceKey) {
                     var panelLayouts = JSON.parse(localStorage.getItem('panelLayouts')) || {};
-                    panelLayouts[persistLayout] = {
+                    panelLayouts[layoutPersistenceKey] = {
                         position: { left: this.newX, top: this.newY }
                     };
                     localStorage.setItem('panelLayouts', JSON.stringify(panelLayouts));
@@ -281,13 +281,13 @@ Flame.Panel = Flame.RootView.extend({
             this.set('isVisible', true);
             if (this.get('acceptsKeyResponder')) this.becomeKeyResponder(false);
             // Try to restore panel layout
-            var persistLayout = this.get('persistLayout');
-            if (persistLayout) {
+            var layoutPersistenceKey = this.get('layoutPersistenceKey');
+            if (layoutPersistenceKey) {
                 var panelLayouts = JSON.parse(localStorage.getItem('panelLayouts')) || {};
-                if (panelLayouts[persistLayout]) {
+                if (panelLayouts[layoutPersistenceKey]) {
                     var layout = this.get('layout');
-                    layout.top = panelLayouts[persistLayout].position.top;
-                    layout.left = panelLayouts[persistLayout].position.left;
+                    layout.top = panelLayouts[layoutPersistenceKey].position.top;
+                    layout.left = panelLayouts[layoutPersistenceKey].position.left;
                     layout.centerX = undefined;
                     layout.centerY = undefined;
                 }
