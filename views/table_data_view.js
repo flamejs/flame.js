@@ -100,7 +100,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                     var cell = rows[i] && rows.eq(i).children().eq(columnIndex + j);
                     if (!cell) return;
                     var dataCell = data[rowIndex + i][columnIndex + j];
-                    if (dataCell.isEditable() && dataCell.isPastable()) {
+                    if (dataCell && dataCell.isEditable() && dataCell.isPastable()) {
                         if (dataCell.options()) {
                             var option = dataCell.options().findBy('title', field);
                             if (!option) {
