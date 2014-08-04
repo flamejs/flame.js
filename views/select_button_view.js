@@ -11,7 +11,7 @@ Flame.SelectButtonView = Flame.ButtonView.extend({
     handlebars: function() {
         var itemTitleKey = this.get('itemTitleKey');
         return '<label {{bind-attr title="view._selectedMenuItem.%@"}}>{{view._selectedMenuItem.%@}}</label><div><img src="%@"></div>'.fmt(itemTitleKey, itemTitleKey, Flame.image('select_button_arrow.png'));
-    }.property('_selectedMenuItem', 'itemTitleKey'),
+    }.property('itemTitleKey'),
 
     _selectedMenuItem: function() {
         if (this.get('value') === undefined) return undefined;

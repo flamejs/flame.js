@@ -16,19 +16,20 @@ Flame.MenuItem = function(opts) {
 };
 
 Flame.MenuItem.prototype.renderToBuffer = function(buffer) {
-    var classes = ["flame-view", "flame-list-item-view", "flame-menu-item-view"];
-    if (this.isSelected) classes.push("is-selected");
-    if (this.isChecked) classes.push("is-checked");
+    var classes = ['flame-view', 'flame-list-item-view', 'flame-menu-item-view'];
+    if (this.isSelected) classes.push('is-selected');
+    if (!this.isEnabled()) classes.push('is-disabled');
     var subMenuLength = Ember.isNone(this.subMenuItems) ? -1 : this.subMenuItems.get('length');
-    var menuIndicatorClasses = ["menu-indicator"];
-    if (!this.isEnabled()) {
-        classes.push("is-disabled");
-    } else if (subMenuLength > 0) {
-        menuIndicatorClasses.push("is-enabled");
-    }
-    var title = Handlebars.Utils.escapeExpression(this.title);
-    var template = '<div id="%@" class="%@"><div class="title">%@</div><div class="%@"></div></div>';
-    buffer.push(template.fmt(this.id, classes.join(' '), title, menuIndicatorClasses.join(' ')));
+    var template = '<div id="%@" class="%@">%@%@%@</div>';
+    buffer.push(
+        template.fmt(
+            this.id,
+            classes.join(' '),
+            this.isChecked ? '<div class="flame-menu-item-view-checkmark"></div>' : '',
+            Handlebars.Utils.escapeExpression(this.title),
+            subMenuLength > 0 ? '<div class="menu-indicator"></div>' : ''
+        )
+    );
 };
 
 Flame.MenuItem.prototype.isEnabled = function() {
@@ -107,8 +108,8 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
             var nextTitle = Ember.get(item, itemTitleKey);
             return currentTitles + nextTitle + '<br>';
         }, '');
-        // Give the menus a 16px breathing space to account for sub menu indicator, and to give some right margin
-        return Flame.measureString(allTitles, 'ember-view flame-view flame-list-item-view flame-menu-item-view', 'title').width + 16;
+        // Give the menus a 16px breathing space to account for sub menu indicator, and to give some right margin (+18px for the padding)
+        return Flame.measureString(allTitles, 'ember-view flame-view flame-list-item-view flame-menu-item-view', 'title').width + 16 + 18;
     },
 
     _createMenuItems: function() {

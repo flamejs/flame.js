@@ -1,17 +1,21 @@
+var alias = Ember.computed.alias,
+    trueFalse = Flame.computed.trueFalse,
+    equal = Ember.computed.equal;
+
 Flame.TextField = Ember.TextField.extend(Flame.EventManager, Flame.FocusSupport, {
     classNameBindings: ['isInvalid', 'isEditableLabel', 'isFocused'],
     acceptsKeyResponder: true,
-    type: Flame.computed.trueFalse('parentView.isPassword', 'password', 'text'),
-    isInvalid: Ember.computed.equal('parentView.isValid', false),
-    value: Ember.computed.alias('parentView.value'),
-    placeholder: Ember.computed.alias('parentView.placeholder'),
-    isEditableLabel: Ember.computed.alias('parentView.isEditableLabel'),
-    isVisible: Ember.computed.alias('parentView.isVisible'),
-    disabled: Ember.computed.alias('parentView.isDisabled'),
+    type: trueFalse('parentView.isPassword', 'password', 'text'),
+    isInvalid: equal('parentView.isValid', false),
+    value: alias('parentView.value'),
+    placeholder: alias('parentView.placeholder'),
+    isEditableLabel: alias('parentView.isEditableLabel'),
+    isVisible: alias('parentView.isVisible'),
+    disabled: alias('parentView.isDisabled'),
+    name: alias('parentView.name'),
     attributeBindings: ['name', 'disabled'],
     _setValueDelay: 700,
     _timer: null,
-    name: Ember.computed.alias('parentView.name'),
 
     init: function() {
         this._super();

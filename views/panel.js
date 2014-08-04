@@ -85,14 +85,20 @@ Flame.Panel = Flame.RootView.extend({
         }),
 
         moving: Flame.State.extend({
+            enterState: function() {
+                this.element = this.get('owner.parentView').$();
+                this.windowHeight = jQuery(window).height();
+                this.windowWidth = jQuery(window).width();
+                this.elementWidth = this.element.outerWidth();
+                this.elementHeight = this.element.outerHeight();
+            },
             mouseMove: function(event) {
                 var owner = this.get('owner');
                 var newX = owner._panelX + (event.pageX - owner._pageX);
                 var newY = owner._panelY + (event.pageY - owner._pageY);
-                var element = owner.get('parentView').$();
-                this.newX = Math.max(5, Math.min(newX, Ember.$(window).width() - element.outerWidth() - 5));  // Constrain inside window
-                this.newY = Math.max(5, Math.min(newY, Ember.$(window).height() - element.outerHeight() - 5));
-                element.css({left: this.newX, top: this.newY, right: '', bottom: '', marginLeft: '', marginTop: ''});
+                this.newX = Math.max(5, Math.min(newX, this.windowWidth - this.elementWidth - 5));  // Constrain inside window
+                this.newY = Math.max(5, Math.min(newY, this.windowHeight - this.elementHeight - 5));
+                this.element.css({ left: this.newX, top: this.newY, right: '', bottom: '', marginLeft: '', marginTop: '' });
                 return true;
             },
             touchMove: function(event) {
@@ -160,7 +166,7 @@ Flame.Panel = Flame.RootView.extend({
                 var newH = owner._startH + (event.pageY - owner._pageY);
                 newW = Math.max(parentView.get('minWidth'), newW);  // Minimum panel width
                 newH = Math.max(parentView.get('minHeight'), newH);  // Minimum panel height: title bar plus this "thumb"
-                parentView.$().css({width: newW, height: newH });
+                parentView.$().css({ width: newW, height: newH });
                 return true;
             },
             touchMove: function(event) {

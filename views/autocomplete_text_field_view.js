@@ -8,7 +8,7 @@ Flame.AutocompleteTextFieldView = Flame.TextFieldView.extend(Flame.Statechart, F
 
     textField: Flame.TextField.extend({
         keyUp: function(event) {
-            this._super();
+            this._super(event);
             Ember.run.debounce(this, 'autocompleteAction', event, 500);
         },
 
@@ -89,7 +89,7 @@ Flame.AutocompleteTextFieldView = Flame.TextFieldView.extend(Flame.Statechart, F
     },
 
     _closeAutocompleteMenu: function() {
-        if (this._autocompleteMenu){
+        if (this._autocompleteMenu) {
             this._autocompleteMenu.close();
             this._autocompleteMenu = null;
         }
