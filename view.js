@@ -1,6 +1,5 @@
 //= require_tree ./mixins
 //= require ./layout_manager
-//= require ./view_support
 //= require_self
 //= require_tree ./views
 
