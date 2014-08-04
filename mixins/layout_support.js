@@ -26,6 +26,7 @@ Flame.LayoutSupport = {
     },
 
     willDestroy: function() {
+        this._super();
         if (this._layoutObservers) {
             var length = this._layoutObservers.length;
             for (var i = 0; i < length; i++) {

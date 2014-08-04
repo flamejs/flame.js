@@ -37,6 +37,36 @@ Flame.reopen({
 Flame.View = Ember.ContainerView.extend(Flame.ViewSupport, Flame.LayoutSupport, Flame.EventManager, {
     isFocused: false, // Does this view currently have key focus?
 
+    init: function() {
+        // Adds support for conditionally rendering child views, e.g.:
+        //   childViews: ['labelView', 'hasButton:buttonView']
+        // will only render the buttonView if this.get('hasButton') is true.
+        var childViews = this.get('childViews');
+        if (!childViews) {
+            this._super();
+            return;
+        }
+        var length = childViews.length;
+        var removedCount = 0;
+        var childViewsToCreate;
+        for (var i = 0; i < length; i++) {
+            var childView = childViews[i];
+            if (childView.indexOf(':') > -1) {
+                childViewsToCreate = childViewsToCreate || childViews.slice(0);
+                var split = childView.split(':');
+                if (this.get(split[0])) {
+                    childViewsToCreate[i - removedCount] = split[1];
+                } else {
+                    childViewsToCreate.splice(i - removedCount, 1);
+                    removedCount++;
+                }
+            }
+        }
+        if (childViewsToCreate) this.set('childViews', childViewsToCreate);
+
+        this._super();
+    },
+
     render: function(buffer) {
         // If a template is defined, render that, otherwise use ContainerView's rendering (render childViews)
         var get = Ember.get;
@@ -78,7 +108,6 @@ Flame.View = Ember.ContainerView.extend(Flame.ViewSupport, Flame.LayoutSupport, 
     removeChild: function(view) {
         if (this.get('template')) {
             // there is a template - use Ember.View's `removeChild`
-            var set = Ember.set;
             return Ember.View.prototype.removeChild.call(this, view);
         } else {
             // no template - use Ember.ContainerView's `removeChild`
