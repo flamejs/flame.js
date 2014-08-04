@@ -24,7 +24,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         },
 
         enterState: function() {
-            if (this.get('owner.state') === 'inDOM') {
+            if (this.get('owner._state') === 'inDOM') {
                 this.get('owner.selection').hide();
             }
         }
@@ -226,7 +226,9 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         },
 
         keyUp: function(event) {
-            if (jQuery(event.target).is('.clipboard-container textarea')) {
+            var $target = jQuery(event.target);
+            if ($target.is('.clipboard-container textarea')) {
+                $target.off('paste');
                 var $container = this.get('owner').$('.clipboard-container');
                 $container.empty().hide();
                 return true;
@@ -347,7 +349,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         },
 
         exitState: function() {
-            if (this.get('state') !== 'inDOM') return;
+            if (this.get('_state') !== 'inDOM') return;
             var clipboardContainer = this.get('owner').$('.clipboard-container');
             if (clipboardContainer) clipboardContainer.empty().hide();
         }
@@ -727,7 +729,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
     updateColumnWidth: function(index, width) {
         var cells = this.$('td[data-index=%@]'.fmt(index));
-        cells.css({'width': '%@px'.fmt(width)});
+        cells.first().css('width', width);
         this.propertyDidChange('selectedCell'); // Let the size of the selection div be updated
     },
 

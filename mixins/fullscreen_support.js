@@ -1,8 +1,7 @@
-
-// Mix this into any view. Calling enterFullscreen then makes the view shown fullscreen. An 'exit fullscreen' button is
-// shown automatically on the right upper corner on top of everything.
-//
-// TODO Make this work on IE7. The problem is that the modal pane covers everything, only the close button appears on top.
+/**
+  Mix this into any view. Calling enterFullscreen then makes the view shown fullscreen. An 'exit fullscreen' button is
+  shown automatically on the right upper corner on top of everything.
+*/
 Flame.FullscreenSupport = {
     isFullscreen: false,
 
@@ -46,7 +45,7 @@ Flame.FullscreenSupport = {
 
             var element = this.$();
             var oldAttributes = {
-                left: element.css('left'), 
+                left: element.css('left'),
                 top: element.css('top'),
                 right: element.css('right'),
                 bottom: element.css('bottom'),

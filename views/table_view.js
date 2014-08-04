@@ -1,10 +1,20 @@
 //= require ./table_data_view
 
+var alias = Ember.computed.alias;
+
+var unbindScroll = function() {
+    var scrollable = this.get('scrollable');
+    if (scrollable) {
+        scrollable.off('scroll');
+    }
+};
+
 Flame.TableView = Flame.View.extend(Flame.Statechart, {
     MIN_COLUMN_WIDTH: 30,
 
     classNames: 'flame-table-view'.w(),
     childViews: 'tableDataView'.w(),
+    displayProperties: ['contentAdapter.headers'],
     acceptsKeyResponder: false,
 
     // References to DOM elements
@@ -38,14 +48,14 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
 
     tableDataView: Flame.TableDataView.extend({
         dataBinding: '^content._data',
-        content: Ember.computed.alias('parentView.content'),
-        dirtyCells: Ember.computed.alias('parentView.content.dirtyCells'),
-        areValuesOnRows: Ember.computed.alias('parentView.content.areValuesOnRows'),
-        totalRowIds: Ember.computed.alias('parentView.content.totalRowIds'),
-        totalColumnIds: Ember.computed.alias('parentView.content.totalColumnIds'),
-        tableViewDelegate: Ember.computed.alias('parentView.tableViewDelegate'),
-        cellsMarkedForUpdate: Ember.computed.alias('parentView.content.cellsMarkedForUpdate'),
-        batchUpdates: Ember.computed.alias('parentView.batchUpdates')
+        content: alias('parentView.content'),
+        dirtyCells: alias('parentView.content.dirtyCells'),
+        areValuesOnRows: alias('parentView.content.areValuesOnRows'),
+        totalRowIds: alias('parentView.content.totalRowIds'),
+        totalColumnIds: alias('parentView.content.totalColumnIds'),
+        tableViewDelegate: alias('parentView.tableViewDelegate'),
+        cellsMarkedForUpdate: alias('parentView.content.cellsMarkedForUpdate'),
+        batchUpdates: alias('parentView.batchUpdates')
     }),
 
     rowDepth: function() {
@@ -79,18 +89,21 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
 
             var target = jQuery(event.target);
             if (target.is('div.resize-handle')) {
-                this.gotoFlameState('resizing');
                 var owner = this.get('owner');
                 // If a table cell is being edited at this point, its 'editField' would get displaced by the resizing operation, so we just turn the editing off
                 var tableDataView = owner.get('tableDataView');
-                if (tableDataView.get('currentFlameState.name') === "editing")
+                if (tableDataView.get('currentFlameState.name') === 'editing') {
                     tableDataView.cancel();
-                var cell = target.closest('td').first();
-                owner.set('resizingCell', cell);
-                owner.set('dragStartX', event.pageX);
-                owner.set('startX', parseInt(target.parent().css('width'), 10));
-                owner.set('offset', parseInt(this.get('owner.tableCorner').css('width'), 10));
-                owner.set('type', cell.is('.column-header td') ? 'column' : 'row');
+                }
+                var cell = target.closest('td');
+                owner.setProperties({
+                    resizingCell: cell,
+                    dragStartX: event.pageX,
+                    startX: cell.get(0).clientWidth + 1,
+                    offset: parseInt(this.get('owner.tableCorner').css('width'), 10),
+                    type: cell.is('.column-header td') ? 'column' : 'row'
+                });
+                this.gotoFlameState('resizing');
                 return true;
             } else if (!!target.closest('.column-header').length) {
                 return true;
@@ -120,7 +133,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                 if (width < owner.MIN_COLUMN_WIDTH) width = owner.MIN_COLUMN_WIDTH;
                 owner.setColumnWidth(header.leafIndex, width);
                 var resizeDelegate = owner.get('tableViewDelegate');
-                if (resizeDelegate) {
+                if (resizeDelegate && resizeDelegate.columnResized) {
                     resizeDelegate.columnResized(index, width);
                 }
                 return true;
@@ -158,43 +171,57 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     }),
 
     resizing: Flame.State.extend({
-        mouseMove: function(event) {
+        enterState: function() {
             var cell = this.get('owner.resizingCell');
-            var deltaX = event.pageX - this.get('owner.dragStartX');
-            var cellWidth = this.get('owner.startX') + deltaX;
-            if (cellWidth < this.get('owner.MIN_COLUMN_WIDTH')) cellWidth = this.get('owner.MIN_COLUMN_WIDTH');
-            var leafIndex;
-            // Adjust size of the cell
-            if (this.get('owner.type') === 'column') { // Update data table column width
-                leafIndex = parseInt(cell.attr('data-leaf-index'), 10) + 1;
-                cell.parents('table').find('colgroup :nth-child(%@)'.fmt(leafIndex)).css('width', '%@px'.fmt(cellWidth));
-                this.get('owner')._synchronizeColumnWidth();
-            } else {
-                var width = this.get('owner.offset') + deltaX - 2;
-                if (width < 30) width = 30;
-                width -= 1;
-                // Move data table and column header
-                this.get('owner.scrollable').css('left', '%@px'.fmt(width));
-                this.get('owner.columnHeader').parent().css('left', '%@px'.fmt(width));
-                this.get('owner.tableCorner').css('width', '%@px'.fmt(width));
-                // Update column width
-                var totalDepth = this.get('owner.rowDepth');
-                var remainingDepth = 0;
-                // must account for row headers spanning multiple columns to get the right leafIndex and width
-                cell.nextAll().each(function() {
-                    var colspan = $(this).attr('colspan');
-                    remainingDepth += colspan ? parseInt(colspan, 10) : 1;
-                });
-                leafIndex = totalDepth - remainingDepth;
+            var $table = cell.closest('table');
+            var columns = $table.find('col');
 
-                var colWidth = cellWidth;
-                if ($(cell).attr('colspan')) {
-                    var colStart = leafIndex - parseInt($(cell).attr('colspan'), 10) + 1; // the first column included in the span
-                    for(colStart; colStart < leafIndex; colStart++) {
-                        colWidth -= parseInt(cell.parents('table').find('colgroup :nth-child(%@)'.fmt(colStart)).css('width'), 10);
-                    }
-                }
-                cell.parents('table').find('colgroup :nth-child(%@)'.fmt(leafIndex)).css('width', '%@px'.fmt(colWidth));
+            if (this.get('owner.type') === 'column') {
+                var column = parseInt(cell.attr('data-leaf-index'), 10);
+                this.set('resizingColumn', columns.eq(column));
+            } else {
+                var totalDepth = columns.length;
+                var cells = [];
+                $table.find('td').each(function() {
+                    var $cell = $(this);
+                    if (!$cell.attr('colspan')) cells.push($cell);
+                    if (cells.length === totalDepth) return false;
+                });
+                this.set('cells', cells);
+
+                // Get column index for resized cell
+                // must account for row headers spanning multiple columns to get the right leafIndex and width
+                var remainingDepth = 0;
+                cell.nextAll().each(function() {
+                    remainingDepth += $(this).attr('colspan') || 1;
+                });
+                var leafIndex = totalDepth - remainingDepth - 1;
+
+                this.set('resizingColumn', columns.eq(leafIndex));
+                this.set('owner.resizingCell', cells[leafIndex]);
+                this.set('owner.startX', cells[leafIndex].get(0).clientWidth + 1);
+            }
+        },
+
+        mouseMove: function(event) {
+            var owner = this.get('owner');
+            var deltaX = event.pageX - owner.get('dragStartX');
+            var minWidth = owner.get('MIN_COLUMN_WIDTH');
+            var cellWidth = owner.get('startX') + deltaX;
+            if (cellWidth < minWidth) cellWidth = minWidth;
+            // Adjust size of the cell
+            if (owner.get('type') === 'column') { // Update data table column width
+                this.get('resizingColumn').css('width', cellWidth);
+                owner._synchronizeColumnWidth(cellWidth);
+            } else {
+                var width = owner.get('offset') + cellWidth - owner.get('startX');
+
+                // Move data table and column header
+                owner.get('scrollable').css('left', width);
+                owner.get('columnHeader').parent().css('left', width);
+                owner.get('tableCorner').css('width', width);
+
+                this.get('resizingColumn').css('width', cellWidth);
             }
         },
 
@@ -209,8 +236,8 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                     resizeDelegate.columnResized(index, width);
                 } else if (resizeDelegate.rowHeaderResized) {
                     // Can't use col-element to get the width from as it does not work correctly in IE
-                    var widths = this.$('.row-header tr:first', '[class*=level]').map(function() { return $(this).width(); });
-                    resizeDelegate.rowHeaderResized(widths.get());
+                    var widths = this.get('cells').map(function(cell) { return cell.outerWidth(); });
+                    resizeDelegate.rowHeaderResized(widths);
                 }
             }
             this.gotoFlameState('idle');
@@ -219,56 +246,40 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     }),
 
     setColumnWidth: function(columnIndex, cellWidth) {
-        var headerCellWidth = this._getBrowserSpecificHeaderCellWidth(cellWidth);
-        this.$().parent().find('div.column-header').find('colgroup :nth-child(%@)'.fmt(columnIndex + 1)).css('width', '%@px'.fmt(headerCellWidth));
-
-        cellWidth = this._getBrowserSpecificTableCellWidth(cellWidth);
+        this.$('div.column-header col').eq(columnIndex).css('width', cellWidth + 3);
         var table = this.objectAt(0);
-        table.updateColumnWidth(columnIndex, cellWidth);
+        table.updateColumnWidth(columnIndex, cellWidth + 3);
     },
 
     getColumnContents: function(columnHeader) {
-        return this.get("content.tableData").map(function(e) {
+        return this.get('content.tableData').map(function(e) {
             var elem = e[columnHeader.leafIndex];
             return Ember.isNone(elem) ? '' : elem.formattedValue();
         });
     },
 
     getLeafHeaderLabel: function(header) {
-        var leaf = this.get("content.columnLeafs")[header.leafIndex];
-        return leaf.get("headerLabel");
+        var leaf = this.get('content.columnLeafs')[header.leafIndex];
+        return leaf.get('headerLabel');
     },
 
-    _synchronizeColumnWidth: function() {
+    _synchronizeColumnWidth: function(width) {
         // Update data table columns
         var cell = this.get('resizingCell');
         var table = this.objectAt(0);
-        var width = this._getBrowserSpecificTableCellWidth(parseInt(cell.css('width'), 10));
         var index = parseInt(cell.attr('data-leaf-index'), 10);
         table.updateColumnWidth(index, width);
     },
 
-    _getBrowserSpecificHeaderCellWidth: function(width) {
-        return width + 3;
-    },
-
-    _getBrowserSpecificTableCellWidth: function(width) {
-        return width + 3;
-    },
-
-    willInsertElement: function() {
-        var scrollable = this.get('scrollable');
-        if (scrollable) {
-            scrollable.unbind();
-        }
-    },
+    willInsertElement: unbindScroll,
+    willDestroyElement: unbindScroll,
 
     didInsertElement: function() {
         this.set('scrollable', this.$('.flame-table').parent().parent());
         this.set('rowHeader', this.$('.row-header table'));
         this.set('columnHeader', this.$('.column-header table'));
         this.set('tableCorner', this.$('.table-corner'));
-        this.get('scrollable').scroll(jQuery.proxy(this.didScroll, this));
+        this.get('scrollable').on('scroll', jQuery.proxy(this.didScroll, this));
     },
 
     isScrolling: false,
@@ -284,20 +295,15 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
 
     _updateHeaderPositions: function() {
         if (this.lastScrollTop !== this.lastSetScrollTop) {
-            this.get('rowHeader').css('top', '-%@px'.fmt(this.lastScrollTop));
+            this.get('rowHeader').css('top', -this.lastScrollTop);
             this.lastSetScrollTop = this.lastScrollTop;
         }
         if (this.lastScrollLeft !== this.lastSetScrollLeft) {
-            this.get('columnHeader').css('left', '-%@px'.fmt(this.lastScrollLeft));
+            this.get('columnHeader').css('left', -this.lastScrollLeft);
             this.lastSetScrollLeft = this.lastScrollLeft;
         }
         this.isScrolling = false;
     },
-
-    _headersDidChange: function() {
-        // When the headers change, fully re-render the view
-        this.rerender();
-    }.observes('contentAdapter.headers'),
 
     render: function(buffer) {
         var renderColumnHeader = this.get('renderColumnHeader');

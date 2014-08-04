@@ -9,7 +9,7 @@
         height: 28px;
         background-repeat: no-repeat;
     }
-    &.points-to-right .pointer{
+    &.points-to-right .pointer {
         float: right;
         background-image: image-url('images/error_triangle_right.png');
     }
@@ -32,7 +32,7 @@
         font-weight: bold;
         @include box-shadow(1, 1, 4, #333333);
     }
-    &.points-to-right .error-box{
+    &.points-to-right .error-box {
         margin: 3px 14px 3px 3px;
         padding: 0px 6px 0px 10px;
         border-radius: 3px 0px 0px 3px;

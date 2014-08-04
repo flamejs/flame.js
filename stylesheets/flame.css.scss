@@ -237,7 +237,7 @@ body {
     border-radius: none;
     overflow: visible;
 
-    div.flame-text {
+    .flame-text {
         right: 0;
         left: 0;
         bottom: 0;
@@ -248,7 +248,7 @@ body {
         @include no-gradient();
     }
 
-    div.flame-button-view {
+    .flame-button-view {
         border-radius: 0px 1px 1px 0px;
         @include gradient(#eeeeee, #cccccc);
 
@@ -594,6 +594,7 @@ body {
     position: relative;
     background-color: white;
     height: 21px; /* The same value should be given to MenuViews itemHeight property. */
+    padding-left: 18px;
 
     &.is-disabled {
         color: #aaa;
@@ -601,36 +602,26 @@ body {
         &.is-selected {
             color: #aaa;
         }
-
-        &.is-checked {
-            .title {
-                background: image-url('images/checkmark_grey.png') no-repeat 3px 3px !important;
-            }
-        }
     }
 
     &.is-selected {
         color: white;
 
-        .menu-indicator.is-enabled {
+        .menu-indicator {
             background: image-url('images/triangle_right_white.png') no-repeat 50% 50%;
         }
-    }
 
-    &.is-checked {
-        .title {
-            background: image-url('images/checkmark_grey.png') no-repeat 3px 3px;
-        }
-
-        &.is-selected {
-            .title {
-                background: image-url('images/checkmark_white.png') no-repeat 3px 3px;
-            }
+        .flame-menu-item-view-checkmark {
+            background: image-url('images/checkmark_white.png') no-repeat 0 3px;
         }
     }
 
-    .title {
-        padding-left: 18px;
+    .flame-menu-item-view-checkmark {
+        position: absolute;
+        left: 4px;
+        background: image-url('images/checkmark_grey.png') no-repeat 0 3px;
+        width: 12px;
+        height: 100%;
     }
 
     .menu-indicator {
@@ -639,15 +630,12 @@ body {
         top: 0px;
         width: 16px;
         height: 100%;
-
-        &.is-enabled {
-          background: image-url('images/triangle_right.png') no-repeat 50% 50%;
-        }
+        background: image-url('images/triangle_right.png') no-repeat 50% 50%;
     }
 }
 
 .ember-view {
-    font-family: 'Lucida Sans', 'Lucida Grande', Verdana, Arial, sans-serif;
+    font-family: 'Lucida Grande', 'Lucida Sans', Verdana, Arial, sans-serif;
 }
 
 input[type="password"] {
@@ -784,7 +772,7 @@ input[type="password"] {
         position: static;
     }
 
-    div.resize-handle {
+    .resize-handle {
         position: absolute;
         cursor: col-resize;
         width: 17px;
@@ -793,7 +781,7 @@ input[type="password"] {
         z-index: 2;
     }
 
-    div.table-selection {
+    .table-selection {
         display: none;
         border: 2px solid #4285f4;
         padding-left: 2px;
@@ -803,7 +791,7 @@ input[type="password"] {
         pointer-events: none;
     }
 
-    div.clipboard-container {
+    .clipboard-container {
         position: absolute;
         width: 0px;
         height: 0px;
@@ -818,7 +806,7 @@ input[type="password"] {
         }
     }
 
-    div.read-only {
+    .read-only {
         background-color: white;
         line-height: 21px;
         z-index: 3;
