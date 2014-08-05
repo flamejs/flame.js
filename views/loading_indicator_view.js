@@ -3,4 +3,3 @@ Flame.LoadingIndicatorView = Flame.ImageView.extend({
     classNames: ['loading-indicator'],
     value: Flame.image('loading.gif')
 });
-
