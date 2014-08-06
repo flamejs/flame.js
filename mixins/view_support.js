@@ -25,6 +25,7 @@ Flame.ViewSupport = {
     },
 
     willDestroy: function() {
+        this._super();
         var properties = this.get('displayProperties') || [];
         var length = properties.length;
         for (var i = 0; i < length; i++) {
