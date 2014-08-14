@@ -1,4 +1,4 @@
-/*jshint loopfunc: true */
+/* jshint loopfunc: true */
 
 Flame.State = Ember.Object.extend({
     gotoFlameState: function(stateName) {
