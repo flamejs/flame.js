@@ -8,13 +8,8 @@ Flame.SearchTextFieldView = Flame.TextFieldView.extend({
             // Nothing to clear, we don't handle the event
             return false;
         } else {
-            // I don't know why, but for this to work in Firefox we need to run
-            // it in the next run loop.
-            Ember.run.next(this, function() {
-                this.set('value', '');
-            });
+            this.set('value', '');
             return true;
         }
     }
 });
-
