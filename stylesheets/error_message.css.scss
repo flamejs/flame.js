@@ -1,50 +1,59 @@
-@import "mixins";
+@import 'mixins';
 
-/* This is outside the form-view element, so we can't use it as parent selector */
+// This is outside the form-view element, so we can't use it as parent selector
 .flame-form-view-validation-error {
     z-index: 1;
+
     .pointer {
-        margin: 3px 0px 3px 0px;
+        margin: 3px 0;
         width: 14px;
         height: 28px;
         background-repeat: no-repeat;
     }
+
     &.points-to-right .pointer {
         float: right;
         background-image: image-url('images/error_triangle_right.png');
     }
+
     &.points-to-left .pointer {
         background-image: image-url('images/error_triangle_left.png');
         float: left;
     }
+
     &.skinny.points-to-left .pointer {
-        margin-top: 0px;
+        margin-top: 0;
         background-image: image-url('images/error_triangle_left_skinny.png');
     }
+
     &.skinny.points-to-right .pointer {
-        margin-top: 0px;
+        margin-top: 0;
         background-image: image-url('images/error_triangle_right_skinny.png');
     }
+
     .error-box {
         line-height: 28px;
         background-color: #cd443d;
         color: white;
         font-weight: bold;
-        @include box-shadow(1, 1, 4, #333333);
+        @include box-shadow(1, 1, 4, #333);
     }
+
     &.points-to-right .error-box {
         margin: 3px 14px 3px 3px;
-        padding: 0px 6px 0px 10px;
-        border-radius: 3px 0px 0px 3px;
+        padding: 0 6px 0 10px;
+        border-radius: 3px 0 0 3px;
     }
+
     &.points-to-left .error-box {
         margin: 3px 3px 3px 14px;
-        padding: 0px 10px 0px 6px;
-        border-radius: 0px 3px 3px 0px;
+        padding: 0 10px 0 6px;
+        border-radius: 0 3px 3px 0;
     }
+
     &.skinny .error-box {
         height: 22px;
-        margin-top: 0px;
+        margin-top: 0;
         line-height: 22px;
     }
 }

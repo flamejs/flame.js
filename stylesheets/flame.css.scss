@@ -4,7 +4,7 @@
 //= require ./form_view
 //= require ./error_message
 
-@import "mixins";
+@import 'mixins';
 
 $default-font-size: 12px;
 
@@ -14,21 +14,21 @@ body {
 }
 
 *[contenteditable="true"] {
-    -ms-user-select: text !important;
-    -webkit-user-select: text !important;
     -khtml-user-select: text !important;
-    -o-user-select: text !important;
-    user-select: text !important;
     -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    -o-user-select: text !important;
+    -webkit-user-select: text !important;
+    user-select: text !important;
 }
 
 .flame-view {
     position: absolute;
     cursor: default;
     overflow: hidden;
-    box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .flame-border {
@@ -50,8 +50,8 @@ body {
     border: 1px solid #999;
     border-bottom-color: #888;
     border-radius: 4px;
-    @include gradient(#eeeeee, #cccccc);
-    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+    @include gradient(#eee, #ccc);
+    text-shadow: 0 1px 1px rgba(255, 255, 255, .75);
 }
 
 .flame-button-view.is-hovered {
@@ -77,13 +77,14 @@ body {
     }
 
     &.is-hovered {
-        @include gradient(#82B3ED, #5588c6);
+        @include gradient(#82b3ed, #5588c6);
     }
 }
 
-.flame-button-view.is-disabled, .flame-button-view.is-disabled:hover {
+.flame-button-view.is-disabled,
+.flame-button-view.is-disabled:hover {
     border: 1px solid #b3b3b3;
-    @include gradient(#eeeeee, #cccccc);
+    @include gradient(#eee, #ccc);
     color: #888;
 }
 
@@ -93,7 +94,7 @@ body {
 
 .flame-button-view.is-active {
     border-color: #777 #999 #999 #777;
-    @include gradient(#bbbbbb, #dddddd);
+    @include gradient(#bbb, #ddd);
     color: black;
 }
 
@@ -114,7 +115,7 @@ body {
     background-image: none;
     @include no-gradient();
     background-color: transparent;
-    border: none;
+    border: 0;
     box-shadow: none;
     line-height: 20px;
 
@@ -135,7 +136,7 @@ body {
 
     &.is-active {
         .flame-checkbox-box {
-            @include gradient(#eeeeee, #cdcdcd);
+            @include gradient(#eee, #cdcdcd);
         }
     }
 
@@ -147,7 +148,7 @@ body {
 
     &.is-disabled {
         @include no-gradient();
-        border: none;
+        border: 0;
 
         .flame-checkbox-label {
             color: #999;
@@ -155,17 +156,17 @@ body {
 
         .flame-checkbox-box {
             @include no-gradient();
-            background: #EEE;
-            border: 1px solid #AAA;
+            background: #eee;
+            border: 1px solid #aaa;
         }
 
         .flame-checkbox-checkmark {
-            @include opacity(0.4);
+            @include opacity(.4);
         }
     }
 
     .flame-checkbox-box {
-        @include gradient(#ffffff, #f5f5f5);
+        @include gradient(#fff, #f5f5f5);
         position: absolute;
         border: 1px solid #888;
         width: 12px;
@@ -193,13 +194,14 @@ body {
         .flame-checkbox-box {
             border-radius: 100px;
         }
+
         .flame-checkbox-checkmark {
             background-color: #000;
             filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#888888', endColorstr='#000000');
             background: -webkit-radial-gradient(left top, circle, #888, #000);
-            background: -moz-radial-gradient(top left,  circle, #888,  #000);
-            background: -ms-radial-gradient(top left,  circle, #888,  #000);
-            background: -o-radial-gradient(top left,  circle, #888,  #000);
+            background: -moz-radial-gradient(top left, circle, #888, #000);
+            background: -ms-radial-gradient(top left, circle, #888, #000);
+            background: -o-radial-gradient(top left, circle, #888, #000);
             border-radius: 100px;
         }
     }
@@ -221,19 +223,19 @@ body {
         border-left-style: solid;
         font-size: 14px;
         line-height: 13px;
-        padding: 0px 5px;
-        border-radius: 0px 3px 3px 0px;
-        @include gradient(#dddddd, #bbbbbb);
+        padding: 0 5px;
+        border-radius: 0 3px 3px 0;
+        @include gradient(#ddd, #bbb);
     }
 
     &.is-disabled > div > img {
-        @include opacity(0.4);
+        @include opacity(.4);
     }
 }
 
 .flame-combo-box-view {
     background: none;
-    border: none;
+    border: 0;
     border-radius: none;
     overflow: visible;
 
@@ -243,14 +245,14 @@ body {
         bottom: 0;
         top: 0;
         padding: 0;
-        border: none;
+        border: 0;
         font-size: $default-font-size;
         @include no-gradient();
     }
 
     .flame-button-view {
-        border-radius: 0px 1px 1px 0px;
-        @include gradient(#eeeeee, #cccccc);
+        border-radius: 0 1px 1px 0;
+        @include gradient(#eee, #ccc);
 
         img {
             position: relative;
@@ -265,18 +267,18 @@ body {
     border: 1px solid #888;
     border-radius: $panel-border-radius;
     background-color: #f2f2f2;
-    @include box-shadow(0, 8, 20, rgba(0, 0, 0, 0.4));
+    @include box-shadow(0, 8, 20, rgba(0, 0, 0, .4));
 
     .flame-panel-title {
         font-size: 13px;
-        color: #333333;
-        margin: 0px;
-        border-radius: 3px 3px 0px 0px;
-        border: 1px #aaaaaa;
+        color: #333;
+        margin: 0;
+        border-radius: 3px 3px 0 0;
+        border: 1px #aaa;
         border-bottom-style: solid;
-        @include gradient(#eeeeee, #cccccc);
+        @include gradient(#eee, #ccc);
         @include inner-shadow(1px, #f4f4f4);
-        text-shadow: #efefef 0px 1px;
+        text-shadow: #efefef 0 1px;
     }
 
     .flame-resize-thumb {
@@ -288,7 +290,7 @@ body {
 .flame-popover {
     @include no-gradient();
     @include no-box-shadow();
-    border: none;
+    border: 0;
     overflow: visible;
 
     .arrow {
@@ -322,18 +324,18 @@ body {
         background-color: #efefef;
         border: 1px solid #9f9f9f !important;
         border-radius: 4px;
-        box-shadow: 0px 0px 5px rgba(50, 50, 50, 0.4), inset 0 1px #FFF;
-        -webkit-box-shadow: 0px 0px 10px rgba(50, 50, 50, 0.4), inset 0 1px #FFF;
-        -moz-box-shadow: 0px 0px 5px rgba(50, 50, 50, 0.4), inset 0 1px #FFF;
+        box-shadow: 0 0 5px rgba(50, 50, 50, .4), inset 0 1px #fff;
+        -webkit-box-shadow: 0 0 10px rgba(50, 50, 50, .4), inset 0 1px #fff;
+        -moz-box-shadow: 0 0 5px rgba(50, 50, 50, .4), inset 0 1px #fff;
     }
 }
 
 .flame-modal-pane {
     background-color: black;
-    @include opacity(0.001);
+    @include opacity(.001);
 
     &.dim-background {
-        @include opacity(0.15);
+        @include opacity(.15);
     }
 }
 
@@ -352,7 +354,8 @@ body {
 }
 
 .flame-list-view {
-    & .flame-list-item-view.is-selected, & .flame-tree-item-view-container.is-selected {
+    & .flame-list-item-view.is-selected,
+    & .flame-tree-item-view-container.is-selected {
         color: #fff;
         border-color: #5499c7;
         font-weight: bold;
@@ -360,14 +363,17 @@ body {
         text-shadow: #426a9a 0 1px;
     }
 
-    &.is-focused .flame-list-item-view.is-selected, .is-dragged-clone .flame-list-item-view.is-selected, &.is-focused .flame-tree-item-view-container.is-selected, .is-dragged .flame-tree-item-view-container.is-selected {
+    &.is-focused .flame-list-item-view.is-selected,
+    .is-dragged-clone .flame-list-item-view.is-selected,
+    &.is-focused .flame-tree-item-view-container.is-selected,
+    .is-dragged .flame-tree-item-view-container.is-selected {
         @include gradient(#77aae6, #5588c6);
         text-shadow: #426a9a 0 1px;
     }
 
     & .flame-list-item-view.is-dragged {
-        /* Does not combine with gradient in IE7/8 as they're both implemented through filter/-ms-filter attributes. */
-        @include opacity(0.3);
+        // Does not combine with gradient in IE7/8 as they're both implemented through filter/-ms-filter attributes.
+        @include opacity(.3);
     }
 
     .is-dragged-clone .is-selected {
@@ -383,11 +389,11 @@ body {
     }
 
     .flame-list-item-view.is-dragged {
-        @include opacity(1.0);
+        @include opacity(1);
     }
 
     .flame-list-item-view.dragged-clone {
-        @include opacity(0.6);
+        @include opacity(.6);
     }
 
     .indicator {
@@ -425,16 +431,16 @@ body {
     border: 1px #ccc;
     overflow: hidden;
     white-space: nowrap;
-    line-height: normal; /*this is to emulate pre-reset look, but this may be interpreted differently by browsers*/
+    line-height: normal; // this is to emulate pre-reset look, but this may be interpreted differently by browsers
 }
 
 .flame-list-item-view.flame-stack-item-view {
-    padding: 0px;
+    padding: 0;
 }
 
 .flame-tree-item-view {
     &.flame-list-item-view {
-        padding: 0px;
+        padding: 0;
     }
 
     @for $i from 0 through 6 {
@@ -447,13 +453,13 @@ body {
 
     .flame-tree-item-view-content {
         margin-left: 13px;
-        padding: 3px 5px 1px 5px;
+        padding: 3px 5px 1px;
         height: 16px;
     }
 
     .flame-tree-view-toggle {
         float: left;
-        padding: 3px 3px 0px 4px;
+        padding: 3px 3px 0 4px;
     }
 
     .flame-tree-item-view-container {
@@ -464,13 +470,13 @@ body {
 }
 
 .flame-vertical-split-view > .flame-split-view-divider {
-    border-style: none solid none solid;
+    border-style: none solid;
     @include horizontal-gradient(#f7f7f7, #d8d8d8);
     cursor: col-resize;
 }
 
 .flame-horizontal-split-view > .flame-split-view-divider {
-    border-style: solid none solid none;
+    border-style: solid none;
     @include vertical-gradient(#f7f7f7, #d8d8d8);
     cursor: row-resize;
 }
@@ -483,11 +489,11 @@ body {
 .flame-tab-view-tabs .flame-button-view {
     position: static;
     float: left;
-    padding: 0px 8px 2px 8px;
+    padding: 0 8px 2px;
     margin-left: 7px;
-    border-radius: 4px 4px 0px 0px;
-    -moz-border-radius: 4px 4px 0px 0px;
-    border-style: solid solid none solid;
+    border-radius: 4px 4px 0 0;
+    -moz-border-radius: 4px 4px 0 0;
+    border-style: solid solid none;
     font-weight: bold;
     color: #555;
 
@@ -500,7 +506,7 @@ body {
 }
 
 .flame-border > .flame-border {
-    border: none;
+    border: 0;
 }
 
 .align-left {
@@ -527,15 +533,15 @@ body {
 
 .flame-fullscreen-close {
     z-index: 99;
-    @include box-shadow(0, 0, 6, #ffffff);
+    @include box-shadow(0, 0, 6, #fff);
     position: fixed;
 }
 
 .flame-menu {
     font-size: 12px;
     border: 1px solid #bcbcbc;
-    @include box-shadow(0, 3, 16, rgba(0, 0, 0, 0.22));
-    $bgcolor: #FFFFFF;
+    @include box-shadow(0, 3, 16, rgba(0, 0, 0, .22));
+    $bgcolor: #fff;
     @include no-gradient();
     background-color: $bgcolor;
 
@@ -577,13 +583,13 @@ body {
 
             &.scroll-up {
                 &.is-shown {
-                    background-image: image-url('images/triangle_up.png')
+                    background-image: image-url('images/triangle_up.png');
                 }
             }
 
             &.scroll-down {
                 &.is-shown {
-                    background-image: image-url('images/triangle_down.png')
+                    background-image: image-url('images/triangle_down.png');
                 }
             }
         }
@@ -593,7 +599,7 @@ body {
 .flame-menu-item-view {
     position: relative;
     background-color: white;
-    height: 21px; /* The same value should be given to MenuViews itemHeight property. */
+    height: 21px; // The same value should be given to MenuViews itemHeight property.
     padding-left: 18px;
 
     &.is-disabled {
@@ -627,7 +633,7 @@ body {
     .menu-indicator {
         position: absolute;
         right: 2px;
-        top: 0px;
+        top: 0;
         width: 16px;
         height: 100%;
         background: image-url('images/triangle_right.png') no-repeat 50% 50%;
@@ -651,7 +657,8 @@ input[type="password"] {
         line-height: 21px\9;
     }
 
-    & > input[disabled="disabled"], & > [disabled] {
+    & > input[disabled="disabled"],
+    & > [disabled] {
         color: #777;
         background-color: #ddd;
     }
@@ -665,7 +672,8 @@ input[type="password"] {
         padding-top: 2px;
     }
 
-    & > input, & > textarea {
+    & > input,
+    & > textarea {
         width: 100%;
         height: 100%;
         cursor: text;
@@ -681,12 +689,12 @@ input[type="password"] {
 
         &.is-invalid {
             background-color: pink;
-            @include inner-shadow(1px, #FAAFBE);
+            @include inner-shadow(1px, #faafbe);
         }
 
         &.is-focused {
             @include control-blur();
-            border-color: #448CD4 !important;
+            border-color: #448cd4 !important;
         }
 
         &.is-editable-label {
@@ -699,7 +707,8 @@ input[type="password"] {
                 background-color: pink;
             }
 
-            &:hover, &:focus {
+            &:hover,
+            &:focus {
                 background-color: white;
                 border-color: #aaa;
 
@@ -743,7 +752,7 @@ input[type="password"] {
     font-size: 13px;
 
     .table-corner {
-        background-color: #F5F5F5;
+        background-color: #f5f5f5;
         z-index: 2;
         position: absolute;
     }
@@ -793,8 +802,8 @@ input[type="password"] {
 
     .clipboard-container {
         position: absolute;
-        width: 0px;
-        height: 0px;
+        width: 0;
+        height: 0;
         z-index: 100;
         display: none;
         opacity: 0;
@@ -802,7 +811,7 @@ input[type="password"] {
         textarea {
             width: 1px;
             height: 1px;
-            padding: 0px;
+            padding: 0;
         }
     }
 
@@ -817,7 +826,7 @@ input[type="password"] {
 
     table {
         table-layout: fixed;
-        border-spacing: 0px;
+        border-spacing: 0;
         border-collapse: collapse;
         margin: 0;
         padding: 0;
@@ -842,18 +851,21 @@ input[type="password"] {
             font-size: 12px;
             white-space: nowrap;
             overflow: hidden;
-            border: 1px solid #CFD6E3;
-            margin: 0; padding: 0;
+            border: 1px solid #cfd6e3;
+            margin: 0;
+            padding: 0;
             line-height: 21px;
 
             &.is-total {
-                background-color: #E9E9E9;
-                    &.is-double-total {
-                        background-color: #DDD;
-                    }
+                background-color: #e9e9e9;
+
+                &.is-double-total {
+                    background-color: #ddd;
+                }
             }
+
             &.is-updating {
-                color: #D9D9D9;
+                color: #d9d9d9;
             }
         }
     }
@@ -863,40 +875,44 @@ input[type="password"] {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            &.sort-asc, &.sort-desc {
+
+            &.sort-asc,
+            &.sort-desc {
                 background-repeat: no-repeat;
                 padding-left: 15px;
-                background-position-x: 0px;
+                background-position-x: 0;
             }
+
             &.sort-asc {
                 background-image: image-url('images/sort_asc.png');
                 background-position-y: 8px;
             }
+
             &.sort-desc {
                 background-image: image-url('images/sort_desc.png');
-                background-position-y: 0px;
+                background-position-y: 0;
             }
         }
 
         td {
             position: relative;
-            border: 1px solid #366E6A;
+            border: 1px solid #366e6a;
         }
 
         tr {
             &.level-1 td {
                 font-weight: bold;
-                @include gradient-except-ie(#8BCFCA, #73C5C0);
+                @include gradient-except-ie(#8bcfca, #73c5c0);
                 background-clip: padding-box;
             }
 
             &.level-2 td {
-                @include gradient-except-ie(#ADE6E6, #98E0E0);
+                @include gradient-except-ie(#ade6e6, #98e0e0);
                 background-clip: padding-box;
             }
 
             &.level-3 td {
-                background-color: #C9F0EF;
+                background-color: #c9f0ef;
                 background-clip: padding-box;
             }
         }
@@ -913,15 +929,15 @@ input[type="password"] {
         col {
             &.level-1 {
                 font-weight: bold;
-                @include gradient-except-ie(#7CB9E3, #55A4DB);
+                @include gradient-except-ie(#7cb9e3, #55a4db);
             }
 
             &.level-2 {
-                @include gradient-except-ie(#8FC9ED, #7BC0EA);
+                @include gradient-except-ie(#8fc9ed, #7bc0ea);
             }
 
             &.level-3 {
-                background-color: #9FDBF8;
+                background-color: #9fdbf8;
             }
         }
     }
@@ -937,7 +953,7 @@ input[type="password"] {
         &.table-edit-field {
             font-size: 12px;
             display: none;
-            border: none;
+            border: 0;
             outline: none;
             position: absolute;
             z-index: 2;
@@ -946,7 +962,7 @@ input[type="password"] {
 
     .content-container {
         position: relative;
-        padding: 0 2px 0 2px;
+        padding: 0 2px;
     }
 }
 
