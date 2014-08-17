@@ -497,10 +497,13 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     didInsertElement: function() {
         this._super();
         var self = this;
-        var id = this.get('elementId');
-        var events = 'mouseenter.%@ mouseup.%@ mousedown.%@'.fmt(id, id, id);
-        Ember.$('#%@'.fmt(id)).on(events, '.flame-menu-item-view', function(event) {
+        this.$().on('mouseenter mouseup mousedown', '.flame-menu-item-view', function(event) {
             return self.handleMouseEvents(event);
         });
+    },
+
+    willDestroyElement: function() {
+        this._super();
+        this.$().off('mouseenter mouseup mousedown');
     }
 });
