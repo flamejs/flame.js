@@ -25,12 +25,13 @@ Flame.FormView = Flame.View.extend({
     init: function() {
         this._super();
 
-        if (!this.get('layoutManager'))
+        if (!this.get('layoutManager')) {
             this.set('layoutManager', Flame.VerticalStackLayoutManager.create({
                 topMargin: this.get('topMargin'),
                 spacing: this.get('rowSpacing'),
                 bottomMargin: this.get('bottomMargin')
             }));
+        }
 
         this.set('_errorViews', []);
         this.set('controls', []);
@@ -200,10 +201,9 @@ Flame.FormView = Flame.View.extend({
         if (view instanceof Ember.TextField || view instanceof Ember.TextArea) {
             view = view.get('parentView');
         }
-        // XXX it would be better to cache this, but since it's only a temporary solution and because it's fast
-        // enough even in IE8, it's not worth the effort.
         // Collect all controls that can have keyResponder status
-        var controls = this.toArray().mapProperty('childViews').flatten().filter(function(view) {
+        var controls = this.toArray().mapProperty('childViews')
+            .reduce(function(a, b) { return a.concat(b); }).filter(function(view) {
             return view.get('acceptsKeyResponder') && view.get('isVisible');
         });
         if (Ember.isEmpty(controls)) return;
