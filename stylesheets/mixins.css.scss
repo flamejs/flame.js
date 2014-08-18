@@ -16,16 +16,16 @@
     background: $second;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($first)}', endColorstr='#{ie-hex-str($second)}', GradientType=1);
     background: -webkit-linear-gradient(left, $first, $second);
-    background: -moz-linear-gradient(left,  $first,  $second);
-    background: -ms-linear-gradient(left,  $first,  $second);
+    background: -moz-linear-gradient(left, $first, $second);
+    background: -ms-linear-gradient(left, $first, $second);
 }
 
 @mixin vertical-gradient($first, $second) {
     background: $second;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($first)}', endColorstr='#{ie-hex-str($second)}', GradientType=0);
     background: -webkit-linear-gradient(top, $first, $second);
-    background: -moz-linear-gradient(top,  $first,  $second);
-    background: -ms-linear-gradient(top,  $first,  $second);
+    background: -moz-linear-gradient(top, $first, $second);
+    background: -ms-linear-gradient(top, $first, $second);
 }
 
 @mixin no-gradient() {
@@ -38,9 +38,9 @@
     filter: alpha(opacity = $opacity * 100);
 }
 
-@mixin box-shadow($xOffset, $yOffset, $blurRadius, $color) {
-    box-shadow: #{$xOffset}px #{$yOffset}px #{$blurRadius}px $color;
-    -webkit-box-shadow: #{$xOffset}px #{$yOffset}px #{$blurRadius}px $color;
+@mixin box-shadow($x-offset, $y-offset, $blur-radius, $color) {
+    box-shadow: #{$x-offset}px #{$y-offset}px #{$blur-radius}px $color;
+    -webkit-box-shadow: #{$x-offset}px #{$y-offset}px #{$blur-radius}px $color;
 }
 
 @mixin inner-shadow($size, $color) {
@@ -54,8 +54,8 @@
 }
 
 @mixin control-blur() {
-    @include box-shadow(0, 0, 4, #0066cc);
-    border-color: #448CD4\9 !important; // IE only hack
+    @include box-shadow(0, 0, 4, #06c);
+    border-color: #448cd4\9 !important; // IE only hack
 }
 
 @mixin border-radius($radius) {
@@ -76,18 +76,4 @@
     } @else {
         -moz-user-select: $user-select;
     }
-}
-
-@mixin vertically-aligned() {
-    display: -webkit-box;
-    -webkit-box-pack: end;
-    -webkit-box-orient: vertical;
-
-    display: -moz-box;
-    -moz-box-pack: end;
-    -moz-box-orient: vertical;
-
-    display: box;
-    box-pack: end;
-    box-orient: vertical;
 }
