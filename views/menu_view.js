@@ -2,7 +2,6 @@
 //= require ./collection_view
 //= require ../mixins/action_support
 //= require ./menu_scroll_view
-//= require ../utils/string_util
 
 // Only to be used in Flame.MenuView. Represent menu items with normal JS objects as creation of one Ember object took
 // 3.5 ms on fast IE8 machine.
@@ -394,7 +393,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     },
 
     _findByName: function(name) {
-        var re = new RegExp("^" + Flame.StringUtil.escapeForRegexp(name), "i");
+        var re = new RegExp("^" + name.replace(/[\^$*+?.(){}\[\]|]/g, "\\$&"), "i");
         var titleKey = this.get("itemTitleKey");
         return this._findIndex(function(menuItem) {
             return re.test(Ember.get(menuItem, titleKey));
