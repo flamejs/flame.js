@@ -7,7 +7,7 @@ Flame.LayoutSupport = {
     defaultWidth: undefined,
     defaultHeight: undefined,
     layoutManager: undefined,
-    rootView: false,
+
 
     _layoutProperties: ['left', 'right', 'top', 'bottom', 'width', 'height', 'maxHeight'],
     _cssProperties: ['left', 'right', 'top', 'bottom', 'width', 'height', 'margin-left', 'margin-top', 'overflow'],

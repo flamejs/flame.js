@@ -1,4 +1,3 @@
-//= require ./root_view
 //= require ./label_view
 
 // When multiple panels with modal panes are shown at the same time, we need this to get them to stack on
@@ -15,7 +14,7 @@ Flame.reopen({
 
 // A pop-up panel, modal or non-modal. The panel is destroyed on closing by default. If you intend to reuse the same
 // panel instance, set destroyOnClose: false.
-Flame.Panel = Flame.RootView.extend({
+Flame.Panel = Flame.View.extend({
     classNames: ['flame-panel'],
     childViews: ['titleView', 'contentView', 'resizeView'],
     destroyOnClose: true,
@@ -183,7 +182,7 @@ Flame.Panel = Flame.RootView.extend({
 
     // This is the pane that's used to obscure the background if isModal === true
     modalPane: function() {
-        return Flame.RootView.create({
+        return Flame.View.create({
             layout: { left: 0, top: 0, right: 0, bottom: 0 },
             classNames: ['flame-modal-pane'],
             classNameBindings: ['parentPanel.dimBackground'],
