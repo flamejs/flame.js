@@ -94,7 +94,7 @@ Flame.AlertPanel.reopen({
         childViews: 'messageView buttonView'.w(),
 
         messageView: Flame.AlertPanelMessageView.extend({
-            message: Flame.computed.nearest('message'),
+            message: Flame.computed.nearest('message')
         }),
         buttonView: Flame.AlertPanelButtonView.extend({
             confirmButtonTitle: Flame.computed.nearest('confirmButtonTitle'),
