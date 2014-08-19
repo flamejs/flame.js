@@ -6,8 +6,7 @@ Flame.AutocompleteMenuView = Flame.MenuView.extend({
     },
     deleteBackward: function() {
         // Prevent backspace doing native action (go back in history in Chrome) if user is midst of selecting items
-        if (this.get('highlightIndex') >= 0) return true;
-        return false;
+        return this.get('highlightIndex') >= 0;
     },
     insertTab: function() {
         this.close();
