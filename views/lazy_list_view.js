@@ -219,7 +219,7 @@ Flame.LazyListView = Flame.ListView.extend({
         view.set('content', item);
         view.set('contentIndex', row);
         view.layout.top = row * itemHeight;
-        view.updateLayout();
+        view.propertyDidChange('layout');
         view.set('isVisible', true);
         view.endPropertyChanges();
         return view;
