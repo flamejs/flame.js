@@ -162,7 +162,6 @@ Flame.Validatable = Ember.Mixin.create({
     _createIsValidProperties: function() {
         var validations = this.get('validations');
         var propertyName;
-        var self = this;
         // TODO do this without setting computer properties, using only simple properties (i.e. the kind 'foo' is when
         // defined like Ember.Object({foo: false}).
         for (propertyName in validations) {
