@@ -47,7 +47,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     }.property('content'),
 
     tableDataView: Flame.TableDataView.extend({
-        dataBinding: '^content._data',
+        dataBinding: 'parentView.content._data',
         content: alias('parentView.content'),
         dirtyCells: alias('parentView.content.dirtyCells'),
         areValuesOnRows: alias('parentView.content.areValuesOnRows'),
@@ -343,7 +343,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
 
         if (renderColumnHeader) {
             // Top left corner of the headers
-            buffer.push('<div class="table-corner" style="top: %@px; left: 0px; height: %@px; width: %@px;"></div>'.fmt(topOffset, columnHeaderHeight, leftOffset));
+            buffer.push('<div class="table-corner" style="top: %@px; left: 0; height: %@px; width: %@px;"></div>'.fmt(topOffset, columnHeaderHeight, leftOffset));
             // Column headers
             this._renderHeader(buffer, 'column', leftOffset, defaultColumnWidth);
             topOffset += columnHeaderHeight;
@@ -354,7 +354,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         }
 
         // Scrollable div
-        buffer.push('<div class="scrollable" style="overflow: auto; bottom: 0px; top: %@px; left: %@px; right: 0px;">'.fmt(topOffset, leftOffset));
+        buffer.push('<div class="scrollable" style="overflow: auto; bottom: 0; top: %@px; left: %@px; right: 0;">'.fmt(topOffset, leftOffset));
         // There should really only be one child view, the TableDataView
         this.forEach(function(view) {
             view.renderToBuffer(buffer);
@@ -394,7 +394,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         } else {
             var l = this.get('content.columnLeafs').length;
             for (i = 0; i < l; i++) {
-                buffer.push('<col style="width: %@px;" />'.fmt(this.get('content.columnLeafs')[i].get('render_width') || defaultColumnWidth));
+                buffer.push('<col style="width: %@px;">'.fmt(this.get('content.columnLeafs')[i].get('render_width') || defaultColumnWidth));
             }
         }
         buffer.push('</colgroup>');
