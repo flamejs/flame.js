@@ -39,7 +39,7 @@ task :build => :clean do
   environment.append_path('stylesheets')
 
   environment.register_postprocessor('application/javascript', :anon_wrap) do |context, data|
-    context.pathname.to_s['html5'] ? data : "(function() {\n\n#{data}\n})();\n"
+    "(function() {\n'use strict';\n\n#{data}\n})();\n"
   end
 
   assets = environment.find_asset('flame.js')
