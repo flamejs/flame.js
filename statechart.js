@@ -1,4 +1,10 @@
-/* jshint loopfunc: true */
+function createProxyMethod(methodName) {
+    return function(args) {
+        args = Array.prototype.slice.call(arguments);
+        args.unshift(methodName);
+        return this.invokeStateMethod.apply(this, args);
+    };
+}
 
 Flame.State = Ember.Object.extend({
     gotoFlameState: function(stateName) {
@@ -76,13 +82,7 @@ Flame.Statechart = {
         for (var property in state) {
             if (state.constructor.prototype.hasOwnProperty(property) && Ember.typeOf(state[property]) === 'function' &&
                 !this[property] && property !== 'enterState' && property !== 'exitState') {
-                this[property] = function(methodName) {
-                    return function(args) {
-                        args = Array.prototype.slice.call(arguments);
-                        args.unshift(methodName);
-                        return this.invokeStateMethod.apply(this, args);
-                    };
-                }(property);
+                this[property] = createProxyMethod(property);
             }
         }
     },
