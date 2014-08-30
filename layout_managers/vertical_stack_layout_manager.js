@@ -1,4 +1,4 @@
-/*
+/**
   VerticalStackLayoutManager is a layout manager that stacks the children vertically, with optional
   top margin, spacing and bottom margin. Use in your view e.g. like this;
 
@@ -18,9 +18,8 @@ Flame.VerticalStackLayoutManager = Flame.LayoutManager.extend({
     spacing: 0,
 
     setupLayout: function(view) {
-        var self = this;
-        var top = self.get('topMargin');
-        var fluid = false, isFirst = true;
+        var top = this.get('topMargin');
+        var fluid = false;
         var maxHeight = view.get('layout.maxHeight');
 
         // Filter out views that are not affected by the layout manager
@@ -29,28 +28,23 @@ Flame.VerticalStackLayoutManager = Flame.LayoutManager.extend({
                 (childView.get('isVisible') || childView.get('isVisible') === null) && // isVisible is initially null
                 childView.get('layout');
         });
-        var len = views.get('length');
 
+        var length = views.get('length');
         views.forEach(function(childView, i) {
-            if ('string' === typeof childView) throw new Error('Child views have not yet been initialized!');
+            Ember.assert('Child views have not yet been initialized!', 'string' !== typeof childView);
 
-            if (!isFirst) {  // Cannot check the index because some child views may be hidden and must be ignored
-                top += self.get('spacing');
-            } else {
-                isFirst = false;
-            }
+            if (i > 0) top += this.get('spacing');
 
             var layout = childView.get('layout');
-            childView._resolveLayoutBindings(layout);  // XXX ugly
-            Ember.assert('All child views must define layout when using VerticalStackLayoutManager!', !Ember.isNone(layout));
+            childView._resolveLayoutBindings(layout); // XXX ugly
 
             top += (layout.topMargin || 0);
-            childView.adjustLayout('top', top);  // Use adjustLayout, it checks if the property changes (can trigger a series of layout updates)
+            childView.adjustLayout('top', top); // Use adjustLayout, it checks if the property changes (can trigger a series of layout updates)
             top += (layout.topPadding || 0) + (layout.bottomPadding || 0);  // if view has borders, these can be used to compensate
 
             var height = layout.height;
             if ('string' === typeof height) height = parseInt(height, 10);
-            if (i < len - 1) {  // XXX should not check the index, this check should only consider visible child views
+            if (i < length - 1) { // XXX should not check the index, this check should only consider visible child views
                 Ember.assert('All child views except last one must define layout.height when using VerticalStackLayoutManager!', !Ember.isNone(height));
             }
 
@@ -59,7 +53,7 @@ Flame.VerticalStackLayoutManager = Flame.LayoutManager.extend({
             } else {
                 top += height;
             }
-        });
+        }, this);
 
         // fluid == true means that the last child has no height set, meaning that it's meant to fill in the rest of the parent's view.
         // In that case, we must not set parent's height either, because the system is supposed to remain fluid (i.e. bottom is set).
