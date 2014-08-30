@@ -3,16 +3,18 @@
 //= require ./label_view
 //= require ./button_view
 
+var alias = Ember.computed.alias,
+    nearest = Flame.computed.nearest;
+
 Flame.AlertPanel = Flame.Panel.extend();
 
 Flame.AlertPanel.INFO_ICON = Flame.image('info_icon.png');
 Flame.AlertPanel.WARN_ICON = Flame.image('warn_icon.png');
 Flame.AlertPanel.ERROR_ICON = Flame.image('error_icon.png');
 
-
 Flame.AlertPanelButtonView = Flame.View.extend({
     layout: { width: '100%', right: 0, height: 30 },
-    childViews: 'cancelButtonView confirmButtonView'.w(),
+    childViews: ['cancelButtonView', 'confirmButtonView'],
     cancelButtonTitle: 'Cancel',
     confirmButtonTitle: 'OK',
     isCancelVisible: true,
@@ -23,9 +25,9 @@ Flame.AlertPanelButtonView = Flame.View.extend({
 
     cancelButtonView: Flame.ButtonView.extend({
         layout: { width: 90, bottom: 2, right: 110 },
-        title: Ember.computed.alias('parentView.cancelButtonTitle'),
-        isVisible: Ember.computed.alias('parentView.isCancelVisible'),
-        isDisabled: Ember.computed.alias('parentView.isCancelDisabled'),
+        title: alias('parentView.cancelButtonTitle'),
+        isVisible: alias('parentView.isCancelVisible'),
+        isDisabled: alias('parentView.isCancelDisabled'),
         action: function() {
             this.get('parentView.alertPanelView').onCancel();
         }
@@ -33,9 +35,9 @@ Flame.AlertPanelButtonView = Flame.View.extend({
 
     confirmButtonView: Flame.ButtonView.extend({
         layout: { width: 90, bottom: 2, right: 2 },
-        title: Ember.computed.alias('parentView.confirmButtonTitle'),
-        isVisible: Ember.computed.alias('parentView.isConfirmVisible'),
-        isDisabled: Ember.computed.alias('parentView.isConfirmDisabled'),
+        title: alias('parentView.confirmButtonTitle'),
+        isVisible: alias('parentView.isConfirmVisible'),
+        isDisabled: alias('parentView.isConfirmDisabled'),
         isDefault: true,
         action: function() {
             this.get('parentView.alertPanelView').onConfirm();
@@ -45,7 +47,7 @@ Flame.AlertPanelButtonView = Flame.View.extend({
 
 Flame.AlertPanelMessageView = Flame.View.extend({
     layout: { left: 10, right: 2, height: 'measuredHeight' },
-    childViews: 'iconView messageView'.w(),
+    childViews: ['iconView', 'messageView'],
     messageViewWidth: 0,
     measuredHeight: function() {
         var width  = "width: %@px;".fmt(this.get('messageViewWidth'));
@@ -58,7 +60,7 @@ Flame.AlertPanelMessageView = Flame.View.extend({
 
     iconView: Flame.ImageView.extend({
         layout: { left: 10 },
-        value: Flame.computed.nearest('icon')
+        value: nearest('icon')
     }),
 
     messageView: Flame.LabelView.extend({
@@ -67,15 +69,15 @@ Flame.AlertPanelMessageView = Flame.View.extend({
             this.set('parentView.messageViewWidth', this.$().width());
         },
         allowWrapping: true,
-        value: Ember.computed.alias('parentView.message')
+        value: alias('parentView.message')
     })
 });
 
 Flame.AlertPanel.reopen({
     layout: { centerX: 0, centerY: -50, width: 400 },
 
-    layoutManager: Flame.VerticalStackLayoutManager.create({}),
-    classNames: 'flame-alert-panel'.w(),
+    layoutManager: Flame.VerticalStackLayoutManager.create(),
+    classNames: ['flame-alert-panel'],
     icon: Flame.AlertPanel.INFO_ICON,
     isModal: true,
     allowClosingByClickingOutside: false,
@@ -91,17 +93,17 @@ Flame.AlertPanel.reopen({
     contentView: Flame.View.extend({
         layout: { left: 15, right: 15, top: 36, bottom: 15 },
         layoutManager: Flame.VerticalStackLayoutManager.create({ topMargin: 20, bottomMargin: 17, spacing: 10 }),
-        childViews: 'messageView buttonView'.w(),
+        childViews: ['messageView', 'buttonView'],
 
         messageView: Flame.AlertPanelMessageView.extend({
-            message: Flame.computed.nearest('message')
+            message: nearest('message')
         }),
         buttonView: Flame.AlertPanelButtonView.extend({
-            confirmButtonTitle: Flame.computed.nearest('confirmButtonTitle'),
-            cancelButtonTitle: Flame.computed.nearest('cancelButtonTitle'),
-            alertPanelView: Ember.computed.alias('parentView.parentView'),
-            isCancelVisible: Flame.computed.nearest('isCancelVisible'),
-            isConfirmVisible: Flame.computed.nearest('isConfirmVisible')
+            confirmButtonTitle: nearest('confirmButtonTitle'),
+            cancelButtonTitle: nearest('cancelButtonTitle'),
+            alertPanelView: alias('parentView.parentView'),
+            isCancelVisible: nearest('isCancelVisible'),
+            isConfirmVisible: nearest('isConfirmVisible')
         })
     }),
 

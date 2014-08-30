@@ -14,7 +14,7 @@
   @extends LazyListView
 */
 Flame.LazyTreeView = Flame.LazyListView.extend({
-    classNames: 'flame-tree-view flame-lazy-tree-view'.w(),
+    classNames: ['flame-tree-view', 'flame-lazy-tree-view'],
     itemViewClass: Flame.LazyTreeItemView,
     _rowToItemCache: null,
     _itemToRowCache: null,

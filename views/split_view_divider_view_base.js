@@ -1,5 +1,5 @@
 Flame.SplitViewDividerViewBase = Ember.Mixin.create(Flame.Statechart, {
-    classNames: 'flame-split-view-divider'.w(),
+    classNames: ['flame-split-view-divider'],
     initialFlameState: 'idle',
 
     idle: Flame.State.extend({

@@ -1,6 +1,6 @@
 Flame.TabView = Flame.View.extend({
     classNames: ['flame-tab-view'],
-    childViews: 'tabBarView contentView'.w(),
+    childViews: ['tabBarView', 'contentView'],
     tabs: null,
     previousTabs: null,
     nowShowing: null,

@@ -12,7 +12,7 @@
          due to the window being resized, or due to a HorizontalSplitView).
 */
 Flame.ScrollView = Flame.View.extend({
-    classNames: 'scroll-view'.w(),
+    classNames: ['scroll-view'],
     /** Last known vertical scroll offset */
     lastScrollY: 0,
     /** Is the ScrollView currently being scrolled? */

@@ -1,25 +1,25 @@
 Flame.MenuScrollViewButton = Flame.View.extend({
-    classNames: "scroll-element".w(),
-    classNameBindings: "directionClass isShown".w(),
+    classNames: ['scroll-element'],
+    classNameBindings: ['directionClass', 'isShown'],
 
     directionClass: function() {
-        return "scroll-%@".fmt(this.get("direction"));
+        return 'scroll-%@'.fmt(this.get('direction'));
     }.property().volatile(),
 
     isShown: false,
-    direction : "down", // "up" / "down"
+    direction : 'down', // 'up' / 'down'
     useAbsolutePosition: true,
 
     mouseLeave: function() {
-        if (this.get("isShown")) {
-            this.get("parentView").stopScrolling();
+        if (this.get('isShown')) {
+            this.get('parentView').stopScrolling();
             return true;
         }
         return false;
     },
     mouseEnter: function() {
-        if (this.get("isShown")) {
-            this.get("parentView").startScrolling(this.get("direction") === "up" ? -1 : 1);
+        if (this.get('isShown')) {
+            this.get('parentView').startScrolling(this.get('direction') === 'up' ? -1 : 1);
             return true;
         }
         return false;
@@ -31,20 +31,20 @@ Flame.MenuScrollViewButton = Flame.View.extend({
 });
 
 Flame.MenuScrollView = Flame.View.extend({
-    classNames: 'menu-scroll-view'.w(),
+    classNames: ['menu-scroll-view'],
     needScrolling: false,
     scrollDirection: 0,
-    scrollPosition: "top", // "top", "middle", "bottom"
+    scrollPosition: 'top', // 'top', 'middle', 'bottom'
 
-    childViews: 'upArrow viewPort downArrow'.w(),
+    childViews: ['upArrow', 'viewPort', 'downArrow'],
     scrollSize: 10, // How many pixels to scroll per scroll
 
     viewPort: Flame.View.extend({
-        classNames: 'scroll-view-viewport'.w()
+        classNames: ['scroll-view-viewport']
     }),
 
-    upArrow: Flame.MenuScrollViewButton.extend({direction:"up", layout: {height: 20, top: 0, width: "100%"}}),
-    downArrow: Flame.MenuScrollViewButton.extend({direction:"down", layout: {height: 20, bottom: 0, width: "100%"}}),
+    upArrow: Flame.MenuScrollViewButton.extend({direction:'up', layout: { height: 20, top: 0, width: '100%' }}),
+    downArrow: Flame.MenuScrollViewButton.extend({direction:'down', layout: { height: 20, bottom: 0, width: '100%' }}),
 
     willDestroyElement: function() {
         this._super();
@@ -56,21 +56,20 @@ Flame.MenuScrollView = Flame.View.extend({
     },
 
     scrollPositionDidChange: function() {
-        var upArrow = this.get("upArrow");
-        var downArrow = this.get("downArrow");
-        var scrollPosition = this.get("scrollPosition");
-        upArrow.set("isShown", this.get("needScrolling") && scrollPosition !== "top");
-        downArrow.set("isShown", this.get("needScrolling") && scrollPosition !== "bottom");
-
-    }.observes("scrollPosition", "needScrolling"),
+        var upArrow = this.get('upArrow');
+        var downArrow = this.get('downArrow');
+        var scrollPosition = this.get('scrollPosition');
+        upArrow.set('isShown', this.get('needScrolling') && scrollPosition !== 'top');
+        downArrow.set('isShown', this.get('needScrolling') && scrollPosition !== 'bottom');
+    }.observes('scrollPosition', 'needScrolling'),
 
     startScrolling: function(scrollDirection) {
-        this.set("scrollDirection", scrollDirection);
+        this.set('scrollDirection', scrollDirection);
         this.scroll();
     },
 
     stopScrolling: function() {
-        this.set("scrollDirection", 0);
+        this.set('scrollDirection', 0);
         if (this._timer) {
             Ember.run.cancel(this._timer);
         }
@@ -81,9 +80,9 @@ Flame.MenuScrollView = Flame.View.extend({
         if (height > 0) {
             var paddingAndBorders = 5 + 5 + 1 + 1;  // XXX obtain paddings & borders from MenuView?
             this.set('layout', { height: height - paddingAndBorders, width: '100%' });
-            var viewPort = this.get("viewPort");
+            var viewPort = this.get('viewPort');
             if (viewPort) {
-                viewPort.set("layout", {
+                viewPort.set('layout', {
                     height: height - paddingAndBorders,
                     top: 0,
                     width: '100%'
@@ -98,14 +97,14 @@ Flame.MenuScrollView = Flame.View.extend({
     },
 
     scroll: function() {
-        var scrollDirection = this.get("scrollDirection");
+        var scrollDirection = this.get('scrollDirection');
         var scrollTime = 20;
-        var scrollSize = this.get("scrollSize");
-        var viewPort = this.get("viewPort").$();
+        var scrollSize = this.get('scrollSize');
+        var viewPort = this.get('viewPort').$();
         var oldTop = viewPort.scrollTop();
         var viewPortHeight = viewPort.height();
         var continueScrolling = true;
-        var scrollPosition = this.get("scrollPosition");
+        var scrollPosition = this.get('scrollPosition');
 
         var delta = scrollSize;
         if (scrollDirection === -1) {
@@ -126,15 +125,15 @@ Flame.MenuScrollView = Flame.View.extend({
 
         if (!continueScrolling) {
             if (scrollDirection === 1) {
-                scrollPosition = "bottom";
+                scrollPosition = 'bottom';
             } else if (scrollDirection === -1) {
-                scrollPosition = "top";
+                scrollPosition = 'top';
             }
             this.stopScrolling();
         } else {
             this._timer = Ember.run.later(this, this.scroll, scrollTime);
-            scrollPosition = "middle";
+            scrollPosition = 'middle';
         }
-        this.set("scrollPosition", scrollPosition);
+        this.set('scrollPosition', scrollPosition);
     }
 });

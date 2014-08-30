@@ -5,8 +5,8 @@
   dividerView.
 */
 Flame.VerticalSplitView = Flame.SplitView.extend({
-    classNames: 'flame-vertical-split-view'.w(),
-    childViews: 'leftView dividerView rightView'.w(),
+    classNames: ['flame-vertical-split-view'],
+    childViews: ['leftView', 'dividerView', 'rightView'],
     leftWidth: 100,
     rightWidth: 100,
     minLeftWidth: 0,

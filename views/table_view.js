@@ -12,8 +12,8 @@ var unbindScroll = function() {
 Flame.TableView = Flame.View.extend(Flame.Statechart, {
     MIN_COLUMN_WIDTH: 30,
 
-    classNames: 'flame-table-view'.w(),
-    childViews: 'tableDataView'.w(),
+    classNames: ['flame-table-view'],
+    childViews: ['tableDataView'],
     displayProperties: ['contentAdapter.headers'],
     acceptsKeyResponder: false,
 

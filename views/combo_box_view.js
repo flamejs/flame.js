@@ -3,7 +3,7 @@
 
 Flame.ComboBoxView = Flame.SelectButtonView.extend({
     classNames: ['flame-combo-box-view'],
-    childViews: 'textView buttonView'.w(),
+    childViews: ['textView', 'buttonView'],
     handlebars: null,
     acceptsKeyResponder: false,
 
