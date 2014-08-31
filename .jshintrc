@@ -1,0 +1,12 @@
+{
+    "eqeqeq": true,
+    "indent": 4,
+    "jquery": true,
+    "browser": true,
+    "undef": true,
+    "unused": "vars",
+    "latedef": "nofunc",
+    "trailing": true,
+    "nonbsp": true,
+    "predef": ["Ember", "Handlebars", "Flame", "FlameImageUrlPrefix"]
+}
