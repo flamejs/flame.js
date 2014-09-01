@@ -957,12 +957,14 @@ input[type="password"] {
             outline: none;
             position: absolute;
             z-index: 2;
+            background-color: #fff !important;
         }
     }
 
     .content-container {
         position: relative;
         padding: 0 2px;
+        background: transparent;
     }
 }
 
