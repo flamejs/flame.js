@@ -274,6 +274,10 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
             return draggingInfo;
         }
 
+        // When dragging inside same parent, reduce toPosition by one when the item is dragged from top to bottom,
+        // as the elements below the dragged elements original position will move one element up.
+        if (this._itemToParentCache.get(itemFrom) == toParent && proposedIndex > originalIndex) toPosition--;
+
         if (!this.isValidDrop(itemFrom, toParent)) return draggingInfo;
 
         return  { currentIndex: acceptedIndex, toParent: toParent, toPosition: toPosition };
