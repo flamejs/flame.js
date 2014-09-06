@@ -58,10 +58,6 @@
     border-color: #448cd4\9 !important; // IE only hack
 }
 
-@mixin border-radius($radius) {
-    border-radius: $radius;
-}
-
 @mixin user-select($user-select) {
     // -ms-user-select is only supported in IE >= 10. See ie_user_select.js for workaround.
     -ms-user-select: $user-select;
