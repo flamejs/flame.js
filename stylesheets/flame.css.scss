@@ -121,8 +121,9 @@ body {
 
     &.is-selected {
         .flame-checkbox-box {
-            @include gradient(#aacef9, #8ab2e6);
-            border: 1px solid #426a9a;
+            @include gradient(#71a3de, #71a3de);
+            @include no-box-shadow();
+            border: 1px solid #5689c7;
         }
 
         .flame-checkbox-checkmark {
@@ -130,13 +131,15 @@ body {
         }
 
         &.is-active .flame-checkbox-box {
-            @include gradient(#77aae6, #5588c6);
+            @include gradient(#5588c6, #5588c6);
+            border-color: #5588c6;
         }
     }
 
     &.is-active {
         .flame-checkbox-box {
-            @include gradient(#eee, #cdcdcd);
+            @include gradient(#ddd, #ddd);
+            border-color: #bbb;
         }
     }
 
@@ -166,15 +169,15 @@ body {
     }
 
     .flame-checkbox-box {
-        @include gradient(#fff, #f5f5f5);
+        background-color: #fff;
+        @include inner-shadow-blur(1px, 1px, #dfdfdf);
         position: absolute;
-        border: 1px solid #888;
+        border: 1px solid #aaa;
         width: 12px;
         height: 12px;
         top: 4px;
         left: 4px;
         border-radius: 3px;
-        overflow: visible;
     }
 
     .flame-checkbox-checkmark {
@@ -192,17 +195,13 @@ body {
 
     &.flame-radio-button-view {
         .flame-checkbox-box {
-            border-radius: 100px;
+            border-radius: 100%;
         }
 
         .flame-checkbox-checkmark {
-            background-color: #000;
-            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#888888', endColorstr='#000000');
-            background: -webkit-radial-gradient(left top, circle, #888, #000);
-            background: -moz-radial-gradient(top left, circle, #888, #000);
-            background: -ms-radial-gradient(top left, circle, #888, #000);
-            background: -o-radial-gradient(top left, circle, #888, #000);
-            border-radius: 100px;
+            background-color: #fff;
+            @include box-shadow(0, 1, 1, rgba(0, 0, 0, 0.3));
+            border-radius: 100%;
         }
     }
 }
@@ -583,13 +582,13 @@ body {
 
             &.scroll-up {
                 &.is-shown {
-                    background-image: image-url('images/triangle_up.png');
+                    background-image: image-url('images/triangle_up.svg');
                 }
             }
 
             &.scroll-down {
                 &.is-shown {
-                    background-image: image-url('images/triangle_down.png');
+                    background-image: image-url('images/triangle_down.svg');
                 }
             }
         }
@@ -614,7 +613,7 @@ body {
         color: white;
 
         .menu-indicator {
-            background: image-url('images/triangle_right_white.png') no-repeat 50% 50%;
+            background: image-url('images/triangle_right_white.svg') no-repeat 50% 50%;
         }
 
         .flame-menu-item-view-checkmark {
@@ -636,7 +635,7 @@ body {
         top: 0;
         width: 16px;
         height: 100%;
-        background: image-url('images/triangle_right.png') no-repeat 50% 50%;
+        background: image-url('images/triangle_right.svg') no-repeat 50% 50%;
     }
 }
 
@@ -680,9 +679,9 @@ input[type="password"] {
         resize: none;
         padding-left: 2px;
         padding-right: 2px;
-        border: 1px solid #acacac;
+        border: 1px solid #aaa;
         border-top: 1px solid #999;
-        @include inner-shadow(1px, #e1e1e1);
+        @include inner-shadow-blur(1px, 1px, #dfdfdf);
         border-radius: 2px;
         @include user-select(auto);
         outline: none;
@@ -694,7 +693,7 @@ input[type="password"] {
 
         &.is-focused {
             @include control-blur();
-            border-color: #448cd4 !important;
+            border-color: #94bde6 !important;
         }
 
         &.is-editable-label {

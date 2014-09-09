@@ -16,7 +16,7 @@ Flame.ComboBoxView = Flame.SelectButtonView.extend({
 
     buttonView: Flame.ButtonView.extend({
         acceptsKeyResponder: false,
-        handlebars: '<img src="%@">'.fmt(Flame.image('select_button_arrow.png')),
+        handlebars: '<img src="%@">'.fmt(Flame.image('select_button_arrow.svg')),
         layout: { right: -2, width: 22, height: 22 },
 
         action: function() {

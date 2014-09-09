@@ -3,8 +3,8 @@
 Flame.DisclosureView = Flame.LabelView.extend({
     classNames: ['flame-disclosure-view'],
 
-    imageExpanded: Flame.image('disclosure_triangle_down.png'),
-    imageCollapsed: Flame.image('disclosure_triangle_left.png'),
+    imageExpanded: Flame.image('disclosure_triangle_down.svg'),
+    imageCollapsed: Flame.image('disclosure_triangle_right.svg'),
 
     image: function() {
         return this.get('visibilityTarget') ? this.get('imageExpanded') : this.get('imageCollapsed');
