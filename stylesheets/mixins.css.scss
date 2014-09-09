@@ -39,13 +39,18 @@
 }
 
 @mixin box-shadow($x-offset, $y-offset, $blur-radius, $color) {
-    box-shadow: #{$x-offset}px #{$y-offset}px #{$blur-radius}px $color;
     -webkit-box-shadow: #{$x-offset}px #{$y-offset}px #{$blur-radius}px $color;
+    box-shadow: #{$x-offset}px #{$y-offset}px #{$blur-radius}px $color;
 }
 
 @mixin inner-shadow($size, $color) {
     -webkit-box-shadow: inset 0 $size 0 $color;
     box-shadow: inset 0 $size 0 $color;
+}
+
+@mixin inner-shadow-blur($size, $blur-radius, $color) {
+    -webkit-box-shadow: inset 0 $size $blur-radius $color;
+    box-shadow: inset 0 $size $blur-radius $color;
 }
 
 @mixin no-box-shadow() {
@@ -54,8 +59,8 @@
 }
 
 @mixin control-blur() {
-    @include box-shadow(0, 0, 4, #06c);
-    border-color: #448cd4\9 !important; // IE only hack
+    -webkit-box-shadow: 0 0 0 2px #9bc8f6;
+    box-shadow: 0 0 0 2px #9bc8f6;
 }
 
 @mixin user-select($user-select) {
