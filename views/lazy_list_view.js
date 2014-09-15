@@ -33,6 +33,7 @@ Flame.LazyListView = Flame.ListView.extend({
 
     _lastScrollHeight: undefined,
     _lastScrollTop: undefined,
+    _recycledViews: null, // set in init
 
     init: function() {
         this._super();
