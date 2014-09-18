@@ -13,7 +13,9 @@ Flame.LazyTreeItemView = Flame.LazyListItemView.extend({
     }.property('itemContent'),
 
     isExpandedDidChange: function() {
-        this.$().find('img').first().replaceWith(this.get('disclosureImage'));
+        Ember.run.schedule('afterRender', this, function() {
+            this.$().find('img').first().replaceWith(this.get('disclosureImage'));
+        });
     }.observes('isExpanded'),
 
     isExpandable: function() {
