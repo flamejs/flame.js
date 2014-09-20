@@ -230,13 +230,11 @@ Flame.LazyListView = Flame.ListView.extend({
         Ember.changeProperties(function() {
             var views = this._recycledViews;
             for (var key in views) {
-                if (views.hasOwnProperty(key)) {
-                    var viewArray = views[key];
-                    var length = viewArray.length;
-                    for (var i = 0; i < length; i++) {
-                        var view = viewArray[i];
-                        if (view.get('isVisible')) view.set('isVisible', false);
-                    }
+                var viewArray = views[key];
+                var length = viewArray.length;
+                for (var i = 0; i < length; i++) {
+                    var view = viewArray[i];
+                    if (view.get('isVisible')) view.set('isVisible', false);
                 }
             }
         }, this);
