@@ -1,4 +1,5 @@
 {
+    "freeze": true,
     "eqeqeq": true,
     "indent": 4,
     "jquery": true,
