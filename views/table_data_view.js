@@ -1,3 +1,5 @@
+var isWebKit = /webkit/i.test(window.navigator.userAgent);
+
 Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
     classNames: ['flame-table-data-view'],
     acceptsKeyResponder: true,
@@ -630,7 +632,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
     },
 
     _selectionCSS: function(startCell, endCell, scrollTop, scrollLeft, position) {
-        var offset = jQuery.browser.webkit ? 0 : 1;
+        var offset = isWebKit ? 0 : 1;
         endCell = endCell || startCell;
         var startPosition = position;
         var endPosition = startCell === endCell ? position : endCell.position();
