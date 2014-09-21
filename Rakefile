@@ -5,7 +5,7 @@ require 'uglifier'
 
 task :default => [:build]
 
-desc "Concatenate and minify javascript files, compile scss files"
+desc 'Concatenate and minify javascript files, compile scss files'
 task :build => :clean do
   ENV['image_path'] ||= ''
 
@@ -29,9 +29,13 @@ task :build => :clean do
   assets = environment.find_asset('flame.js')
   assets.write_to('build/flame.js')
 
-  flame = File.open('build/flame.min.js', 'w')
-  flame.write(Uglifier.compile(File.read('build/flame.js').gsub(%r{^(\s)+Ember\.assert\((.*)\).*$}, '')))
-  flame.close
+  flame_prod = File.open('build/flame.prod.js', 'w')
+  flame_prod.write(File.read('build/flame.js').gsub(%r{^(\s)+Ember\.assert\((.*)\).*$}, ''))
+  flame_prod.close()
+
+  flame_min = File.open('build/flame.min.js', 'w')
+  flame_min.write(Uglifier.compile(File.read('build/flame.prod.js')))
+  flame_min.close
 
   # SCSS files
   css = environment.find_asset('flame.css.scss')
@@ -46,7 +50,7 @@ task :clean do
   FileUtils.rm_rf('build')
 end
 
-desc "Run JSHint on Flame.js"
+desc 'Run JSHint on Flame.js'
 task :jshint do
   files = Rake::FileList.new('**/*.js').exclude('build/**/*.js')
 
