@@ -8,9 +8,9 @@ var alias = Ember.computed.alias,
 
 Flame.AlertPanel = Flame.Panel.extend();
 
-Flame.AlertPanel.INFO_ICON = Flame.image('info_icon.png');
-Flame.AlertPanel.WARN_ICON = Flame.image('warn_icon.png');
-Flame.AlertPanel.ERROR_ICON = Flame.image('error_icon.png');
+Flame.AlertPanel.INFO_ICON = Flame.image('info_icon.svg');
+Flame.AlertPanel.WARN_ICON = Flame.image('warn_icon.svg');
+Flame.AlertPanel.ERROR_ICON = Flame.image('error_icon.svg');
 
 Flame.AlertPanelButtonView = Flame.View.extend({
     layout: { width: '100%', right: 0, height: 30 },

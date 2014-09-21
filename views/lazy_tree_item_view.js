@@ -5,8 +5,8 @@ Flame.LazyTreeItemView = Flame.LazyListItemView.extend({
     itemContent: '{{view.content}}',
     isExpanded: false,
 
-    collapsedImage: Flame.image('disclosure_triangle_left.png'),
-    expandedImage: Flame.image('disclosure_triangle_down.png'),
+    collapsedImage: Flame.image('disclosure_triangle_right.svg'),
+    expandedImage: Flame.image('disclosure_triangle_down.svg'),
 
     handlebars: function() {
         return '{{{view.disclosureImage}}} <span>' + this.get('itemContent') + '</span>';
