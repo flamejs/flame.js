@@ -71,8 +71,15 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             return false;
         },
 
+        _trim: function(value) {
+            // Trim value to allow correct pasting behavior to cells (normalize line changes, strip leading/trailing whitespace, but preserve tabs)
+            value = value.replace(/\r\n|\r/g, '\n');
+            value = value.replace(/^[^\S\t]+|[^\S\t]+$/g, '');
+            return value;
+        },
+
         paste: function(value) {
-            value = value.replace(/\r\n|\r/g, '\n').trim();
+            value = this._trim(value);
             var owner = this.get('owner');
             var data = owner.get('data');
             var selectedCell = this.get('owner.selectedCell');
