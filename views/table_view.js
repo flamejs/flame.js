@@ -458,7 +458,8 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
 
                 var headerSortDelegate = this.get('tableViewDelegate');
                 if (headerSortDelegate && headerSortDelegate.getSortForHeader) {
-                    sortDirection = headerSortDelegate.getSortForHeader(header);
+                    var activeSort = headerSortDelegate.getSortForHeader(header);
+                    sortDirection = activeSort ? activeSort.direction : null;
                 }
                 var sortClass = sortDirection ? 'sort-%@'.fmt(sortDirection) : '';
                 label = '<div class="label ' + sortClass +'">%@</div>';
