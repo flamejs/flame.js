@@ -7,20 +7,18 @@ Flame.TableSortSupport = {
     },
 
     columnHeaderClicked: function(header, targetElement) {
+        if (!header.get('isLeaf')) return;
         this._showSortMenu(header, this._sortMenuOptions(header), targetElement);
     },
 
     _showSortMenu: function(header, options, anchorView) {
-        // set width based on longest item title
-        var longestTitle = options.map(function(i) { return i.title.length; }).max();
-        var menu = Flame.MenuView.createWithMixins({
+        Flame.MenuView.create({
+            minWidth: anchorView.outerWidth(),
             items: options,
-            layout: { width: longestTitle * 8 },
             target: this,
             action: 'sortContent',
             payload: Ember.computed.alias('value')
-        });
-        menu.popup(anchorView);
+        }).popup(anchorView);
     },
 
     _sortMenuOptions: function(header) {

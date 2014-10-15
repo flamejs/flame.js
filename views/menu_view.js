@@ -5,7 +5,7 @@
 
 // Only to be used in Flame.MenuView. Represent menu items with normal JS objects as creation of one Ember object took
 // 3.5 ms on fast IE8 machine.
-Flame.MenuItem = function(opts) {
+Flame.MenuItem = function MenuItem(opts) {
     var key;
     for (key in opts) {
         if (opts.hasOwnProperty(key)) {

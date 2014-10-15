@@ -122,7 +122,8 @@ body {
     &.is-selected {
         .flame-checkbox-box {
             @include gradient(#71a3de, #71a3de);
-            @include no-box-shadow();
+            -webkit-box-shadow: none;
+            box-shadow: none;
             border: 1px solid #5689c7;
         }
 

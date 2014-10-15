@@ -1,4 +1,4 @@
-Flame.TableCell = function(opts) {
+Flame.TableCell = function TableCell(opts) {
     this.value = null;
     for (var key in opts) {
         if (opts.hasOwnProperty(key)) {
@@ -45,5 +45,5 @@ Flame.TableCell.prototype.cssClasses = function() {
 };
 
 Flame.TableCell.prototype.cssClassesString = function() {
-    return '';
+    return this.cssClasses().join(' ');
 };

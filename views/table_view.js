@@ -146,18 +146,22 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         mouseUp: function(event) {
             this.gotoFlameState('idle');
             var clickDelegate = this.get('owner.tableViewDelegate');
-            if (clickDelegate && clickDelegate.columnHeaderClicked) {
-                var target = jQuery(event.target), index, header;
-                if (!!target.closest('.column-header').length && (index = target.closest('td').attr('data-leaf-index'))) {
+            if (clickDelegate) {
+                var target = jQuery(event.target);
+                var header;
+                if (!!target.closest('.column-header').length) {
                     if (clickDelegate.columnHeaderClicked) {
-                        header = this.get('owner.content.columnLeafs')[index];
+                        // Find the corresponding TableHeader instance for the clicked cell.
+                        var level = parseInt(target.closest('tr').attr('class').match(/level\-(\d+)/)[1], 10);
+                        var row = this.get('owner.contentAdapter.columnHeaderRows')[level - 1];
+                        header = row[target.closest('tr').find('td').index(target.closest('td'))];
                         clickDelegate.columnHeaderClicked(header, target);
                     }
                     return true;
                 } else if (!!target.closest('.row-header').length) {
                     if (clickDelegate.rowHeaderClicked) {
                         var cell = target.closest('td');
-                        index = parseInt(cell.attr('data-index'), 10);
+                        var index = parseInt(cell.attr('data-index'), 10);
                         header = this.get('owner.content._headers.rowHeaders')[index];
                         if (!header) return false;
                         clickDelegate.rowHeaderClicked(header, target, index);
@@ -246,7 +250,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     }),
 
     setColumnWidth: function(columnIndex, cellWidth) {
-        this.$('div.column-header col').eq(columnIndex).css('width', cellWidth + 3);
+        this.$('.column-header col').eq(columnIndex).css('width', cellWidth + 3);
         var table = this.objectAt(0);
         table.updateColumnWidth(columnIndex, cellWidth + 3);
     },
@@ -275,7 +279,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     willDestroyElement: unbindScroll,
 
     didInsertElement: function() {
-        this.set('scrollable', this.$('.flame-table').parent().parent());
+        this.set('scrollable', this.$('.scrollable'));
         this.set('rowHeader', this.$('.row-header table'));
         this.set('columnHeader', this.$('.column-header table'));
         this.set('tableCorner', this.$('.table-corner'));
