@@ -7,18 +7,25 @@ Flame.AutocompleteTextFieldView = Flame.TextFieldView.extend(Flame.Statechart, F
     initialFlameState: 'idle',
 
     textField: Flame.TextField.extend({
+        _debounce: null,
+
         keyUp: function(event) {
             this._super(event);
-            Ember.run.debounce(this, 'autocompleteAction', event, 500);
+            this._debounce = Ember.run.debounce(this, 'autocompleteAction', event, 500);
         },
 
         autocompleteAction: function(event) {
             if (event.which === 8 || event.which > 31) {
                 // Don't want to wait until the value has synced, so just grab the raw val from input
-                var query = this.get('parentView').$('input').val();
+                var query = this.$().val();
                 this.get('parentView').doAutocompleteRequest(query);
                 return true;
             }
+        },
+
+        willDestroyElement: function() {
+            this._super();
+            if (this._debounce) Ember.run.cancel(this._debounce);
         }
     }),
 
