@@ -34,8 +34,6 @@ Flame.Panel = Flame.View.extend({
     // When given a unique id, the panel's layout (so far only position) will be persisted
     layoutPersistenceKey: null,
 
-    _keyResponderOnPopup: undefined,
-
     init: function() {
         Ember.assert('Flame.Panel needs a contentView!', !!this.get('contentView'));
         this._super();
