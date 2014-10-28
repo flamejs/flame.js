@@ -69,7 +69,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             return false;
         },
 
-        paste: function(value) {
+        pasteValue: function(value) {
             value = value.replace(/\r\n|\r/g, '\n').trim();
             var owner = this.get('owner');
             var data = owner.get('data');
@@ -214,7 +214,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                     // IE11 doesn't allow AJAX requests from the paste event,
                     // this is how we work around it.
                     Ember.run.later(self, function() {
-                        this.paste(pastedValue);
+                        this.pasteValue(pastedValue);
                     }, 100);
                 });
 
