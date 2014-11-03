@@ -190,16 +190,26 @@ Flame.EventManager = {
         },
 
         mouseUp: function(event, view) {
-            if (Flame.get('mouseResponderView') !== undefined) {
-                view = Flame.get('mouseResponderView');
+            var mouseResponderView = Flame.get('mouseResponderView');
+            if (mouseResponderView !== undefined) {
+                // Something (e.g. AJAX callback) may remove the responderView from DOM between mouseDown
+                // and mouseUp. In that case return true to ignore the event.
+                if (mouseResponderView.get('_state') !== 'inDOM') return true;
+
+                view = mouseResponderView;
                 Flame.set('mouseResponderView', undefined);
             }
             return !this._dispatch('mouseUp', event, view);
         },
 
         mouseMove: function(event, view) {
-            if (Flame.get('mouseResponderView') !== undefined) {
-                view = Flame.get('mouseResponderView');
+            var mouseResponderView = Flame.get('mouseResponderView');
+            if (mouseResponderView !== undefined) {
+                // Something (e.g. AJAX callback) may remove the responderView from DOM between mouseDown
+                // and/or mouseMove. In that case return true to ignore the event.
+                if (mouseResponderView.get('_state') !== 'inDOM') return true;
+
+                view = mouseResponderView;
             }
             return !this._dispatch('mouseMove', event, view);
         },
