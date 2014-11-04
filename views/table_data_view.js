@@ -26,6 +26,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         },
 
         enterState: function() {
+            this.set('selectedCell', null);
             if (this.get('owner._state') === 'inDOM') {
                 this.get('owner.selection').hide();
             }
@@ -742,7 +743,6 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
     },
 
     render: function(buffer) {
-        this.set('selectedCell', null);
         this.gotoFlameState('loaded');
         this._renderTable(buffer);
     },
