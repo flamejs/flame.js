@@ -26,9 +26,11 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         },
 
         enterState: function() {
-            this.set('selectedCell', null);
-            if (this.get('owner._state') === 'inDOM') {
-                this.get('owner.selection').hide();
+            var owner = this.get('owner');
+            owner.set('selectedCell', null);
+            owner.set('selectionEnd', null);
+            if (owner.get('_state') === 'inDOM') {
+                owner.get('selection').hide();
             }
         }
     }),
@@ -178,8 +180,6 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                 return true;
             } else {
                 this.gotoFlameState('loaded');
-                owner.set('selectedCell', null);
-                owner.set('selectionEnd', null);
                 return owner.invokeStateMethod('mouseDown', event);
             }
         },
@@ -566,11 +566,6 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         // We first change the state so that the current state can do any
         // required cleanup before we set the selected cell to null.
         this.gotoFlameState('loaded');
-
-        this.setProperties({
-            selectedCell: null,
-            selectionEnd: null
-        });
     },
 
     columnIndex: function(cell) {
