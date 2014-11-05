@@ -163,10 +163,21 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
         mouseDown: function(event) {
             var owner = this.get('owner');
+            // For browsers that don't support pointer-events, clicking the selection div
+            // will absorb the mouseDown event.
+            if ($(event.target).is('.table-selection')) {
+                owner.get('selection').hide();
+                event.target = document.elementFromPoint(event.clientX, event.clientY);
+                owner.get('selection').show();
+            }
+
             // If a cell is clicked that was already selected and it's a cell
             // with fixed options, start editing it.
             var selectedDataCell = owner.get('selectedDataCell');
-            if (!Ember.isNone(selectedDataCell) && selectedDataCell.options && selectedDataCell.options() && owner._cellForTarget(event.target)[0] === owner.get('selectedCell')[0]) {
+            if (!Ember.isNone(selectedDataCell) &&
+                    selectedDataCell.options && selectedDataCell.options() &&
+                    ($(event.target).is('.content-container') || $(event.target).is('td')) &&
+                    owner._cellForTarget(event.target)[0] === owner.get('selectedCell')[0]) {
                 this.startEdit();
                 return true;
             }
