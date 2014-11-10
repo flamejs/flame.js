@@ -574,8 +574,6 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
     },
 
     willLoseKeyResponder: function() {
-        // We first change the state so that the current state can do any
-        // required cleanup before we set the selected cell to null.
         this.gotoFlameState('loaded');
     },
 
