@@ -41,8 +41,7 @@ Flame.AutocompleteTextFieldView = Flame.TextFieldView.extend(Flame.Statechart, F
         doAutocompleteRequest: function(query) {
             if (!this.get('owner.autocompleteDelegate')) return;
 
-            if (query) {
-                this.get('owner.autocompleteDelegate').fetchAutocompleteResults(query, this.get('owner'));
+            if (query && this.get('owner.autocompleteDelegate').fetchAutocompleteResults(query, this.get('owner'))) {
                 this.gotoFlameState('requesting');
             } else {
                 this.get('owner')._closeAutocompleteMenu();
