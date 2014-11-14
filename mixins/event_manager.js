@@ -32,8 +32,10 @@ var eventHandlers = {
     },
 
     _handleKeyEvent: function(eventName, event, view) {
-        if (eventName === 'keyDown' && this.interpretKeyEvents(event)) { // Try to hand down the event to a more specific key event handler
-            return false;
+        if (eventName === 'keyDown') { // Try to hand down the event to a more specific key event handler
+            var result = this.interpretKeyEvents(event);
+            if (result === Flame.ALLOW_BROWSER_DEFAULT_HANDLING) return true;
+            if (result) return false;
         } else if (this.get('parentView')) {
             return this.get('parentView').handleKeyEvent(event, view);
         }

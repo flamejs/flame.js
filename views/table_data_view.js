@@ -458,6 +458,14 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             return true;
         },
 
+        moveLeft: function() {
+            return Flame.ALLOW_BROWSER_DEFAULT_HANDLING;
+        },
+
+        moveRight: function() {
+            return Flame.ALLOW_BROWSER_DEFAULT_HANDLING;
+        },
+
         insertNewline: function(event) {
             var owner = this.get('owner');
             if (owner._confirmEdit()) {
