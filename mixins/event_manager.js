@@ -36,7 +36,8 @@ var eventHandlers = {
             var result = this.interpretKeyEvents(event);
             if (result === Flame.ALLOW_BROWSER_DEFAULT_HANDLING) return true;
             if (result) return false;
-        } else if (this.get('parentView')) {
+        }
+        if (this.get('parentView')) {
             return this.get('parentView').handleKeyEvent(event, view);
         }
         return true;
