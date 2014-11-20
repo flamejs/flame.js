@@ -360,12 +360,12 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         },
 
         insertTab: function(event) {
-            this.get('owner').invokeStateMethodByValuesOn('moveDown', 'moveRight');
+            this.get('owner').invokeStateMethod('moveRight');
             return true;
         },
 
         insertBacktab: function(event) {
-            this.get('owner').invokeStateMethodByValuesOn('moveUp', 'moveLeft');
+            this.get('owner').invokeStateMethod('moveLeft');
             return true;
         },
 
@@ -386,7 +386,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         insertNewline: function(event) {
             var owner = this.get('owner');
             this.gotoFlameState('selected');
-            owner.invokeStateMethodByValuesOn('moveRight', 'moveDown');
+            owner.invokeStateMethod('moveDown');
         },
 
         moveLeft: function(event) {
@@ -470,7 +470,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             var owner = this.get('owner');
             if (owner._confirmEdit()) {
                 this.gotoFlameState('selected');
-                owner.invokeStateMethodByValuesOn('moveRight', 'moveDown');
+                owner.invokeStateMethod('moveDown');
             }
             return true;
         },
@@ -578,7 +578,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         var editField = this.get('editField');
         editField.val(value || '');
         this._confirmEdit();
-        this.invokeStateMethodByValuesOn('moveRight', 'moveDown');
+        this.invokeStateMethod('moveDown');
     },
 
     willLoseKeyResponder: function() {
