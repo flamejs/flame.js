@@ -19,11 +19,12 @@ Flame.MenuItem.prototype.renderToBuffer = function(buffer) {
     if (this.isSelected) classes.push('is-selected');
     if (!this.isEnabled()) classes.push('is-disabled');
     var subMenuLength = Ember.isNone(this.subMenuItems) ? -1 : this.subMenuItems.get('length');
-    var template = '<div id="%@" class="%@">%@%@%@</div>';
+    var template = '<div id="%@" class="%@" title="%@">%@%@%@</div>';
     buffer.push(
         template.fmt(
             this.id,
             classes.join(' '),
+            this.item.tooltip ? 'title="%@"'.fmt(this.item.tooltip) : '',
             this.isChecked ? '<div class="flame-menu-item-view-checkmark"></div>' : '',
             Handlebars.Utils.escapeExpression(this.title),
             subMenuLength > 0 ? '<div class="menu-indicator"></div>' : ''
@@ -119,6 +120,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
             itemValueKey = this.get("itemValueKey"),
             subMenuKey = this.get("subMenuKey"),
             selectedValue = this.get("value"),
+            tooltip = this.get("tooltip"),
             valueIsSet = !Ember.isNone(selectedValue),
             menuItems;
         menuItems = (items || []).map(function(item, i) {
