@@ -1,5 +1,4 @@
-
-/*
+/**
   A proxy that views the source array as sorted by given sort key and updates the sort key if the
   order of the items in the proxied array is changed. You can use this proxy in combination with
   a list view or tree view - that way, the concern of how to persist the order of the items is
@@ -15,7 +14,7 @@
   position, and removing an item in the source results in it being removed from the proxy array.
   Similarly, insertions and removals in the proxy are reflected in the source array.
 
-  Note that we don't keep the indexes stricly sequential, we only care about their relative order
+  Note that we don't keep the indexes strictly sequential, we only care about their relative order
   (in other words, there may be gaps after removal). This is to prevent unnecessary datastore
   updates. The sortkeys are preserved, if you create a proxied array with source that has sortkeys
   [1, 3, 5], and then swap items, the resulting source will still only use the [1, 3, 5] as sortkeys
@@ -28,7 +27,7 @@
   but instead proxies all method calls directly. Here we really need to have a sorted copy, because
   sorting obviously changes the item indexes, and rewriting all operations and observers on the fly
   sounds like too difficult to implement.)
- */
+*/
 Flame.SortingArrayProxy = Ember.ArrayProxy.extend({
     sortKey: 'position',
     parent: null,
