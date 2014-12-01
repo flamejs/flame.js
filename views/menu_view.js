@@ -19,7 +19,7 @@ Flame.MenuItem.prototype.renderToBuffer = function(buffer) {
     if (this.isSelected) classes.push('is-selected');
     if (!this.isEnabled()) classes.push('is-disabled');
     var subMenuLength = Ember.isNone(this.subMenuItems) ? -1 : this.subMenuItems.get('length');
-    var template = '<div id="%@" class="%@" title="%@">%@%@%@</div>';
+    var template = '<div id="%@" class="%@" %@>%@%@%@</div>';
     buffer.push(
         template.fmt(
             this.id,
