@@ -120,7 +120,6 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
             itemValueKey = this.get("itemValueKey"),
             subMenuKey = this.get("subMenuKey"),
             selectedValue = this.get("value"),
-            tooltip = this.get("tooltip"),
             valueIsSet = !Ember.isNone(selectedValue),
             menuItems;
         menuItems = (items || []).map(function(item, i) {
