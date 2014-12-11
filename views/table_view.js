@@ -33,7 +33,6 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
 
     defaultColumnWidth: 88,
     rowHeaderWidth: null,
-    tableDelegate: null,
     content: null, // Set to a Flame.TableController
     allowRefresh: true,
     batchUpdates: true,
@@ -481,7 +480,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                         }
                     }
                     if (this.get('isRowHeaderClickable') && header.get('isClickable')) {
-                        label = '<a href="javascript:void(0)">%@</a>';
+                        label = '%@';
                     }
                 }
             }

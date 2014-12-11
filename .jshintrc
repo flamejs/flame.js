@@ -9,5 +9,5 @@
     "latedef": "nofunc",
     "trailing": true,
     "nonbsp": true,
-    "predef": ["Ember", "Handlebars", "Flame", "FlameImageUrlPrefix"]
+    "predef": ["Ember", "Handlebars", "Flame", "FlameImageUrlPrefix", "DocumentFragment"]
 }
