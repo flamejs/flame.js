@@ -142,6 +142,19 @@ Ember.$(document).on('keydown.flame keypress.flame', null, function(event, trigg
     return true;
 });
 
+// Handle mouseUp outside of the window
+Ember.$(window).on('mouseup', function(event) {
+    var mouseResponderView = Flame.get('mouseResponderView');
+    if (mouseResponderView !== undefined) {
+        // Something (e.g. AJAX callback) may remove the responderView from DOM between mouseDown
+        // and mouseUp. In that case return true to ignore the event.
+        if (mouseResponderView.get('_state') !== 'inDOM') return true;
+
+        Flame.set('mouseResponderView', undefined);
+        return !mouseResponderView.get('eventManager')._dispatch('mouseUp', event, mouseResponderView);
+    }
+});
+
 // This logic is needed so that the view that handled mouseDown will receive mouseMoves and the eventual mouseUp, even if the
 // pointer no longer is on top of that view. Without this, you get inconsistencies with buttons and all controls that handle
 // mouse click events. The ember event dispatcher always first looks up 'eventManager' property on the view that's
@@ -150,7 +163,7 @@ Flame.EventManager = {
     // Set to true in your view if you want to accept key responder status (which is needed for handling key events)
     acceptsKeyResponder: false,
 
-    /*
+    /**
       Sets this view as the target of key events. Call this if you need to make this happen programmatically.
       This gets also called on mouseDown if the view handles that, returns true and doesn't have property 'acceptsKeyResponder'
       set to false. If mouseDown returned true but 'acceptsKeyResponder' is false, this call is propagated to the parent view.
@@ -171,7 +184,7 @@ Flame.EventManager = {
         }
     },
 
-    /*
+    /**
       Resign key responder status by popping the head off the stack. The head might or might not be this view,
       depending on whether user clicked anything since this view became the key responder. The new key responder
       will be the next view in the stack, if any.
