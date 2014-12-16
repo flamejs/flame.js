@@ -216,6 +216,15 @@ Flame.Panel = Flame.View.extend({
         return true;
     },
 
+    _getDimensionsForAnchorElement: function(anchorElement) {
+        var isSvg = anchorElement.parents("svg").length > 0;
+        if (isSvg) {
+            return { height: anchorElement[0].getBBox().height, width: anchorElement[0].getBBox().width };
+        } else {
+            return { height: anchorElement.outerHeight(), width: anchorElement.outerWidth() };
+        }
+    },
+
     _layoutRelativeTo: function(anchor, position) {
         position = position || Flame.POSITION_BELOW;
 
@@ -228,17 +237,21 @@ Flame.Panel = Flame.View.extend({
             layout.height = contentView.get('layout').height;
         }
 
+        var dimensions = this._getDimensionsForAnchorElement(anchor);
+        var outerHeight = dimensions.height;
+        var outerWidth = dimensions.width;
+
         if (position & (Flame.POSITION_BELOW | Flame.POSITION_ABOVE)) {
-            layout.top = offset.top + ((position & Flame.POSITION_BELOW) ? anchorElement.outerHeight() : -layout.height);
+            layout.top = offset.top + ((position & Flame.POSITION_BELOW) ? outerHeight : -layout.height);
             layout.left = offset.left;
             if (position & Flame.POSITION_MIDDLE) {
-                layout.left = layout.left - (layout.width / 2) + (anchorElement.outerWidth() / 2);
+                layout.left = layout.left - (layout.width / 2) + (outerWidth / 2);
             }
         } else if (position & (Flame.POSITION_RIGHT | Flame.POSITION_LEFT)) {
             layout.top = offset.top;
-            layout.left = offset.left + ((position & Flame.POSITION_RIGHT) ? anchorElement.outerWidth() : -layout.width);
+            layout.left = offset.left + ((position & Flame.POSITION_RIGHT) ? outerWidth : -layout.width);
             if (position & Flame.POSITION_MIDDLE) {
-                layout.top = layout.top - (layout.height / 2) + (anchorElement.outerHeight() / 2);
+                layout.top = layout.top - (layout.height / 2) + (outerHeight / 2);
             }
         } else {
             Ember.assert('Invalid position for panel', false);
