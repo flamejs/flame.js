@@ -217,7 +217,7 @@ Flame.Panel = Flame.View.extend({
     },
 
     _getDimensionsForAnchorElement: function(anchorElement) {
-        var isSvg = anchorElement.parents("svg").length > 0;
+        var isSvg = anchorElement.closest("svg").length > 0;
         if (isSvg) {
             return { height: anchorElement[0].getBBox().height, width: anchorElement[0].getBBox().width };
         } else {
@@ -238,20 +238,18 @@ Flame.Panel = Flame.View.extend({
         }
 
         var dimensions = this._getDimensionsForAnchorElement(anchor);
-        var outerHeight = dimensions.height;
-        var outerWidth = dimensions.width;
 
         if (position & (Flame.POSITION_BELOW | Flame.POSITION_ABOVE)) {
-            layout.top = offset.top + ((position & Flame.POSITION_BELOW) ? outerHeight : -layout.height);
+            layout.top = offset.top + ((position & Flame.POSITION_BELOW) ? dimensions.height : -layout.height);
             layout.left = offset.left;
             if (position & Flame.POSITION_MIDDLE) {
-                layout.left = layout.left - (layout.width / 2) + (outerWidth / 2);
+                layout.left = layout.left - (layout.width / 2) + (dimensions.width / 2);
             }
         } else if (position & (Flame.POSITION_RIGHT | Flame.POSITION_LEFT)) {
             layout.top = offset.top;
-            layout.left = offset.left + ((position & Flame.POSITION_RIGHT) ? outerWidth : -layout.width);
+            layout.left = offset.left + ((position & Flame.POSITION_RIGHT) ? dimensions.width : -layout.width);
             if (position & Flame.POSITION_MIDDLE) {
-                layout.top = layout.top - (layout.height / 2) + (outerHeight / 2);
+                layout.top = layout.top - (layout.height / 2) + (dimensions.height / 2);
             }
         } else {
             Ember.assert('Invalid position for panel', false);

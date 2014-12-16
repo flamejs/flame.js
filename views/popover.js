@@ -22,17 +22,15 @@ Flame.Popover = Flame.Panel.extend({
         var arrowOffset;
 
         var dimensions = this._getDimensionsForAnchorElement(anchor);
-        var outerHeight = dimensions.height;
-        var outerWidth = dimensions.width;
 
         if (position & (Flame.POSITION_ABOVE | Flame.POSITION_BELOW)) {
-            arrowOffset = offset.left + (outerWidth / 2) - (!this.$().css('left') ? 0 : parseInt(this.$().css('left').replace('px', ''), 10)) - 15;
+            arrowOffset = offset.left + (dimensions.width / 2) - (!this.$().css('left') ? 0 : parseInt(this.$().css('left').replace('px', ''), 10)) - 15;
             arrow.css({ left: arrowOffset + 'px' });
             if (position & Flame.POSITION_ABOVE) {
                 arrow.css({ top: this.get('layout.height') - 1 + 'px' });
             }
         } else {
-            arrowOffset = offset.top + (outerHeight / 2) - parseInt(this.$().css('top').replace('px', ''), 10) - 15;
+            arrowOffset = offset.top + (dimensions.height / 2) - parseInt(this.$().css('top').replace('px', ''), 10) - 15;
             arrow.css({ top: arrowOffset + 'px' });
             if (position & Flame.POSITION_LEFT) {
                 arrow.css({ left: this.get('layout.width') - 1 + 'px' });
