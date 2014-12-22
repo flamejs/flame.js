@@ -13,7 +13,10 @@ Flame.LazyListViewStates.MouseIsDown = Flame.State.extend({
         var parentView = owner.get('parentView');
         if (!parentView.get('allowReordering') || parentView.disableReordering(event)) return true;
         // Only start dragging if we move more than 2 pixels vertically
-        if (this.xOffset === null) { this.xOffset = event.pageX; this.yOffset = event.pageY; }
+        if (this.xOffset === null) {
+            this.xOffset = event.pageX;
+            this.yOffset = event.pageY;
+        }
         if (Math.abs(event.pageY - this.yOffset) < 3) return true;
 
         var offset = owner.$().offset();

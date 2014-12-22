@@ -276,7 +276,7 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
 
         if (!this.isValidDrop(itemFrom, toParent)) return draggingInfo;
 
-        return  { currentIndex: acceptedIndex, toParent: toParent, toPosition: toPosition };
+        return { currentIndex: acceptedIndex, toParent: toParent, toPosition: toPosition };
     },
 
     moveItem: function(from, draggingInfo) {

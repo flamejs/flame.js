@@ -31,7 +31,7 @@ Flame.VerticalStackLayoutManager = Flame.LayoutManager.extend({
 
         var length = views.get('length');
         views.forEach(function(childView, i) {
-            Ember.assert('Child views have not yet been initialized!', 'string' !== typeof childView);
+            Ember.assert('Child views have not yet been initialized!', typeof childView !== 'string');
 
             if (i > 0) top += this.get('spacing');
 
@@ -43,7 +43,7 @@ Flame.VerticalStackLayoutManager = Flame.LayoutManager.extend({
             top += (layout.topPadding || 0) + (layout.bottomPadding || 0);  // if view has borders, these can be used to compensate
 
             var height = layout.height;
-            if ('string' === typeof height) height = parseInt(height, 10);
+            if (typeof height === 'string') height = parseInt(height, 10);
             if (i < length - 1) { // XXX should not check the index, this check should only consider visible child views
                 Ember.assert('All child views except last one must define layout.height when using VerticalStackLayoutManager!', !Ember.isNone(height));
             }

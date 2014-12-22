@@ -20,7 +20,7 @@ Flame.ActionSupport = {
         var target = this.get('target') || this;
         this.beforeAction(this);
 
-        while ('string' === typeof target) {  // Use a while loop: the target can be a path gives another path
+        while (typeof target === 'string') {  // Use a while loop: the target can be a path gives another path
             if (target.charAt(0) === '.') {
                 target = this.get(target.slice(1));  // If starts with a dot, interpret relative to this view
             } else {
@@ -30,12 +30,11 @@ Flame.ActionSupport = {
         if (action === undefined) action = this.get('action');
 
         if (action) {
-            var actionFunction = 'function' === typeof action ? action : Ember.get(target, action);
+            var actionFunction = typeof action === 'function' ? action : Ember.get(target, action);
             if (!actionFunction) throw new Error('Target %@ does not have action %@'.fmt(target, action));
-            var actualPayload = !Ember.isNone(payload) ? payload : this.get('payload');
-            if (Ember.isNone(actualPayload)) actualPayload = this;
-
             var self = this;
+            var actualPayload = !Ember.isNone(payload) ? payload : this.get('payload');
+            if (Ember.isNone(actualPayload)) actualPayload = self;
             var afterActionCallback = function() {
                 self.afterAction(self);
             };

@@ -82,7 +82,7 @@ Flame.FormView = Flame.View.extend({
             isVisible: desc.isVisible === undefined ? true : desc.isVisible,
 
             label: this._buildLabel(descriptor),
-            control: function () {
+            control: function() {
                 return formView._createChildViewWithLayout(control, this, formView.labelWidth + formView.columnSpacing, formView._focusRingMargin);
             }.property()
         };
@@ -296,9 +296,12 @@ Flame.FormView = Flame.View.extend({
                 settings.name = Ember.isNone(descriptor.name) ? descriptor.property : descriptor.name;
                 return Flame.TextFieldView.extend(settings);
             case 'html':
-                return Flame.LabelView.extend(jQuery.extend(settings, {escapeHTML: false, formatter: function(val) {
-                    return val === null ? '' : val;
-                }}));
+                return Flame.LabelView.extend(jQuery.extend(settings, {
+                    escapeHTML: false,
+                    formatter: function(val) {
+                        return val === null ? '' : val;
+                    }
+                }));
             case 'checkbox':
                 settings.title = descriptor.label;
                 settings.isSelected = settings.value;

@@ -47,7 +47,7 @@ Flame.TreeItemView = Flame.ListItemView.extend({
     //      which is very much noticeable in IE7. Should probably convert to a render method.
     handlebars: '<div {{bind-attr class="view.classAttribute"}}><div class="flame-tree-item-view-pad">' +
             '{{#if view.hasChildren}}{{view view.toggleButton}}{{/if}}' +
-            '{{view view.treeItemViewClass content=view.content}}</div></div>'+
+            '{{view view.treeItemViewClass content=view.content}}</div></div>' +
             '{{#if view.renderSubTree}}{{view view.nestedTreeView}}{{/if}}',
 
     /**

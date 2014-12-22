@@ -143,7 +143,7 @@ Flame.SortingArrayProxy = Ember.ArrayProxy.extend({
     },
 
     _getObserverKey: function() {
-        return '__observer_'+Ember.guidFor(this);
+        return '__observer_' + Ember.guidFor(this);
     }.property(),
 
     // Observes changes on the sortKey for each item in the source array. When changes, we simply

@@ -7,7 +7,7 @@ Flame.MenuScrollViewButton = Flame.View.extend({
     }.property().volatile(),
 
     isShown: false,
-    direction : 'down', // 'up' / 'down'
+    direction: 'down', // 'up' / 'down'
     useAbsolutePosition: true,
 
     mouseLeave: function() {
@@ -43,8 +43,8 @@ Flame.MenuScrollView = Flame.View.extend({
         classNames: ['scroll-view-viewport']
     }),
 
-    upArrow: Flame.MenuScrollViewButton.extend({direction:'up', layout: { height: 20, top: 0, width: '100%' }}),
-    downArrow: Flame.MenuScrollViewButton.extend({direction:'down', layout: { height: 20, bottom: 0, width: '100%' }}),
+    upArrow: Flame.MenuScrollViewButton.extend({direction: 'up', layout: { height: 20, top: 0, width: '100%' }}),
+    downArrow: Flame.MenuScrollViewButton.extend({direction: 'down', layout: { height: 20, bottom: 0, width: '100%' }}),
 
     willDestroyElement: function() {
         this._super();

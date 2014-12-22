@@ -126,7 +126,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
             // Only show the selection on the main menu, not in the submenus.
             return new Flame.MenuItem({
                 item: item,
-                isSelected: valueIsSet ? Ember.get(item, itemValueKey) === selectedValue: false,
+                isSelected: valueIsSet ? Ember.get(item, itemValueKey) === selectedValue : false,
                 isDisabled: Ember.get(item, itemEnabledKey) === false,
                 isChecked: Ember.get(item, itemCheckedKey),
                 subMenuItems: Ember.get(item, subMenuKey),
@@ -271,7 +271,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     },
 
     /* event handling starts */
-    mouseDown: function () {
+    mouseDown: function() {
         return true;
     },
 
@@ -307,7 +307,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
         return false;
     },
 
-    handleMouseEvents: function (event) {
+    handleMouseEvents: function(event) {
         // This should probably be combined with our event handling in event_manager.
         var itemIndex = this._idToIndex(event.currentTarget.id);
         // jQuery event handling: false bubbles the stuff up.
@@ -428,7 +428,6 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
             }
         }
         this.set("_internalSelection", internalSelection);
-
     }.observes("_highlightIndex"),
 
     /**
@@ -473,7 +472,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
         return res && res.length === 2 ? parseInt(res[1], 10) : -1;
     },
 
-    _tryOpenSubmenu: function (selectItem) {
+    _tryOpenSubmenu: function(selectItem) {
         var index = this.get("_highlightIndex");
         var item = this.get("_menuItems").objectAt(index);
         if (!item) {

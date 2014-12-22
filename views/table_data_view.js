@@ -229,7 +229,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                     .select();
 
                 var self = this;
-                $textarea.on('paste', function (e) {
+                $textarea.on('paste', function(e) {
                     var clipboardData = e.originalEvent.clipboardData || window.clipboardData;
                     var pastedValue = clipboardData.getData('Text');
                     // IE11 doesn't allow AJAX requests from the paste event,
@@ -534,7 +534,10 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                             };
                         }),
                         // Make the cube table view go back to the selected state when the menu is closed
-                        close: function() { owner.gotoFlameState('selected'); this._super(); }
+                        close: function() {
+                            owner.gotoFlameState('selected');
+                            this._super();
+                        }
                     });
                     menu.popup(selectedCell);
                 } else { // Normal edit field for everything else
@@ -775,7 +778,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         buffer.pushOpeningTag();
         var i, j;
         for (i = 0; i < rowCount; i++) {
-            buffer.push('<tr data-index="'+i+'">');
+            buffer.push('<tr data-index="' + i + '">');
             for (j = 0; j < columnCount; j++) {
                 var content;
                 var cell = data[i][j];

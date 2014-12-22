@@ -39,11 +39,11 @@ Flame.HorizontalSplitView = Flame.SplitView.extend({
         if (topHeight === undefined && bottomHeight !== undefined && totalHeight !== null && totalHeight !== 0) topHeight = totalHeight - bottomHeight - dividerThickness;
         if (bottomHeight === undefined && topHeight !== undefined && totalHeight !== null && totalHeight !== 0) bottomHeight = totalHeight - topHeight - dividerThickness;
 
-        if ('number' === typeof topHeight && topHeight < this.get('minTopHeight')) {
+        if (typeof topHeight === 'number' && topHeight < this.get('minTopHeight')) {
             bottomHeight += topHeight - this.get('minTopHeight');
             topHeight = this.get('minTopHeight');
         }
-        if ('number' === typeof bottomHeight && bottomHeight < this.get('minBottomHeight')) {
+        if (typeof bottomHeight === 'number' && bottomHeight < this.get('minBottomHeight')) {
             topHeight += bottomHeight - this.get('minBottomHeight');
             bottomHeight = this.get('minBottomHeight');
         }

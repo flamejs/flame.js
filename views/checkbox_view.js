@@ -15,6 +15,6 @@ Flame.CheckboxView = Flame.ButtonView.extend({
 
     renderCheckMark: function(buffer) {
         var imgUrl = Flame.image('checkmark.svg');
-        buffer.push('<div class="flame-view flame-checkbox-checkmark" style="left: 4px; top: 2px;"><img src="'+ imgUrl + '"></div>');
+        buffer.push('<div class="flame-view flame-checkbox-checkmark" style="left: 4px; top: 2px;"><img src="' + imgUrl + '"></div>');
     }
 });

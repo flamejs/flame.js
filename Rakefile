@@ -22,7 +22,7 @@ task :build => :clean do
   environment.append_path('.')
   environment.append_path('stylesheets')
 
-  environment.register_postprocessor('application/javascript', :anon_wrap) do |context, data|
+  environment.register_postprocessor('application/javascript', :anon_wrap) do |_, data|
     "(function() {\n'use strict';\n\n#{data}\n})();\n"
   end
 
@@ -31,7 +31,7 @@ task :build => :clean do
 
   flame_prod = File.open('build/flame.prod.js', 'w')
   flame_prod.write(File.read('build/flame.js').gsub(%r{^(\s)+Ember\.assert\((.*)\).*$}, ''))
-  flame_prod.close()
+  flame_prod.close
 
   flame_min = File.open('build/flame.min.js', 'w')
   flame_min.write(Uglifier.compile(File.read('build/flame.prod.js')))
@@ -54,7 +54,7 @@ desc 'Run JSHint on Flame.js'
 task :jshint do
   files = Rake::FileList.new('**/*.js').exclude('build/**/*.js')
 
-  sh "jshint #{files.join(' ')}" do |ok, res|
+  sh "jshint #{files.join(' ')}" do |ok, _|
     fail 'JSHint found errors.' unless ok
   end
 end
