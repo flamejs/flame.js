@@ -77,10 +77,10 @@ Flame.TableController = Ember.Object.extend({
     // crash the UI as it would try to access missing cells.
     // Here we'll ensure that the batch belongs actually to current table by checking if first AND last
     // item in the batch are accessible.
-    _dataBatchIsForCurrentTable : function(dataBatch) {
+    _dataBatchIsForCurrentTable: function(dataBatch) {
         var length = dataBatch.length;
         var mapping = this.get("_indexFromPathMapping");
-        return length > 0 ? mapping[dataBatch[0].path.row] && mapping[dataBatch[length-1].path.row] : false;
+        return length > 0 ? mapping[dataBatch[0].path.row] && mapping[dataBatch[length - 1].path.row] : false;
     },
 
     _indexFromPathMapping: function() {

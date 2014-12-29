@@ -8,7 +8,6 @@ Flame.LayoutSupport = {
     defaultHeight: undefined,
     layoutManager: undefined,
 
-
     _layoutProperties: ['left', 'right', 'top', 'bottom', 'width', 'height', 'maxHeight'],
     _cssProperties: ['left', 'right', 'top', 'bottom', 'width', 'height', 'margin-left', 'margin-top', 'overflow'],
     _layoutChangeInProgress: false,
@@ -88,7 +87,7 @@ Flame.LayoutSupport = {
         this._layoutProperties.forEach(function(prop) {
             var value = layout[prop];
             // Does it look like a property path (and not e.g. '50%')?
-            if (!Ember.isNone(value) && 'string' === typeof value && value !== '' && isNaN(parseInt(value, 10))) {
+            if (!Ember.isNone(value) && typeof value === 'string' && value !== '' && isNaN(parseInt(value, 10))) {
                 this.addObserver(value, this, function() {
                     this.adjustLayout(prop, this.get(value));
                 });
@@ -132,7 +131,7 @@ Flame.LayoutSupport = {
             var prop = this._cssProperties[i];
             var value = cssLayout[prop];
             // If a number or a string containing only a number, append 'px'
-            if (value !== undefined && ('number' === typeof value || parseInt(value, 10).toString() === value)) {
+            if (value !== undefined && (typeof value === 'number' || parseInt(value, 10).toString() === value)) {
                 cssLayout[prop] = value += 'px';
             }
 

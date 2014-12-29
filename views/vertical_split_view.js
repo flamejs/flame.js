@@ -39,11 +39,11 @@ Flame.VerticalSplitView = Flame.SplitView.extend({
         if (leftWidth === undefined && rightWidth !== undefined && totalWidth !== null && totalWidth !== 0) leftWidth = totalWidth - rightWidth - dividerThickness;
         if (rightWidth === undefined && leftWidth !== undefined && totalWidth !== null && totalWidth !== 0) rightWidth = totalWidth - leftWidth - dividerThickness;
 
-        if ('number' === typeof leftWidth && leftWidth < this.get('minLeftWidth')) {
+        if (typeof leftWidth === 'number' && leftWidth < this.get('minLeftWidth')) {
             rightWidth += leftWidth - this.get('minLeftWidth');
             leftWidth = this.get('minLeftWidth');
         }
-        if ('number' === typeof rightWidth && rightWidth < this.get('minRightWidth')) {
+        if (typeof rightWidth === 'number' && rightWidth < this.get('minRightWidth')) {
             leftWidth += rightWidth - this.get('minRightWidth');
             rightWidth = this.get('minRightWidth');
         }

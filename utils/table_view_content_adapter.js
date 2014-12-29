@@ -72,7 +72,7 @@ Flame.TableViewContentAdapter = Ember.Object.extend({
             headerRows[depth].push(header);
         } else if (type === 'rows') {
             if (!isFirst) { headerRows.push([]); }
-            headerRows[headerRows.length-1].push(header);
+            headerRows[headerRows.length - 1].push(header);
         }
 
         var count = 0;
@@ -83,7 +83,9 @@ Flame.TableViewContentAdapter = Ember.Object.extend({
                 var child = children[i];
                 count += this._processHeader(headerRows, child, type, depth + 1, i === 0, index);
             }
-        } else { count = 1; }
+        } else {
+            count = 1;
+        }
 
         if (type === 'columns') {
             header.colspan = count;

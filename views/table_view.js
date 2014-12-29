@@ -466,7 +466,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                     sortDirection = activeSort ? activeSort.direction : null;
                 }
                 var sortClass = sortDirection ? 'sort-%@'.fmt(sortDirection) : '';
-                label = '<div class="label ' + sortClass +'">%@</div>';
+                label = '<div class="label ' + sortClass + '">%@</div>';
             } else if (type === 'row') {
                 buffer.attr('data-index', header.dataIndex);
                 if (this.get('renderColumnHeader')) {

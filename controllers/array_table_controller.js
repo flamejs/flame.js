@@ -23,14 +23,14 @@ Flame.ArrayTableController = Flame.DataTableController.extend(Flame.TableSortSup
             rowHeaders: this.get('content').map(function(object, i) {
                 // headers won't update in-place, have to force rerender via observer
                 var originalValue = object.get(headerProperty);
-                var observerMethod = function() {
+                var observerMethod = (function() {
                     return function(sender, key, value) {
                         // relies on ArrayTableController#headers being recreated when headers change
                         if (value !== originalValue) {
                             self.refreshHeaders();
                         }
                     };
-                }();
+                })();
                 self._setPropertyObserver(object, headerProperty, observerMethod);
                 return {
                     isClickable: rowHeadersClickable,
@@ -51,12 +51,12 @@ Flame.ArrayTableController = Flame.DataTableController.extend(Flame.TableSortSup
             return columns.map(function(column, j) {
                 // add observer for in-place cell refreshing
                 var propertyName = Ember.get(column, 'property');
-                var observerMethod = function() {
+                var observerMethod = (function() {
                     var propertyName = Ember.get(column, 'property');
                     return function(sender, key, value) {
                         self.pushDataBatch([{path: {row: [i], column: [j]}, value: sender.get(propertyName)}]);
                     };
-                }();
+                })();
                 self._setPropertyObserver(object, propertyName, observerMethod);
 
                 return Ember.get(object, Ember.get(column, 'property'));
