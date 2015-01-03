@@ -36,7 +36,7 @@ Flame.Popover = Flame.Panel.extend({
                 arrow.css({ left: this.get('layout.width') - 1 + 'px' });
             }
         }
-    },
+    }.on('didInsertElement'),
 
     _layoutRelativeTo: function(anchor, position) {
         anchor = anchor instanceof jQuery ? anchor : anchor.$();
@@ -70,10 +70,6 @@ Flame.Popover = Flame.Panel.extend({
             this.set('image', this.ARROW_LEFT);
         }
         return layout;
-    },
-
-    didInsertElement: function() {
-        this._positionArrow();
     },
 
     popup: function(anchor, position) {

@@ -217,8 +217,7 @@ Flame.Panel = Flame.View.extend({
     },
 
     _getDimensionsForAnchorElement: function(anchorElement) {
-        var isSvg = anchorElement.closest("svg").length > 0;
-        if (isSvg) {
+        if (anchorElement.closest('svg').length > 0) {
             return { height: anchorElement[0].getBBox().height, width: anchorElement[0].getBBox().width };
         } else {
             return { height: anchorElement.outerHeight(), width: anchorElement.outerWidth() };
@@ -237,7 +236,7 @@ Flame.Panel = Flame.View.extend({
             layout.height = contentView.get('layout').height;
         }
 
-        var dimensions = this._getDimensionsForAnchorElement(anchor);
+        var dimensions = this._getDimensionsForAnchorElement(anchorElement);
 
         if (position & (Flame.POSITION_BELOW | Flame.POSITION_ABOVE)) {
             layout.top = offset.top + ((position & Flame.POSITION_BELOW) ? dimensions.height : -layout.height);
