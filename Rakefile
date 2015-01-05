@@ -27,10 +27,10 @@ task :build => :clean do
   end
 
   assets = environment.find_asset('flame.js')
-  assets.write_to('build/flame.js')
+  assets.write_to('build/flame.debug.js')
 
   flame_prod = File.open('build/flame.prod.js', 'w')
-  flame_prod.write(File.read('build/flame.js').gsub(%r{^(\s)+Ember\.assert\((.*)\).*$}, ''))
+  flame_prod.write(File.read('build/flame.debug.js').gsub(%r{^(\s)+Ember\.assert\((.*)\).*$}, ''))
   flame_prod.close
 
   flame_min = File.open('build/flame.min.js', 'w')
