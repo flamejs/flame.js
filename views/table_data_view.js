@@ -600,7 +600,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         }
     }),
 
-    notifySelectionChange: function () {
+    notifySelectionChange: function() {
         var tableViewDelegate = this.get('tableViewDelegate');
         if (tableViewDelegate && tableViewDelegate.didMakeSelection) {
             tableViewDelegate.didMakeSelection(
