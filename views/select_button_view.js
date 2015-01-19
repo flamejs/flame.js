@@ -46,24 +46,7 @@ Flame.SelectButtonView = Flame.ButtonView.extend({
     },
 
     menu: function() {
-        // This has to be created dynamically to set the selectButtonView reference (parentView does not work
-        // because a menu is added on the top level of the view hierarchy, not as a children of this view)
-        var self = this;
-        return Flame.MenuView.extend({
-            selectButtonView: this,
-            itemTitleKey: this.get('itemTitleKey'),
-            itemValueKey: this.get('itemValueKey'),
-            itemActionKey: this.get('itemActionKey'),
-            subMenuKey: this.get('subMenuKey'),
-            items: Ember.computed.alias('selectButtonView.items'),
-            value: Ember.computed.alias('selectButtonView.value'),
-            minWidth: this.get('layout.width') || this.$().width(),
-            close: function() {
-                self.gotoFlameState('idle');
-                this._super();
-            }
-        });
-    }.property().volatile(),
+    },
 
     mouseDown: function() {
         if (!this.get('isDisabled')) this._openMenu();
@@ -77,6 +60,23 @@ Flame.SelectButtonView = Flame.ButtonView.extend({
 
     _openMenu: function() {
         this.gotoFlameState('mouseDownInside');
-        this.get('menu').create().popup(this);
+
+        // This has to be created dynamically to set the selectButtonView reference (parentView does not work
+        // because a menu is added on the top level of the view hierarchy, not as a child of this view)
+        var self = this;
+        Flame.MenuView.createWithMixins({
+            selectButtonView: this,
+            itemTitleKey: this.get('itemTitleKey'),
+            itemValueKey: this.get('itemValueKey'),
+            itemActionKey: this.get('itemActionKey'),
+            subMenuKey: this.get('subMenuKey'),
+            items: Ember.computed.alias('selectButtonView.items'),
+            value: Ember.computed.alias('selectButtonView.value'),
+            minWidth: this.get('layout.width') || this.$().width(),
+            close: function() {
+                self.gotoFlameState('idle');
+                this._super();
+            }
+        }).popup(this);
     }
 });
