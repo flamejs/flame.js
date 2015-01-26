@@ -1,7 +1,11 @@
 function createProxyMethod(methodName) {
-    return function(args) {
-        args = Array.prototype.slice.call(arguments);
-        args.unshift(methodName);
+    return function() {
+        var length = arguments.length;
+        var args = Array(length + 1);
+        args[0] = methodName;
+        for (var i = 1; i < length + 1; i++) {
+            args[i] = arguments[i - 1];
+        }
         return this.invokeStateMethod.apply(this, args);
     };
 }
@@ -37,10 +41,9 @@ Flame.State = Ember.Object.extend({
         return event;
     },
 
-    $: function(args) {
-        args = Array.prototype.slice.call(arguments);
+    $: function() {
         var owner = this.get('owner');
-        return owner.$.apply(owner, args);
+        return owner.$.apply(owner, arguments);
     }
 });
 
@@ -106,9 +109,10 @@ Flame.Statechart = {
         }
     },
 
-    invokeStateMethod: function(methodName, args) {
-        args = Array.prototype.slice.call(arguments);
-        args.shift();
+    invokeStateMethod: function(methodName) {
+        for (var length = arguments.length, args = Array(length - 1), i = 1; i < length; i++) {
+            args[i - 1] = arguments[i];
+        }
         var state = this.get('currentFlameState');
         Ember.assert('Cannot invoke state method without having a current state!', !Ember.isNone(state) && state instanceof Flame.State);
         var method = state[methodName];

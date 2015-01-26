@@ -80,7 +80,7 @@ Flame.LazyListItemView = Flame.ListItemView.extend(Flame.Statechart, {
             var $listView = listView.$();
             this.set('owner.isDragged', true);
             this.scrollViewOffset = listView.get('parentView').$().offset();
-            this.clone = this.get('owner').$().safeClone();
+            this.clone = this.$().safeClone();
             this.clone.addClass('dragged-clone');
             this.clone.draggingInfo = { currentIndex: this.get('owner.contentIndex') };
             this.indicator = jQuery('<div class="indicator"><img src="%@"></div>'.fmt(Flame.image('reorder_indicator.svg'))).hide();

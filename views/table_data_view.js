@@ -268,7 +268,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             var $target = jQuery(event.target);
             if ($target.hasClass('clipboard-container textarea')) {
                 $target.off('paste');
-                var $container = this.get('owner').$('.clipboard-container');
+                var $container = this.$('.clipboard-container');
                 $container.empty().hide();
                 return true;
             }
