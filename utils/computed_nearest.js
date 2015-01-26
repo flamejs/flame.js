@@ -32,10 +32,8 @@ Flame.computed.nearest = function(key, macro) {
         }
         if (arguments.length > 1) {
             this.set(propertyName, value);
-            return value;
-        } else {
-            return this.get(propertyName);
         }
+        return this.get(propertyName);
     });
 
     return computed;

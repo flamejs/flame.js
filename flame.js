@@ -6,4 +6,4 @@
 //= require ./validations
 //= require ./version
 
-window.Flame = Ember.Namespace.create({});
+window.Flame = Ember.Namespace.create();
