@@ -774,6 +774,10 @@ input[type="password"] {
         position: static;
     }
 
+    .content-container {
+        position: relative;
+    }
+
     .resize-handle {
         position: absolute;
         cursor: col-resize;
