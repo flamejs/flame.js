@@ -124,7 +124,12 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
     },
 
     changeIsExpanded: function(item, status) {
-        status ? this._expandedItems.add(item) : this._expandedItems.remove(item);
+        if (status) {
+             this._expandedItems.add(item);
+        } else {
+            this._expandedItems.remove(item);
+        }
+
         var row = this.rowForItem(item);
         var view = this.childViewForIndex(row);
         if (view && !view.get('isExpanded')) {
