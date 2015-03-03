@@ -108,6 +108,10 @@ Flame.LayoutSupport = {
             cssLayout.overflow = 'auto';
         }
 
+        if (layout.overflow) {
+            cssLayout.overflow = layout.overflow;
+        }
+
         cssLayout.width = layout.width;
         if (layout.centerX === undefined) {
             cssLayout.left = layout.left;
