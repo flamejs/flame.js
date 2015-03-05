@@ -23,10 +23,12 @@ Flame.ProgressView = Flame.View.extend({
 
     sizeDidChange: function() {
         Ember.run.schedule('afterRender', this, function() {
-            if (this.get('animate')) {
-                this.$('.progress-bar').animate({ width: this.get('size') }, 300);
-            } else {
-                this.$('.progress-bar').css('width', this.get('size'));
+            if (this.get('_state') === 'inDOM') {
+                if (this.get('animate')) {
+                    this.$('.progress-bar').animate({width: this.get('size')}, 300);
+                } else {
+                    this.$('.progress-bar').css('width', this.get('size'));
+                }
             }
         });
     }.observes('size')
