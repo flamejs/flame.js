@@ -26,8 +26,8 @@
 Flame.computed.nearest = function(key, macro) {
     var propertyName = '__' + key.replace(/\./g, '_');
 
-    var computed = Ember.computed(propertyName, function(k, value) {
-        if (this[propertyName] === undefined) {
+    return Ember.computed(propertyName, function(k, value) {
+        if (!Ember.meta(this).descs[propertyName]) {
             createProperty(this, propertyName, key, macro);
         }
         if (arguments.length > 1) {
@@ -35,8 +35,6 @@ Flame.computed.nearest = function(key, macro) {
         }
         return this.get(propertyName);
     });
-
-    return computed;
 };
 
 var IS_PATH_REGEX = /[\.]/,

@@ -64,8 +64,7 @@ Flame.Statechart = {
         this._super();
 
         // Look for defined states and initialize them
-        var key;
-        for (key in this) {
+        for (var key in this) {
             var state = this[key];
             if (Flame.State.detect(state)) {
                 this[key] = state.create({ owner: this, name: key });
@@ -83,7 +82,7 @@ Flame.Statechart = {
     */
     _setupProxyMethods: function(state) {
         for (var property in state) {
-            if (state.constructor.prototype.hasOwnProperty(property) && Ember.typeOf(state[property]) === 'function' &&
+            if (state.constructor.prototype.hasOwnProperty(property) && typeof state[property] === 'function' &&
                 !this[property] && property !== 'enterState' && property !== 'exitState') {
                 this[property] = createProxyMethod(property);
             }
@@ -116,7 +115,7 @@ Flame.Statechart = {
         var state = this.get('currentFlameState');
         Ember.assert('Cannot invoke state method without having a current state!', !Ember.isNone(state) && state instanceof Flame.State);
         var method = state[methodName];
-        if (Ember.typeOf(method) === 'function') {
+        if (typeof method === 'function') {
             return method.apply(state, args);
         } else if (methodName === 'keyDown') {
             args.unshift(methodName);
