@@ -83,19 +83,24 @@ Flame.LayoutSupport = {
 
     _resolveLayoutBindings: function(layout) {
         if (layout._bindingsResolved) return; // Only add the observers once, even if rerendered
+        var observer = function(prop, value) {
+            return function() {
+                this.adjustLayout(prop, this.get(value));
+            };
+        };
         this._layoutObservers = [];
-        this._layoutProperties.forEach(function(prop) {
+        var length = this._layoutProperties.length;
+        for (var i = 0; i < length; i++) {
+            var prop = this._layoutProperties[i];
             var value = layout[prop];
             // Does it look like a property path (and not e.g. '50%')?
-            if (!Ember.isNone(value) && typeof value === 'string' && value !== '' && isNaN(parseInt(value, 10))) {
-                this.addObserver(value, this, function() {
-                    this.adjustLayout(prop, this.get(value));
-                });
+            if (typeof value === 'string' && value !== '' && isNaN(parseInt(value, 10))) {
+                this.addObserver(value, this, observer(prop, value));
                 // Keep track of the observers we add so they can be removed later
                 this._layoutObservers.push(value);
                 layout[prop] = this.get(value);
             }
-        }, this);
+        }
         layout._bindingsResolved = true;
     },
 
