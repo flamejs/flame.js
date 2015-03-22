@@ -6,8 +6,7 @@
 // Only to be used in Flame.MenuView. Represent menu items with normal JS objects as creation of one Ember object took
 // 3.5 ms on fast IE8 machine.
 Flame.MenuItem = function MenuItem(opts) {
-    var key;
-    for (key in opts) {
+    for (var key in opts) {
         if (opts.hasOwnProperty(key)) {
             this[key] = opts[key];
         }
@@ -189,9 +188,38 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
         }
     },
 
+    subMenu: function() {
+        return Flame.MenuView.extend({
+            isModal: false,
+
+            popup: function(anchor, position) {
+                if (!this.get('layout.width')) {
+                    // We already need to know the width of the menu at this point so that Panel#popup
+                    // can correctly position it.
+                    var menuWidth = Math.max(this.get('minWidth') || 0, this._calculateMenuWidth());
+                    this.set('layout.width', menuWidth);
+                }
+                this._super(anchor, position);
+            },
+
+            _layoutRelativeTo: function(anchor, position) {
+                var layout = this._super(anchor, position);
+                // If already positioned on the left, nothing else needs to be checked.
+                if (this.get('subMenuPosition') === Flame.POSITION_LEFT) return layout;
+
+                if (layout.movedX) {
+                    // Any further opened submenu should be opened on the left side.
+                    this.set('subMenuPosition', Flame.POSITION_LEFT);
+                    layout = this._super(anchor, Flame.POSITION_LEFT);
+                }
+                return layout;
+            }
+        });
+    }.property(),
+
     // This function is here to break the dependency between MenuView and MenuItemView
     createSubMenu: function(subMenuItems) {
-        return Flame.MenuView.create({
+        return this.get('subMenu').create({
             items: subMenuItems,
             parentMenu: this,
             subMenuKey: this.get('subMenuKey'),
@@ -199,7 +227,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
             itemTitleKey: this.get('itemTitleKey'),
             itemValueKey: this.get('itemValueKey'),
             itemHeight: this.get('itemHeight'),
-            isModal: false
+            subMenuPosition: this.get('subMenuPosition')
         });
     },
 
@@ -486,7 +514,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
                 subMenu = this.createSubMenu(subMenuItems);
                 item.subMenuView = subMenu;
             }
-            subMenu.popup(item.$(), Flame.POSITION_RIGHT);
+            subMenu.popup(item.$(), this.get('subMenuPosition') || Flame.POSITION_RIGHT);
             if (selectItem) subMenu._selectNext(1);
             return true;
         }
