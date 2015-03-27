@@ -212,6 +212,9 @@ body {
         padding-left: 7px;
         text-align: left;
         font-size: $default-font-size;
+        white-space: nowrap;
+        margin-right: 23px;
+        overflow: hidden;
     }
 
     div {
