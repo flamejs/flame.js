@@ -233,8 +233,10 @@ Flame.FormView = Flame.View.extend({
     _buildControl: function(descriptor) {
         var property = descriptor.get('property');
         var object = this.get('object');
+        var layout = { topPadding: 1, bottomPadding: 1, width: this.get('controlWidth') };
+        if (descriptor.controlLayout) jQuery.extend(layout, descriptor.controlLayout);
         var settings = {
-            layout: { topPadding: 1, bottomPadding: 1, width: this.get('controlWidth') },
+            layout: layout,
             value: Ember.computed.alias('parentView.parentView.object.%@'.fmt(property)),
             isValid: Ember.computed.notEqual('parentView.parentView.object.%@IsValid'.fmt(property), false),
             isDisabled: descriptor.isDisabled ? descriptor.isDisabled : Ember.computed.equal('parentView.parentView.object.%@IsDisabled'.fmt(property), true)
