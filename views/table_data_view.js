@@ -456,7 +456,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             var owner = this.get('owner');
             var selection = owner.get('selection');
             var dataCell = owner.get('selectedDataCell');
-            var readOnlyValue = owner.editableValue(dataCell, true);
+            var readOnlyValue = Handlebars.Utils.escapeExpression(owner.editableValue(dataCell, true));
             this.selectionContent = selection.html();
             selection.html(readOnlyValue);
             selection.addClass('read-only is-selectable');
@@ -797,6 +797,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         var defaultCellWidth = this.get('parentView.defaultColumnWidth');
         var columnLeafs = this.get('parentView.content.columnLeafs');
         var cellWidth;
+        var escape = Handlebars.Utils.escapeExpression;
 
         var classes = 'flame-table';
         if (!this.get('parentView.allowSelection')) classes += ' is-selectable';
@@ -818,10 +819,13 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                         while (div.firstChild) div.removeChild(div.firstChild);
                         div.appendChild(content);
                         content = div.innerHTML;
+                    } else {
+                        // Escape the cell content unless there is a deliberate implementation for cells with HTML content.
+                        content = escape(content);
                     }
                     cssClassesString = cell.cssClassesString();
                     if (cell.inlineStyles) inlineStyles = cell.inlineStyles();
-                    titleValue = (cell.titleValue && cell.titleValue() ? 'title="%@"'.fmt(cell.titleValue()) : '');
+                    titleValue = (cell.titleValue && cell.titleValue() ? 'title="%@"'.fmt(escape(cell.titleValue())) : '');
                 } else {
                     content = '<span style="color: #999">...</span>';
                 }

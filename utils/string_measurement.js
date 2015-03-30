@@ -19,9 +19,19 @@ Ember.mixin(Flame, {
         return element;
     },
 
-    measureString: function(string, parentClasses, elementClasses, additionalStyles) {
+    measureString: function(stringOrArray, parentClasses, elementClasses, additionalStyles) {
+        var escape = Handlebars.Utils.escapeExpression;
+        var measuredString;
+        // We also accept an array of strings and then return the width of the longest one by joining them with <br>.
+        if (Ember.isArray(stringOrArray)) {
+            measuredString = stringOrArray.reduce(function(currentStrings, nextString) {
+                        return currentStrings + escape(nextString) + '<br>';
+                    }, '');
+        } else {
+            measuredString = escape(stringOrArray);
+        }
         var element = this._setupStringMeasurement(parentClasses, elementClasses, additionalStyles);
-        element.innerHTML = string;
+        element.innerHTML = measuredString;
         return {
             width: element.clientWidth,
             height: element.clientHeight
