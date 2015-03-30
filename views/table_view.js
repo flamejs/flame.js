@@ -254,6 +254,29 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         table.updateColumnWidth(columnIndex, cellWidth + 3);
     },
 
+    _setColumnHeaderHeights: function(heights, columnRowHeight, tableTopMargin) {
+        var tableView = this;
+        heights.forEach(function(value, index) {
+            // Get header row
+            var $tr = tableView.$('.column-header .level-' + (index + 1));
+            $tr.find('.content-container').css('height', value * columnRowHeight);
+            $tr.find('.resize-handle').css('height', value * columnRowHeight - 1);
+            $tr.find('.label').css('white-space', value === 1 ? 'nowrap' : 'normal');
+        });
+
+        var totalHeight = 2 + heights.length - 1;
+        heights.forEach(function(h) {
+            totalHeight += h * columnRowHeight;
+        });
+
+        // Update offset of scrollable
+        tableView.$('.scrollable').css('top', totalHeight + tableTopMargin);
+        // Update size of table corner
+        tableView.$('.table-corner').css('height', totalHeight);
+        // Update offset of row headers
+        tableView.$('.row-header').css('top', totalHeight + tableTopMargin);
+    },
+
     getColumnContents: function(columnHeader) {
         return this.get('content.tableData').map(function(e) {
             var elem = e[columnHeader.leafIndex];
