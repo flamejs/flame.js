@@ -66,6 +66,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     childViews: ['contentView'],
     contentView: Flame.MenuScrollView,
     dimBackground: false,
+    allowClosingByCancelButton: true,
     subMenuKey: 'subMenu',
     itemTitleKey: 'title',
     /* Attribute that can be used to indicate a disabled menu item. The item will be disabled only if
@@ -304,7 +305,13 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     },
 
     cancel: function() {
-        this.close();
+        var parentMenu = this.get('parentMenu');
+        if (!Ember.isNone(parentMenu)) {
+            parentMenu.closeCurrentlyOpenSubMenu();
+            return true;
+        } else {
+            return this._super();
+        }
     },
 
     moveUp: function() { return this._selectNext(-1); },
@@ -317,7 +324,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
 
     moveLeft: function() {
         var parentMenu = this.get('parentMenu');
-        if (!Ember.isNone(parentMenu)) { parentMenu.closeCurrentlyOpenSubMenu(); }
+        if (!Ember.isNone(parentMenu)) parentMenu.closeCurrentlyOpenSubMenu();
         return true;
     },
 
