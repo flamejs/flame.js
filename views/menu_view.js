@@ -104,10 +104,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
             return;
         }
         var itemTitleKey = this.get('itemTitleKey');
-        var allTitles = items.reduce(function(currentTitles, item) {
-            var nextTitle = Ember.get(item, itemTitleKey);
-            return currentTitles + nextTitle + '<br>';
-        }, '');
+        var allTitles = items.map(function(currentTitles, item) { Ember.get(item, itemTitleKey); });
         // Give the menus a 16px breathing space to account for sub menu indicator, and to give some right margin (+18px for the padding)
         return Flame.measureString(allTitles, 'ember-view flame-view flame-list-item-view flame-menu-item-view', 'title').width + 16 + 18;
     },

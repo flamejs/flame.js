@@ -9,7 +9,7 @@ Flame.CheckboxView = Flame.ButtonView.extend({
         buffer.push('<div class="flame-checkbox-box"></div>');
         this.renderCheckMark(buffer);
         buffer.push('<label class="flame-checkbox-label">');
-        buffer.push(Ember.isNone(this.get('title')) ? '' : this.get('title'));
+        buffer.push(Ember.isNone(this.get('title')) ? '' : Handlebars.Utils.escapeExpression(this.get('title')));
         buffer.push('</label>');
     },
 

@@ -319,7 +319,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         }
 
         if (this.get('content.title')) {
-            buffer.push('<div class="panel-title">%@</div>'.fmt(this.get('content.title')));
+            buffer.push('<div class="panel-title">%@</div>'.fmt(Handlebars.Utils.escapeExpression(this.get('content.title'))));
             didRenderTitle = true;
         }
 
@@ -438,7 +438,8 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
 
             headerLabel = header.get ? header.get('headerLabel') : header.label;
             if (!headerLabel) headerLabel = "";
-
+            // We have to support <br> for row headers, so we'll replace them back after escaping
+            headerLabel = Ember.Handlebars.Utils.escapeExpression(headerLabel).replace(/&lt;br&gt;/g, '<br>');
             buffer.attr('title', headerLabel.replace(/<br>/g, '\n'));
 
             if (header.rowspan > 1) {
