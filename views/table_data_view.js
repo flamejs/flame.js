@@ -100,7 +100,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             // copy that value to all selected cells.
             if (!/\n|\t/.test(value) && selectedCell !== this.get('owner.selectionEnd')) {
                 this._forEachSelectedCell(function(i, j, dataCell) {
-                    if (dataCell.isEditable() && dataCell.isPastable()) {
+                    if (dataCell && dataCell.isEditable() && dataCell.isPastable()) {
                         var cell = owner.$('tr[data-index=%@]'.fmt(i)).find('td[data-index=%@]'.fmt(j)).first();
                         if (!owner._validateAndSet(value, cell)) pasteFailed(value);
                     }
@@ -141,7 +141,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                     if (!Ember.isEmpty(row)) value.push(row.join('\t'));
                     row = [];
                 }
-                row.push(cell.isCopyable() ? cell.editableValue() : '');
+                row.push(cell && cell.isCopyable() ? cell.editableValue() : '');
             });
             if (!Ember.isEmpty(row)) value.push(row.join('\t'));
             return value.join('\n');
