@@ -208,21 +208,21 @@ Flame.LazyListView = Flame.ListView.extend({
         var item = this.itemForRow(row);
         var viewClass = this.viewClassForItem(item);
         var itemClass = item.constructor.toString();
-        var view = (this._recycledViews[itemClass] && this._recycledViews[itemClass].pop());
+        var view = this._recycledViews[itemClass] && this._recycledViews[itemClass].pop();
         if (!view) {
             view = this.createChildView(viewClass, jQuery.extend({ useAbsolutePosition: true }, attributes || {}));
             this.pushObject(view);
         }
+
         view.beginPropertyChanges();
-        if (item === this.get('selection')) {
-            view.set('isSelected', true);
-        }
+        view.set('isSelected', item === this.get('selection'));
         view.set('content', item);
         view.set('contentIndex', row);
         view.layout.top = row * itemHeight;
         view.propertyDidChange('layout');
         view.set('isVisible', true);
         view.endPropertyChanges();
+
         return view;
     },
 

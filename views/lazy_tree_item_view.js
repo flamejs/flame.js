@@ -22,6 +22,33 @@ Flame.LazyTreeItemView = Flame.LazyListItemView.extend({
         return this.get('parentView').isExpandable(this.get('content'));
     },
 
+    ensureCorrectLevelClass: function(level) {
+        if (this._indentationLevel === level) return;
+
+        var classNames = this.get('classNames');
+        var levelClass = 'level-' + (level + 1);
+
+        if (this._indentationLevel) {
+            // Remove old level class
+            var oldLevelClass = 'level-' + (this._indentationLevel + 1);
+            classNames.removeObject(oldLevelClass);
+
+            // Updating the classNames array alone is not enough. If the view has already
+            // been inserted in the DOM, we also need to update the element.
+            if (this.get('_state') === 'inDOM') {
+                this.$().removeClass(oldLevelClass);
+            }
+        }
+
+        // Add new level class
+        classNames.pushObject(levelClass);
+        if (this.get('_state') === 'inDOM') {
+            this.$().addClass(levelClass);
+        }
+
+        this._indentationLevel = level;
+    },
+
     disclosureImage: function() {
         var isExpandable = this.isExpandable();
         if (!isExpandable) return '';

@@ -7,9 +7,6 @@
   We keep a number of internal caches to easily map this flat list onto the
   tree we're rendering.
 
-  TODO * `LazyTreeView` currently has the limitation that it does not allow
-         dragging items between different levels.
-
   @class LazyTreeView
   @extends LazyListView
 */
@@ -70,8 +67,7 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
     },
 
     viewClassForItem: function(item) {
-        var itemViewClasses = this.get('itemViewClasses');
-        return itemViewClasses[item.constructor.toString()];
+        return this.get('itemViewClasses')[item.constructor.toString()];
     },
 
     itemForRow: function(row) {
@@ -83,6 +79,7 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
     },
 
     levelForItem: function(item) {
+        if (!item) return -1;
         return this._itemToLevelCache.get(item);
     },
 
@@ -92,14 +89,7 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
         var isExpanded = this._expandedItems.contains(item);
         var view = this._super(row, { isExpanded: isExpanded });
         view.set('isExpanded', isExpanded);
-        var level = this._itemToLevelCache.get(item);
-        // Check if we already have the correct indentation level
-        if (view._indentationLevel !== level) {
-            var classNames = view.get('classNames');
-            classNames.removeObject('level-' + (view._indentationLevel + 1));
-            classNames.pushObject('level-' + (level + 1));
-            view._indentationLevel = level;
-        }
+        view.ensureCorrectLevelClass(this.levelForItem(item));
         return view;
     },
 
@@ -154,9 +144,9 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
 
       @param view {Flame.LazyListItemView} The view that was clicked to expand or collapse the item
     */
-    toggleItem: function(view) {
-        var item = view.get('content');
-        var isExpanded = view.get('isExpanded');
+    toggleItem: function(toggledView) {
+        var item = toggledView.get('content');
+        var isExpanded = toggledView.get('isExpanded');
         if (isExpanded) {
             this._expandedItems.add(item);
         } else {
@@ -231,67 +221,83 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
         return false;
     },
 
-    closestCommonAncestor: function(item1, item2) {
-        var ancestor = this._itemToParentCache.get(item1);
-        var parent = this._itemToParentCache.get(item2);
-        while (parent) {
-            if (parent === ancestor) {
-                return parent;
-            } else {
-                parent = this._itemToParentCache.get(parent);
-            }
-        }
+    isValidDrop: function(item, parent) {
+        return true;
     },
 
-    isValidDrop: function(item, dropParent) {
-        return true;
+    getAncestors: function(item) {
+        var ancestors = [item];
+        var parent = this._itemToParentCache.get(item);
+        while (parent) {
+            ancestors.push(parent);
+            parent = this._itemToParentCache.get(parent);
+        }
+        ancestors.push(null);
+        return ancestors;
     },
 
     /**
       @param {Object} draggingInfo
       @param {Number} proposedIndex
       @param {Number} originalIndex
-    */
-    indexForMovedItem: function(draggingInfo, proposedIndex, originalIndex) {
-        // Get items of interest
-        var itemFrom = this.itemForRow(originalIndex);
-        var itemAbove = this.itemForRow(proposedIndex - 1);
-        var itemBelow = this.itemForRow(proposedIndex);
 
+      @return draggingInfo
+    */
+    indexForMovedItem: function(draggingInfo, proposedIndex, originalIndex, newLeft) {
         // Bounds checking
         if (proposedIndex < 0) proposedIndex = 0;
         if (proposedIndex > this.numberOfRows()) proposedIndex = this.numberOfRows();
 
-        // Only allow moving between the same level
-        var itemLevel = this.levelForItem(itemFrom);
-        var acceptedIndex,
-            toParent,
-            toPosition;
-        if (itemBelow && this.levelForItem(itemBelow) === itemLevel) {
-            acceptedIndex = proposedIndex;
-            toParent = this._itemToParentCache.get(itemBelow);
-            toPosition = (toParent && toParent.get('treeItemChildren') || this.get('content')).indexOf(itemBelow);
-        } else if (itemAbove && this.levelForItem(itemAbove) === itemLevel && !this._expandedItems.contains(itemAbove)) {
-            acceptedIndex = proposedIndex;
-            toParent = this._itemToParentCache.get(itemAbove);
-            toPosition = toParent ? toParent.get('treeItemChildren.length') : this.get('content.length');
-        } else if ((!itemBelow || (itemBelow && this.levelForItem(itemBelow) < itemLevel)) &&
-                   itemAbove && this.levelForItem(itemAbove) > itemLevel) {
-            acceptedIndex = proposedIndex;
-            toParent = this.closestCommonAncestor(itemFrom, itemAbove);
-            toPosition = toParent ? toParent.get('treeItemChildren.length') : this.get('content.length');
-        } else if (itemAbove && itemLevel - 1 === this.levelForItem(itemAbove) && this._expandedItems.contains(itemAbove)) {
-            // Dragging into parent item that is currently empty and open
-            acceptedIndex = proposedIndex;
-            toParent = itemAbove;
-            toPosition = 0;
+        // Get items of interest
+        var movedItem = this.itemForRow(originalIndex);
+        var itemAbove = this.itemForRow(proposedIndex - 1);
+        var itemBelow = this.itemForRow(proposedIndex);
+
+        // Get the closest parent for the given position
+        var closestParent = null;
+        if (this._expandedItems.contains(itemAbove)) {
+            closestParent = itemAbove;
         } else {
-            return draggingInfo;
+            for (var i = proposedIndex - 1; i >= 0; i--) {
+                var item = this.itemForRow(i);
+                if (this.levelForItem(item) >= this.levelForItem(itemAbove)) continue;
+                if (this._expandedItems.contains(item)) {
+                    closestParent = item;
+                    break;
+                }
+            }
         }
 
-        if (!this.isValidDrop(itemFrom, toParent)) return draggingInfo;
+        var possibleParents = this.getAncestors(closestParent).filter(function(parent) {
+            return this.levelForItem(parent) + 1 - this.levelForItem(itemBelow) >= 0 && this.isValidDrop(movedItem, parent);
+        }, this);
 
-        return { currentIndex: acceptedIndex, toParent: toParent, toPosition: toPosition };
+        if (possibleParents.length === 0) return draggingInfo;
+
+        var itemLevel = this.levelForItem(movedItem);
+        var changeLevel = ~~(newLeft / 22); // 22 pixels per level of indentation
+        var intendedLevel = itemLevel + changeLevel;
+
+        var intendedParent = null;
+        possibleParents.forEach(function(parent) {
+            if (!intendedParent || Math.abs(this.levelForItem(parent) - intendedLevel) < Math.abs(this.levelForItem(intendedParent) - intendedLevel)) {
+                intendedParent = parent;
+            }
+        }, this);
+
+        var position = null;
+        if (!intendedParent) {
+            position = itemBelow ? this.get('content').indexOf(itemBelow) : this.get('content.length');
+        } else if (itemBelow && this.levelForItem(itemBelow) === this.levelForItem(intendedParent) + 1) {
+            // The item below belongs to the same parent as the item we're dragging
+            position = intendedParent.get('treeItemChildren').indexOf(itemBelow);
+        } else {
+            // The item is the last item in the parent
+            position = intendedParent.get('treeItemChildren.length');
+        }
+
+        var parentLevel = this.levelForItem(intendedParent);
+        return { currentIndex: proposedIndex, toParent: intendedParent, toPosition: position, level: parentLevel + 1 };
     },
 
     moveItem: function(from, draggingInfo) {
@@ -304,17 +310,18 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
             if (contentIndex > from && contentIndex < to ||
                 contentIndex < from && contentIndex >= to) {
                 view.set('contentIndex', contentIndex + direction);
-                view.$().animate({top: view.get('contentIndex') * itemHeight + 'px'});
+                view.$().css('top', view.get('contentIndex') * itemHeight);
             }
         });
         if (direction < 0) to--;
         movedView.set('contentIndex', to);
-        movedView.$().animate({top: to * itemHeight + 'px'});
+        movedView.ensureCorrectLevelClass(draggingInfo.level);
+        movedView.$().css('top', to * itemHeight);
 
         if (direction < 0) to++;
         var fromItem = this.itemForRow(from);
         var fromParent = this._itemToParentCache.get(fromItem);
-        var toParent = draggingInfo.toParent || fromParent;
+        var toParent = draggingInfo.toParent;
 
         var fromContent = fromParent ? fromParent.get('treeItemChildren') : this.get('content');
         var toContent = toParent ? toParent.get('treeItemChildren') : this.get('content');
@@ -330,9 +337,9 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
         });
 
         var delegate = this.get('reorderDelegate');
-        if (delegate) {
+        if (delegate && delegate.didReorderContent) {
             Ember.run.next(this, function() {
-                delegate.didReorderContent(toContent);
+                delegate.didReorderContent(fromItem, toContent);
             });
         }
     }
