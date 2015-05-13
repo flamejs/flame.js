@@ -109,7 +109,7 @@ Flame.FormView = Flame.View.extend({
             textAlign: this.get('labelAlign'),
             value: descriptor.get('label') + ':',
             attributeBindings: ['title'],
-            title: descriptor.get('label')
+            title: descriptor.get('tooltip') || descriptor.get('label')
         });
     },
 
