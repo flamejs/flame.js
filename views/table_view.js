@@ -121,8 +121,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
             if (!!target.closest('.column-header').length && (index = target.closest('td').attr('data-leaf-index'))) {
                 header = this.get('owner.content.columnLeafs')[index];
 
-                var columnDataAsString = owner.getColumnContents(header).map(function(e) { return e; }).join('<br>');
-                var columnDimensions = Flame.measureString(columnDataAsString, 'ember-view');
+                var columnDimensions = Flame.measureString(owner.getColumnContents(header), 'ember-view');
 
                 var isBold = target.closest('td').css('font-weight') === 'bold';
                 var headerLabelDimensions = Flame.measureString(owner.getLeafHeaderLabel(header), 'ember-view', 'label', isBold ? 'font-weight:bold;' : '');
