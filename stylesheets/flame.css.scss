@@ -26,8 +26,6 @@ body {
     position: absolute;
     cursor: default;
     overflow: hidden;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
     box-sizing: border-box;
 }
 
@@ -122,7 +120,6 @@ body {
     &.is-selected {
         .flame-checkbox-box {
             @include gradient(#71a3de, #71a3de);
-            -webkit-box-shadow: none;
             box-shadow: none;
             border: 1px solid #5689c7;
         }
@@ -328,8 +325,6 @@ body {
         border: 1px solid #9f9f9f !important;
         border-radius: 4px;
         box-shadow: 0 0 5px rgba(50, 50, 50, .4), inset 0 1px #fff;
-        -webkit-box-shadow: 0 0 10px rgba(50, 50, 50, .4), inset 0 1px #fff;
-        -moz-box-shadow: 0 0 5px rgba(50, 50, 50, .4), inset 0 1px #fff;
     }
 }
 
@@ -375,7 +370,6 @@ body {
     }
 
     & .flame-list-item-view.is-dragged {
-        // Does not combine with gradient in IE7/8 as they're both implemented through filter/-ms-filter attributes.
         @include opacity(.3);
     }
 
@@ -480,7 +474,7 @@ body {
 
 .flame-horizontal-split-view > .flame-split-view-divider {
     border-style: solid none;
-    @include vertical-gradient(#f7f7f7, #d8d8d8);
+    @include gradient(#f7f7f7, #d8d8d8);
     cursor: row-resize;
 }
 
@@ -846,8 +840,6 @@ input[type="password"] {
 
         td {
             box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            -webkit-box-sizing: border-box;
             font-size: 12px;
             white-space: nowrap;
             overflow: hidden;
@@ -902,12 +894,12 @@ input[type="password"] {
         tr {
             &.level-1 td {
                 font-weight: bold;
-                @include gradient-except-ie(#8bcfca, #73c5c0);
+                @include gradient(#8bcfca, #73c5c0);
                 background-clip: padding-box;
             }
 
             &.level-2 td {
-                @include gradient-except-ie(#ade6e6, #98e0e0);
+                @include gradient(#ade6e6, #98e0e0);
                 background-clip: padding-box;
             }
 
@@ -929,11 +921,11 @@ input[type="password"] {
         col {
             &.level-1 {
                 font-weight: bold;
-                @include gradient-except-ie(#7cb9e3, #55a4db);
+                @include gradient(#7cb9e3, #55a4db);
             }
 
             &.level-2 {
-                @include gradient-except-ie(#8fc9ed, #7bc0ea);
+                @include gradient(#8fc9ed, #7bc0ea);
             }
 
             &.level-3 {

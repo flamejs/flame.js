@@ -1,36 +1,15 @@
 @mixin gradient($first, $second) {
-    background: $second;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($first)}', endColorstr='#{ie-hex-str($second)}');
-    background: -webkit-gradient(linear, left top, left bottom, from($first), to($second));
-    background: -moz-linear-gradient(top, $first, $second);
-    background: -ms-linear-gradient(top, $first, $second);
-}
-
-@mixin gradient-except-ie($first, $second) {
-    background: $second;
-    background: -webkit-gradient(linear, left top, left bottom, from($first), to($second));
-    background: -moz-linear-gradient(top, $first, $second);
+    background-color: $second;
+    background-image: linear-gradient($first, $second);
 }
 
 @mixin horizontal-gradient($first, $second) {
-    background: $second;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($first)}', endColorstr='#{ie-hex-str($second)}', GradientType=1);
-    background: -webkit-linear-gradient(left, $first, $second);
-    background: -moz-linear-gradient(left, $first, $second);
-    background: -ms-linear-gradient(left, $first, $second);
-}
-
-@mixin vertical-gradient($first, $second) {
-    background: $second;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($first)}', endColorstr='#{ie-hex-str($second)}', GradientType=0);
-    background: -webkit-linear-gradient(top, $first, $second);
-    background: -moz-linear-gradient(top, $first, $second);
-    background: -ms-linear-gradient(top, $first, $second);
+    background-color: $second;
+    background-image: linear-gradient(to right, $first, $second);
 }
 
 @mixin no-gradient() {
     background: none;
-    filter: none;
 }
 
 @mixin opacity($opacity) {
@@ -39,27 +18,22 @@
 }
 
 @mixin box-shadow($x-offset, $y-offset, $blur-radius, $color) {
-    -webkit-box-shadow: #{$x-offset}px #{$y-offset}px #{$blur-radius}px $color;
     box-shadow: #{$x-offset}px #{$y-offset}px #{$blur-radius}px $color;
 }
 
 @mixin inner-shadow($size, $color) {
-    -webkit-box-shadow: inset 0 $size 0 $color;
     box-shadow: inset 0 $size 0 $color;
 }
 
 @mixin inner-shadow-blur($size, $blur-radius, $color) {
-    -webkit-box-shadow: inset 0 $size $blur-radius $color;
     box-shadow: inset 0 $size $blur-radius $color;
 }
 
 @mixin no-box-shadow() {
-    -webkit-box-shadow: none !important;
     box-shadow: none !important;
 }
 
 @mixin control-blur() {
-    -webkit-box-shadow: 0 0 0 2px #9bc8f6;
     box-shadow: 0 0 0 2px #9bc8f6;
 }
 
