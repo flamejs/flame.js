@@ -37,6 +37,7 @@ Flame.LazyListViewStates.MouseIsDown = Flame.State.extend({
 
 Flame.LazyListItemView = Flame.ListItemView.extend(Flame.Statechart, {
     layout: { left: 0, right: 0, height: 25 },
+    flameStates: ['idle', 'mouseIsDown', 'dragging'],
     initialFlameState: 'idle',
 
     init: function() {
