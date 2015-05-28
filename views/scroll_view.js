@@ -19,7 +19,7 @@ Flame.ScrollView = Flame.View.extend({
     isScrolling: false,
 
     didInsertElement: function() {
-        this.$().on('scroll', jQuery.proxy(this.didScroll, this));
+        this.$().on('scroll', this.didScroll.bind(this));
         this._update();
     },
 
@@ -30,7 +30,7 @@ Flame.ScrollView = Flame.View.extend({
     didScroll: function(event) {
         this.lastScrollY = this.get('element').scrollTop;
         if (!this.isScrolling) {
-            requestAnimationFrame(jQuery.proxy(this._update, this));
+            requestAnimationFrame(this._update.bind(this));
         }
         this.isScrolling = true;
     },

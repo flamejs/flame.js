@@ -303,7 +303,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         this.set('rowHeader', this.$('.row-header table'));
         this.set('columnHeader', this.$('.column-header table'));
         this.set('tableCorner', this.$('.table-corner'));
-        this.get('scrollable').on('scroll', jQuery.proxy(this.didScroll, this));
+        this.get('scrollable').on('scroll', this.didScroll.bind(this));
     },
 
     isScrolling: false,
@@ -312,7 +312,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         this.lastScrollTop = scrollable.scrollTop();
         this.lastScrollLeft = scrollable.scrollLeft();
         if (!this.isScrolling) {
-            requestAnimationFrame(jQuery.proxy(this._updateHeaderPositions, this));
+            requestAnimationFrame(this._updateHeaderPositions.bind(this));
         }
         this.isScrolling = true;
     },
