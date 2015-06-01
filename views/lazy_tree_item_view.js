@@ -2,6 +2,7 @@
 
 Flame.LazyTreeItemView = Flame.LazyListItemView.extend({
     classNames: ['flame-tree-item-view'],
+    classNameBindings: ['isExpanded'],
     itemContent: '{{view.content}}',
     isExpanded: false,
 
