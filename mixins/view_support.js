@@ -17,7 +17,7 @@ Flame.ViewSupport = {
         // Remove classNames up to Flame.View to make it easier to define custom
         // styles for buttons, checkboxes etc...
         // We only want to do this in the init of class that sets the flag
-        if (this.get('resetClassNames') && Object.getPrototypeOf) {
+        if (this.get('resetClassNames')) {
             var superClassNames = this._collectSuperClassNames();
             var classNames = this.get('classNames').removeObjects(superClassNames);
             this.set('classNames', classNames);
@@ -48,7 +48,13 @@ Flame.ViewSupport = {
     */
     _collectSuperClassNames: function() {
         var superClassNames = [];
-        var superClass = Object.getPrototypeOf(Object.getPrototypeOf(this));
+        var resetingClass = this;
+        // Find first class in inheritance chain that sets the resetClassNames property
+        while (resetingClass && !resetingClass.hasOwnProperty('resetClassNames') && resetingClass.constructor !== Flame.View) {
+            resetingClass = Object.getPrototypeOf(resetingClass);
+        }
+        // Collect classNames from it's super classes
+        var superClass = Object.getPrototypeOf(resetingClass);
         while (superClass && superClass.constructor !== Flame.View) {
             superClassNames.pushObjects(superClass.classNames || []);
             superClass = Object.getPrototypeOf(superClass);
