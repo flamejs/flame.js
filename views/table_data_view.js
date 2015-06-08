@@ -456,10 +456,13 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             var owner = this.get('owner');
             var selection = owner.get('selection');
             var dataCell = owner.get('selectedDataCell');
-            var readOnlyValue = Handlebars.Utils.escapeExpression(owner.editableValue(dataCell, true));
-            this.selectionContent = selection.html();
-            selection.html(readOnlyValue);
-            selection.addClass('read-only is-selectable');
+            var selectedCell = owner.get('selectedCell');
+            if (!dataCell.showReadOnlyEditor(selectedCell, owner, owner.get('content'))) {
+                var readOnlyValue = Handlebars.Utils.escapeExpression(owner.editableValue(dataCell, true));
+                this.selectionContent = selection.html();
+                selection.html(readOnlyValue);
+                selection.addClass('read-only is-selectable');
+            }
         },
 
         exitState: function() {
