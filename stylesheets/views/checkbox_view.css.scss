@@ -1,0 +1,82 @@
+@import '../mixins';
+
+.flame-button-view.flame-checkbox-view {
+    @include no-gradient();
+    border: 0;
+    box-shadow: none;
+    line-height: 20px;
+
+    &.is-selected {
+        .flame-checkbox-box {
+            @include gradient(#71a3de, #71a3de);
+            box-shadow: none;
+            border: 1px solid #5689c7;
+        }
+
+        .flame-checkbox-checkmark {
+            display: inline;
+        }
+
+        &.is-active .flame-checkbox-box {
+            @include gradient(#5588c6, #5588c6);
+            border-color: #5588c6;
+        }
+    }
+
+    &.is-active {
+        .flame-checkbox-box {
+            @include gradient(#ddd, #ddd);
+            border-color: #bbb;
+        }
+    }
+
+    &.is-focused {
+        .flame-checkbox-box {
+            @include control-blur();
+        }
+    }
+
+    &.is-disabled {
+        @include no-gradient();
+        border: 0;
+
+        .flame-checkbox-label {
+            color: #999;
+        }
+
+        .flame-checkbox-box {
+            @include no-gradient();
+            background: #eee;
+            border: 1px solid #aaa;
+        }
+
+        .flame-checkbox-checkmark {
+            @include opacity(.4);
+        }
+    }
+
+    .flame-checkbox-box {
+        background-color: #fff;
+        @include inner-shadow-blur(1px, 1px, #dfdfdf);
+        position: absolute;
+        border: 1px solid #aaa;
+        width: 12px;
+        height: 12px;
+        top: 4px;
+        left: 4px;
+        border-radius: 3px;
+    }
+
+    .flame-checkbox-checkmark {
+        display: none;
+        position: absolute;
+        z-index: 2;
+    }
+
+    .flame-checkbox-label {
+        text-align: left;
+        margin-left: 25px;
+        color: black;
+        padding-top: 0;
+    }
+}

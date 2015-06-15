@@ -218,8 +218,9 @@ Flame.LazyListView = Flame.ListView.extend({
         view.set('isSelected', item === this.get('selection'));
         view.set('content', item);
         view.set('contentIndex', row);
-        view.layout.top = row * itemHeight;
-        view.propertyDidChange('layout');
+        Ember.run.schedule('afterRender', function() {
+            view.$().css('transform', 'translateY(%@px)'.fmt(row * itemHeight));
+        });
         view.set('isVisible', true);
         view.endPropertyChanges();
 

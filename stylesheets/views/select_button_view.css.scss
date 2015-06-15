@@ -1,0 +1,30 @@
+@import '../mixins';
+
+.flame-select-button-view {
+    label {
+        padding-left: 7px;
+        text-align: left;
+        font-size: $default-font-size;
+        white-space: nowrap;
+        margin-right: 23px;
+        overflow: hidden;
+    }
+
+    div {
+        position: absolute;
+        top: 1px;
+        right: 1px;
+        bottom: 1px;
+        border: 1px #aaa;
+        border-left-style: solid;
+        font-size: 14px;
+        line-height: 13px;
+        padding: 0 5px;
+        border-radius: 0 3px 3px 0;
+        @include gradient(#ddd, #bbb);
+    }
+
+    &.is-disabled > div > img {
+        @include opacity(.4);
+    }
+}

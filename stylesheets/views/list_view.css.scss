@@ -1,0 +1,28 @@
+@import '../mixins';
+
+.flame-list-view {
+    & .flame-list-item-view.is-selected,
+    & .flame-tree-item-view-container.is-selected {
+        color: #fff;
+        border-color: #5499c7;
+        font-weight: bold;
+        @include gradient(#b3bdd6, #8598b8);
+        text-shadow: #426a9a 0 1px;
+    }
+
+    &.is-focused .flame-list-item-view.is-selected,
+    .is-dragged-clone .flame-list-item-view.is-selected,
+    &.is-focused .flame-tree-item-view-container.is-selected,
+    .is-dragged .flame-tree-item-view-container.is-selected {
+        @include gradient(#77aae6, #5588c6);
+        text-shadow: #426a9a 0 1px;
+    }
+
+    & .flame-list-item-view.is-dragged {
+        @include opacity(.3);
+    }
+
+    .is-dragged-clone .is-selected {
+        cursor: move !important;
+    }
+}

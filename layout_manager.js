@@ -7,5 +7,13 @@
   in the layout of child views.
 */
 Flame.LayoutManager = Ember.Object.extend({
-    setupLayout: undefined
+    setupLayout: undefined,
+
+    getAffectedChildViews: function(view) {
+        return view.toArray().filter(function(childView) {
+            return childView.get('ignoreLayoutManager') !== true &&
+                (childView.get('isVisible') || childView.get('isVisible') === null) && // isVisible is initially null
+                childView.get('layout');
+        });
+    }
 });

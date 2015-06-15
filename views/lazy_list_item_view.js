@@ -37,6 +37,7 @@ Flame.LazyListViewStates.MouseIsDown = Flame.State.extend({
 
 Flame.LazyListItemView = Flame.ListItemView.extend(Flame.Statechart, {
     layout: { left: 0, right: 0, height: 25 },
+    flameStates: ['idle', 'mouseIsDown', 'dragging'],
     initialFlameState: 'idle',
 
     init: function() {
@@ -115,9 +116,9 @@ Flame.LazyListItemView = Flame.ListItemView.extend(Flame.Statechart, {
 
         didDragItem: function(newTop, newLeft) {
             if (this.get('owner.parentView.constrainDragginToXAxis')) {
-                this.clone.css({top: newTop});
+                this.clone.css({transform: 'translateY(%@px)'.fmt(newTop)});
             } else {
-                this.clone.css({top: newTop, left: newLeft});
+                this.clone.css({transform: 'translate(%@px, %@px)'.fmt(newLeft, newTop)});
             }
             var itemHeight = this.get('owner.parentView.itemHeight');
             var index = Math.ceil(newTop / itemHeight);

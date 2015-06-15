@@ -2,6 +2,7 @@ require 'sprockets'
 require 'sprockets-sass'
 require 'sass'
 require 'uglifier'
+require 'cssminify'
 
 task :default => [:build]
 
@@ -40,6 +41,10 @@ task :build => :clean do
   # SCSS files
   css = environment.find_asset('flame.css.scss')
   css.write_to('build/stylesheets/flame.css')
+
+  css_min = File.open('build/stylesheets/flame.min.css', 'w')
+  css_min.write(CSSminify.compress(File.read('build/stylesheets/flame.css')))
+  css_min.close
 
   # Copy over images directory
   FileUtils.copy_entry('images', 'build/images')

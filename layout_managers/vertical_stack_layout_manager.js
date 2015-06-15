@@ -9,8 +9,6 @@
   of the child views change their height, the layout is updated automatically. If a childView has
   property 'ignoreLayoutManager' set to true, its layout is not affected nor considered here.
   Similarly, elements with isVisible false are ignored.
-
-  TODO: make ignoreLayoutManager handling more generic if/when more layout managers are implemented
 */
 Flame.VerticalStackLayoutManager = Flame.LayoutManager.extend({
     topMargin: 0,
@@ -22,13 +20,7 @@ Flame.VerticalStackLayoutManager = Flame.LayoutManager.extend({
         var fluid = false;
         var maxHeight = view.get('layout.maxHeight');
 
-        // Filter out views that are not affected by the layout manager
-        var views = view.toArray().filter(function(childView) {
-            return childView.get('ignoreLayoutManager') !== true &&
-                (childView.get('isVisible') || childView.get('isVisible') === null) && // isVisible is initially null
-                childView.get('layout');
-        });
-
+        var views = this.getAffectedChildViews(view);
         var length = views.get('length');
         views.forEach(function(childView, i) {
             Ember.assert('Child views have not yet been initialized!', typeof childView !== 'string');

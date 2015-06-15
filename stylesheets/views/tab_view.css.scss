@@ -1,0 +1,19 @@
+@import '../mixins';
+
+.flame-tab-view-tabs .flame-button-view {
+    position: static;
+    float: left;
+    padding: 0 8px 2px;
+    margin-left: 7px;
+    border-radius: 4px 4px 0 0;
+    border-style: solid solid none;
+    font-weight: bold;
+    color: #555;
+
+    &.is-selected {
+        color: #fff;
+        border-color: #426a9a;
+        text-shadow: #426a9a 0 -1px;
+        @include inner-shadow(1px, #86beff);
+    }
+}

@@ -130,21 +130,16 @@ Flame.FormView = Flame.View.extend({
     },
 
     _buildButton: function(descriptor, right) {
-        var properties = jQuery.extend({
-            targetBinding: '^defaultTarget'
-        }, descriptor);
-
-        if (!properties.layout) {
-            properties.layout = { width: this.get('buttonWidth'), right: right };
-        }
-        properties.layout.top = this._focusRingMargin;
-
-        // if an explicit target is set, we don't want the default targetBinding to be used
-        if (descriptor.target) {
-            delete properties.targetBinding;
+        if (!descriptor.target) {
+            descriptor.target = Flame.computed.nearest('defaultTarget');
         }
 
-        return Flame.ButtonView.extend(properties);
+        if (!descriptor.layout) {
+            descriptor.layout = { width: this.get('buttonWidth'), right: right };
+        }
+        descriptor.layout.top = this._focusRingMargin;
+
+        return Flame.ButtonView.extend(descriptor);
     },
 
     _buildValidationObservers: function(validationMessage) {

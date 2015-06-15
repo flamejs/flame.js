@@ -9,6 +9,7 @@ Flame.ButtonView = Flame.View.extend(Flame.ActionSupport, Flame.Statechart, {
     isDisabled: false,
     isDefault: false,  // If true, fires in a panel when user hits enter
     isSticky: false,  // If true, each click (mouseUp to be specific) toggles 'isSelected'
+    flameStates: ['idle', 'hover', 'mouseDownInside', 'mouseDownOutside'],
     initialFlameState: 'idle',
 
     handlebars: '<label class="flame-button-label">{{view.title}}</label>',

@@ -63,12 +63,24 @@ Flame.Statechart = {
     init: function() {
         this._super();
 
-        // Look for defined states and initialize them
-        for (var key in this) {
-            var state = this[key];
-            if (Flame.State.detect(state)) {
+        var key, state;
+        var states = this.get('flameStates');
+        if (states) {
+            var length = states.length;
+            for (var i = 0; i < length; i++) {
+                key = states[i];
+                state = this[key];
                 this[key] = state.create({ owner: this, name: key });
                 this._setupProxyMethods(this[key]);
+            }
+        } else {
+            // Look for defined states and initialize them
+            for (key in this) {
+                state = this[key];
+                if (Flame.State.detect(state)) {
+                    this[key] = state.create({ owner: this, name: key });
+                    this._setupProxyMethods(this[key]);
+                }
             }
         }
         Ember.assert('No initial state defined for statechart!', !Ember.isNone(this.get('initialFlameState')));

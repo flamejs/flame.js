@@ -1,0 +1,15 @@
+.flame-lazy-tree-view {
+    .flame-tree-item-view {
+        span {
+            position: absolute;
+            right: 0;
+        }
+
+        @for $i from 0 through 6 {
+            &.level-#{$i + 1} {
+                padding-left: #{$i * 13 + 4}px;
+                span { left: #{$i * 13 + 17}px; }
+            }
+        }
+    }
+}

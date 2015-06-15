@@ -1,0 +1,17 @@
+@import '../mixins';
+
+.flame-progress-view {
+    .progress-container {
+        border: 1px solid #aaa;
+        border-radius: 3px;
+        background-color: white;
+    }
+
+    .progress-bar {
+        position: absolute;
+        border-radius: 2px;
+        top: 2px;
+        left: 2px;
+        @include gradient(#77aae6, #5588c6);
+    }
+}

@@ -1,0 +1,30 @@
+@import '../mixins';
+
+.flame-combo-box-view {
+    background: none;
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+
+    .flame-text {
+        right: 0;
+        left: 0;
+        bottom: 0;
+        top: 0;
+        padding: 0;
+        border: 0;
+        font-size: $default-font-size;
+        @include no-gradient();
+    }
+
+    .flame-button-view {
+        border-radius: 0 1px 1px 0;
+        @include gradient(#eee, #ccc);
+
+        img {
+            position: relative;
+            top: -1px;
+            left: 1px;
+        }
+    }
+}
