@@ -168,7 +168,9 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
                 if (contentIndex !== row) {
                     view.set('contentIndex', row);
                     var itemHeight = this.itemHeightForRow(row);
-                    view.$().css('top', row * itemHeight + 'px');
+                    Ember.run.schedule('afterRender', function() {
+                        view.$().css('transform', 'translateY(%@px)'.fmt(row * itemHeight));
+                    });
                 }
                 if (row < range.start || row > range.end) {
                     this._recycleView(view);
@@ -310,13 +312,13 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
             if (contentIndex > from && contentIndex < to ||
                 contentIndex < from && contentIndex >= to) {
                 view.set('contentIndex', contentIndex + direction);
-                view.$().css('top', view.get('contentIndex') * itemHeight);
+                view.$().css('transform', 'translateY(%@px)'.fmt(view.get('contentIndex') * itemHeight));
             }
         });
         if (direction < 0) to--;
         movedView.set('contentIndex', to);
         movedView.ensureCorrectLevelClass(draggingInfo.level);
-        movedView.$().css('top', to * itemHeight);
+        movedView.$().css('transform', 'translateY(%@px)'.fmt(to * itemHeight));
 
         if (direction < 0) to++;
         var fromItem = this.itemForRow(from);
