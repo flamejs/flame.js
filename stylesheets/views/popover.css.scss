@@ -1,0 +1,42 @@
+@import '../mixins';
+
+.flame-popover {
+    @include no-gradient();
+    @include no-box-shadow();
+    border: 0;
+    overflow: visible;
+
+    .arrow {
+        position: relative;
+        z-index: 9999;
+
+        &.below {
+            width: 31px;
+            height: 16px;
+            top: -14px;
+        }
+
+        &.left {
+            height: 31px;
+            width: 15px;
+        }
+
+        &.right {
+            height: 31px;
+            width: 15px;
+            left: -14px;
+        }
+
+        &.above {
+            width: 31px;
+            height: 15px;
+        }
+    }
+
+    & > .flame-view { // The content view
+        background-color: #efefef;
+        border: 1px solid #9f9f9f !important;
+        border-radius: 4px;
+        box-shadow: 0 0 5px rgba(50, 50, 50, .4), inset 0 1px #fff;
+    }
+}

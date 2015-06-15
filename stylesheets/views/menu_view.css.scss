@@ -1,0 +1,104 @@
+@import '../mixins';
+
+.flame-menu {
+    font-size: 12px;
+    border: 1px solid #bcbcbc;
+    @include box-shadow(0, 3, 16, rgba(0, 0, 0, .22));
+    $bgcolor: #fff;
+    @include no-gradient();
+    background-color: $bgcolor;
+
+
+    $padding: 5px;
+    padding-top: $padding;
+    padding-bottom: $padding;
+
+    .flame-menu-item-view.is-selected {
+        text-shadow: none;
+        font-weight: normal;
+        @include gradient(#77aae6, #5588c6);
+
+        &.is-disabled {
+            @include no-gradient();
+        }
+    }
+
+    .scroll-view-viewport {
+        overflow: hidden;
+    }
+
+    .menu-scroll-view {
+        position: relative;
+        overflow: hidden;
+        background-color: $bgcolor;
+
+        .scroll-element {
+            z-index: 1;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-color: $bgcolor;
+            display: none;
+
+            &.is-shown {
+                display: block;
+                background-color: inherit;
+            }
+
+            &.scroll-up {
+                &.is-shown {
+                    background-image: image-url('images/triangle_up.svg');
+                }
+            }
+
+            &.scroll-down {
+                &.is-shown {
+                    background-image: image-url('images/triangle_down.svg');
+                }
+            }
+        }
+    }
+}
+
+.flame-menu-item-view {
+    position: relative;
+    background-color: white;
+    height: 21px; // The same value should be given to MenuViews itemHeight property.
+    padding-left: 18px;
+
+    &.is-disabled {
+        color: #aaa;
+
+        &.is-selected {
+            color: #aaa;
+        }
+    }
+
+    &.is-selected {
+        color: white;
+
+        .menu-indicator {
+            background: image-url('images/triangle_right_white.svg') no-repeat 50% 50%;
+        }
+
+        .flame-menu-item-view-checkmark {
+            background: image-url('images/checkmark_white.png') no-repeat 0 3px;
+        }
+    }
+
+    .flame-menu-item-view-checkmark {
+        position: absolute;
+        left: 4px;
+        background: image-url('images/checkmark_grey.png') no-repeat 0 3px;
+        width: 12px;
+        height: 100%;
+    }
+
+    .menu-indicator {
+        position: absolute;
+        right: 2px;
+        top: 0;
+        width: 16px;
+        height: 100%;
+        background: image-url('images/triangle_right.svg') no-repeat 50% 50%;
+    }
+}

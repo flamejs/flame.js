@@ -1,0 +1,30 @@
+@import '../mixins';
+
+.flame-lazy-list-view {
+    overflow: visible;
+
+    .flame-list-item-view {
+        line-height: 25px;
+    }
+
+    .flame-list-item-view.is-dragged {
+        @include opacity(1);
+    }
+
+    .flame-list-item-view.dragged-clone {
+        @include opacity(.6);
+    }
+
+    .indicator {
+        position: relative;
+        margin-right: 7px;
+        margin-left: 8px;
+        border-top: 2px solid #3a76d0;
+
+        img {
+            position: relative;
+            top: -8px;
+            left: -6px;
+        }
+    }
+}

@@ -1,0 +1,7 @@
+.flame-list-item-view {
+    padding: 3px 8px 3px 2px;
+    border: 1px #ccc;
+    overflow: hidden;
+    white-space: nowrap;
+    line-height: normal; // this is to emulate pre-reset look, but this may be interpreted differently by browsers
+}

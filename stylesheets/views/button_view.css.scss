@@ -1,0 +1,66 @@
+@import '../mixins';
+
+.flame-button-view {
+    border: 1px solid #999;
+    border-bottom-color: #888;
+    border-radius: 4px;
+    @include gradient(#eee, #ccc);
+    text-shadow: 0 1px 1px rgba(255, 255, 255, .75);
+}
+
+.flame-button-view.is-hovered {
+    @include gradient(#f4f4f4, #d4d4d4);
+}
+
+.flame-button-view.is-default {
+    @include gradient(#77aae6, #5588c6);
+    @include inner-shadow(1px, #86beff);
+    border: 1px solid #426a9a;
+    color: #fff;
+    text-shadow: #426a9a 0 -1px;
+
+    &.is-active {
+        @include gradient(#5588c6, #77aae6);
+        border: 1px solid #426a9a;
+        color: #fff;
+    }
+
+    &.is-disabled {
+        @include no-box-shadow();
+        text-shadow: none;
+    }
+
+    &.is-hovered {
+        @include gradient(#82b3ed, #5588c6);
+    }
+}
+
+.flame-button-view.is-disabled,
+.flame-button-view.is-disabled:hover {
+    border: 1px solid #b3b3b3;
+    @include gradient(#eee, #ccc);
+    color: #888;
+}
+
+.flame-button-view.is-focused {
+    @include control-blur();
+}
+
+.flame-button-view.is-active {
+    border-color: #777 #999 #999 #777;
+    @include gradient(#bbb, #ddd);
+    color: black;
+}
+
+.flame-button-view.is-selected {
+    @include gradient(#77aae6, #5588c6);
+    color: #eee;
+}
+
+.flame-button-view label {
+    display: block;
+    text-align: center;
+    cursor: default;
+    overflow: hidden;
+    height: 100%;
+}

@@ -1,0 +1,30 @@
+.flame-tree-item-view {
+    &.flame-list-item-view {
+        padding: 0;
+    }
+
+    @for $i from 0 through 6 {
+        &.level-#{$i + 1} .flame-tree-item-view-pad { padding-left: #{$i * 13}px; }
+    }
+
+    & .flame-tree-view-nested {
+        overflow: hidden;
+    }
+
+    .flame-tree-item-view-content {
+        margin-left: 13px;
+        padding: 3px 5px 1px;
+        height: 16px;
+    }
+
+    .flame-tree-view-toggle {
+        float: left;
+        padding: 3px 3px 0 4px;
+    }
+
+    .flame-tree-item-view-container {
+        &:hover .flame-tree-view-toggle span {
+            color: #27a;
+        }
+    }
+}

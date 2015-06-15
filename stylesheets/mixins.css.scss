@@ -1,3 +1,5 @@
+$default-font-size: 12px;
+
 @mixin gradient($first, $second) {
     background-color: $second;
     background-image: linear-gradient($first, $second);
@@ -41,8 +43,6 @@
     // -ms-user-select is only supported in IE >= 10. See ie_user_select.js for workaround.
     -ms-user-select: $user-select;
     -webkit-user-select: $user-select;
-    -khtml-user-select: $user-select;
-    -o-user-select: $user-select;
     user-select: $user-select;
     @if $user-select == none {
         -moz-user-select: -moz-none;

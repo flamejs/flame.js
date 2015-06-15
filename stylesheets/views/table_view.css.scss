@@ -1,0 +1,211 @@
+@import '../mixins';
+
+.flame-table-view {
+    line-height: normal;
+    font-size: 13px;
+
+    .table-corner {
+        background-color: #f5f5f5;
+        z-index: 2;
+        position: absolute;
+    }
+
+    .scrollable {
+        position: absolute;
+    }
+
+    tr {
+        height: 22px;
+        line-height: 20px;
+    }
+
+    td {
+        padding: 0;
+        padding-left: 2px;
+    }
+
+    div {
+        position: static;
+    }
+
+    .content-container {
+        position: relative;
+    }
+
+    .resize-handle {
+        position: absolute;
+        cursor: col-resize;
+        width: 17px;
+        height: 21px;
+        right: -9px;
+        z-index: 2;
+    }
+
+    .table-selection {
+        display: none;
+        border: 2px solid #4285f4;
+        padding-left: 2px;
+        position: absolute;
+        z-index: 2;
+        font-size: 12px;
+        pointer-events: none;
+    }
+
+    .clipboard-container {
+        position: absolute;
+        width: 0;
+        height: 0;
+        z-index: 100;
+        display: none;
+        opacity: 0;
+
+        textarea {
+            width: 1px;
+            height: 1px;
+            padding: 0;
+        }
+    }
+
+    .read-only {
+        background-color: white;
+        line-height: 21px;
+        z-index: 3;
+        overflow: hidden;
+        white-space: nowrap;
+        @include user-select(text);
+    }
+
+    table {
+        table-layout: fixed;
+        border-spacing: 0;
+        border-collapse: collapse;
+        margin: 0;
+        padding: 0;
+    }
+
+    .flame-table {
+        background-color: white;
+        @include user-select(none);
+
+        &.is-selectable {
+            @include user-select(auto);
+        }
+    }
+
+    .flame-table-data-view {
+        overflow: visible;
+
+        td {
+            box-sizing: border-box;
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            border: 1px solid #cfd6e3;
+            margin: 0;
+            padding: 0 2px;
+            line-height: 21px;
+
+            &.is-total {
+                background-color: #e9e9e9;
+
+                &.is-double-total {
+                    background-color: #ddd;
+                }
+            }
+
+            &.is-updating {
+                color: #d9d9d9;
+            }
+        }
+    }
+
+    .column-header {
+        .label {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            &.sort-asc,
+            &.sort-desc {
+                background-repeat: no-repeat;
+                padding-left: 15px;
+                background-position-x: 0;
+            }
+
+            &.sort-asc {
+                background-image: image-url('images/sort_asc.png');
+                background-position-y: 8px;
+            }
+
+            &.sort-desc {
+                background-image: image-url('images/sort_desc.png');
+                background-position-y: 0;
+            }
+        }
+
+        td {
+            position: relative;
+            border: 1px solid #366e6a;
+        }
+
+        tr {
+            &.level-1 td {
+                font-weight: bold;
+                @include gradient(#8bcfca, #73c5c0);
+                background-clip: padding-box;
+            }
+
+            &.level-2 td {
+                @include gradient(#ade6e6, #98e0e0);
+                background-clip: padding-box;
+            }
+
+            &.level-3 td {
+                background-color: #c9f0ef;
+                background-clip: padding-box;
+            }
+        }
+    }
+
+    .row-header {
+        td {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            border: 1px solid #306082;
+        }
+
+        col {
+            &.level-1 {
+                font-weight: bold;
+                background-color: #7cb9e3;
+            }
+
+            &.level-2 {
+                background-color: #8fc9ed;
+            }
+
+            &.level-3 {
+                background-color: #9fdbf8;
+            }
+        }
+    }
+
+    input {
+        border-radius: 0;
+
+        &.invalid {
+            color: red;
+        }
+
+        &.table-edit-field {
+            font-size: 12px;
+            display: none;
+            border: 0;
+            outline: none;
+            position: absolute;
+            z-index: 2;
+            background-color: #fff !important;
+        }
+    }
+}

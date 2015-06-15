@@ -1,0 +1,34 @@
+@import '../mixins';
+
+.flame-panel {
+    border: 1px solid #888;
+    border-radius: 4px;
+    background-color: #f2f2f2;
+    @include box-shadow(0, 8, 20, rgba(0, 0, 0, .4));
+
+    .flame-panel-title {
+        font-size: 13px;
+        color: #333;
+        margin: 0;
+        border-radius: 3px 3px 0 0;
+        border: 1px #aaa;
+        border-bottom-style: solid;
+        @include gradient(#eee, #ccc);
+        @include inner-shadow(1px, #f4f4f4);
+        text-shadow: #efefef 0 1px;
+    }
+
+    .flame-resize-thumb {
+        background-image: image-url('images/resize_thumb.png');
+        cursor: nwse-resize;
+    }
+}
+
+.flame-modal-pane {
+    background-color: black;
+    @include opacity(.001);
+
+    &.dim-background {
+        @include opacity(.15);
+    }
+}

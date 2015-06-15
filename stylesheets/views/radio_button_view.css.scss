@@ -1,0 +1,13 @@
+@import '../mixins';
+
+.flame-checkbox-view.flame-radio-button-view {
+    .flame-checkbox-box {
+        border-radius: 50%;
+    }
+
+    .flame-checkbox-checkmark {
+        background-color: #fff;
+        @include box-shadow(0, 1, 1, rgba(0, 0, 0, 0.3));
+        border-radius: 50%;
+    }
+}
