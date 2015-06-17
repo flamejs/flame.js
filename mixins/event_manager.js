@@ -4,7 +4,7 @@ var eventHandlers = {
         var eventName = mapping[event.keyCode];
         if (eventName && this[eventName]) {
             var handler = this[eventName];
-            if (Ember.typeOf(handler) === 'function') {
+            if (typeof handler === 'function') {
                 return handler.call(this, event, this);
             }
         }

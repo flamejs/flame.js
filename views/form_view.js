@@ -305,23 +305,27 @@ Flame.FormView = Flame.View.extend({
                 delete settings.value;
                 return Flame.CheckboxView.extend(settings);
             case 'select':
-                settings.itemValueKey = descriptor.itemValueKey || "value";
-                settings.subMenuKey = descriptor.subMenuKey || "subMenu";
+                settings.itemValueKey = descriptor.itemValueKey || 'value';
+                settings.subMenuKey = descriptor.subMenuKey || 'subMenu';
                 if (descriptor.optionsBinding) {
-                    settings.itemTitleKey = descriptor.itemTitleKey || "name";
+                    settings.itemTitleKey = descriptor.itemTitleKey || 'name';
                     settings.itemsBinding = descriptor.optionsBinding;
                 } else if (descriptor.options) {
-                    settings.itemTitleKey = descriptor.itemTitleKey || "title";
-                    if (Ember.typeOf(descriptor.options) === "function") {
+                    settings.itemTitleKey = descriptor.itemTitleKey || 'title';
+                    if (typeof descriptor.options === 'function') {
                         settings.items = descriptor.options.apply(this);
                     } else {
                         settings.items = descriptor.options;
                     }
+                } else if (Ember.meta(descriptor).descs.options) {
+                    settings.itemTitleKey = descriptor.itemTitleKey || 'title';
+                    settings.items = Ember.meta(descriptor).descs.options;
                 }
-                if (!descriptor.get('allowNew')) {
-                    return Flame.SelectButtonView.extend(settings);
-                } else {
+
+                if (descriptor.get('allowNew')) {
                     return Flame.ComboBoxView.extend(settings);
+                } else {
+                    return Flame.SelectButtonView.extend(settings);
                 }
         }
         throw new Error('Invalid control type %@'.fmt(type));
