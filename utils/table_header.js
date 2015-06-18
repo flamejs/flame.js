@@ -1,5 +1,5 @@
 Flame.TableHeader = Ember.Object.extend({
-    isClickable: false,
+    isClickable: true,
 
     headerLabel: Ember.computed.alias('label'),
     isLeaf: Ember.computed.not('children'),

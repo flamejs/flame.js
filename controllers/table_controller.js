@@ -1,3 +1,5 @@
+var readOnly = Ember.computed.readOnly;
+
 /**
   A controller that you need to use when displaying an Flame.TableView. You need to
   define _headers property and call pushDataBatch to render data (can be called
@@ -12,8 +14,8 @@ Flame.TableController = Ember.Object.extend({
     valuesOn: 'column',
     isLoading: false,
 
-    tableDataBinding: '_data',
-    headerDataBinding: '_headers',
+    tableData: readOnly('_data'),
+    headerData: readOnly('_headers'),
 
     /**
       Takes in an array of cell value objects, e.g.
