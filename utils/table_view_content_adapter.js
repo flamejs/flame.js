@@ -1,17 +1,11 @@
+var readOnly = Ember.computed.readOnly;
+
 Flame.TableViewContentAdapter = Ember.Object.extend({
     content: null,
 
-    headers: function() {
-        return this.get('content._headers');
-    }.property('content._headers'),
-
-    columnLeafs: function() {
-        return this.get('content.columnLeafs');
-    }.property('content.columnLeafs'),
-
-    rowLeafs: function() {
-        return this.get('content.rowLeafs');
-    }.property('content.rowLeafs'),
+    headers: readOnly('content._headers'),
+    columnLeafs: readOnly('content.columnLeafs'),
+    rowLeafs: readOnly('content.rowLeafs'),
 
     columnHeaderRows: function() {
         var columnHeaderRows = [];
@@ -30,7 +24,7 @@ Flame.TableViewContentAdapter = Ember.Object.extend({
         }
 
         return columnHeaderRows;
-    }.property('headers'),
+    }.property('headers').readOnly(),
 
     rowHeaderRows: function() {
         var rowHeaderRows = [[]];
@@ -49,12 +43,7 @@ Flame.TableViewContentAdapter = Ember.Object.extend({
         }
 
         return rowHeaderRows;
-    }.property('headers'),
-
-    clear: function() {
-        this._headers = null;
-        this.propertyDidChange('headers');
-    },
+    }.property('headers').readOnly(),
 
     /**
       Calculate the colspan (rowspan) attribute to be used when rendering.
@@ -68,10 +57,10 @@ Flame.TableViewContentAdapter = Ember.Object.extend({
 
         // This representation is much easier to render
         if (type === 'columns') {
-            if (!headerRows[depth]) { headerRows[depth] = []; }
+            if (!headerRows[depth]) headerRows[depth] = [];
             headerRows[depth].push(header);
         } else if (type === 'rows') {
-            if (!isFirst) { headerRows.push([]); }
+            if (!isFirst) headerRows.push([]);
             headerRows[headerRows.length - 1].push(header);
         }
 

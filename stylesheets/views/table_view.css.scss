@@ -75,6 +75,10 @@
         @include user-select(text);
     }
 
+    .clickable {
+        cursor: pointer;
+    }
+
     table {
         table-layout: fixed;
         border-spacing: 0;

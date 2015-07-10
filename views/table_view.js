@@ -1,6 +1,7 @@
 //= require ./table_data_view
 
-var alias = Ember.computed.alias;
+var alias = Ember.computed.alias,
+    readOnly = Ember.computed.readOnly;
 
 var unbindScroll = function() {
     var scrollable = this.get('scrollable');
@@ -25,10 +26,12 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
 
     renderColumnHeader: true,
     renderRowHeader: true,
-    isRowHeaderClickable: true,
+    isRowHeaderClickable: false,
+    isColumnHeaderClickable: false,
     isResizable: true,
     allowSelection: false,
 
+    flameStates: ['idle', 'clickInProgress', 'resizing'],
     initialFlameState: 'idle',
 
     defaultColumnWidth: 88,
@@ -46,15 +49,15 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
     }.property('content'),
 
     tableDataView: Flame.TableDataView.extend({
-        dataBinding: 'parentView.content._data',
-        content: alias('parentView.content'),
+        data: readOnly('parentView.content._data'),
+        content: readOnly('parentView.content'),
         dirtyCells: alias('parentView.content.dirtyCells'),
-        areValuesOnRows: alias('parentView.content.areValuesOnRows'),
-        totalRowIds: alias('parentView.content.totalRowIds'),
-        totalColumnIds: alias('parentView.content.totalColumnIds'),
-        tableViewDelegate: alias('parentView.tableViewDelegate'),
-        cellsMarkedForUpdate: alias('parentView.content.cellsMarkedForUpdate'),
-        batchUpdates: alias('parentView.batchUpdates')
+        areValuesOnRows: readOnly('parentView.content.areValuesOnRows'),
+        totalRowIds: readOnly('parentView.content.totalRowIds'),
+        totalColumnIds: readOnly('parentView.content.totalColumnIds'),
+        tableViewDelegate: readOnly('parentView.tableViewDelegate'),
+        cellsMarkedForUpdate: readOnly('parentView.content.cellsMarkedForUpdate'),
+        batchUpdates: readOnly('parentView.batchUpdates')
     }),
 
     rowDepth: function() {
@@ -145,24 +148,27 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
             this.gotoFlameState('idle');
             var clickDelegate = this.get('owner.tableViewDelegate');
             if (clickDelegate) {
-                var target = jQuery(event.target);
+                var $target = Ember.$(event.target);
                 var header;
-                if (!!target.closest('.column-header').length) {
+                if ($target.closest('.column-header').length) {
                     if (clickDelegate.columnHeaderClicked) {
                         // Find the corresponding TableHeader instance for the clicked cell.
-                        var level = parseInt(target.closest('tr').attr('class').match(/level\-(\d+)/)[1], 10);
+                        var level = parseInt($target.closest('tr').attr('class').match(/level\-(\d+)/)[1], 10);
                         var row = this.get('owner.contentAdapter.columnHeaderRows')[level - 1];
-                        header = row[target.closest('tr').find('td').index(target.closest('td'))];
-                        clickDelegate.columnHeaderClicked(header, target);
+                        header = row[$target.closest('tr').find('td').index($target.closest('td'))];
+                        clickDelegate.columnHeaderClicked(header, $target);
                     }
                     return true;
-                } else if (!!target.closest('.row-header').length) {
+                } else if ($target.closest('.row-header').length) {
                     if (clickDelegate.rowHeaderClicked) {
-                        var cell = target.closest('td');
+                        var cell = $target.closest('td');
+                        // XXX The problem here is that currently this doesn't find the correct header
+                        // instance for the clicked cell. For now we work around it by check the class
+                        // on the clicked cell.
+                        if (!cell.hasClass('clickable')) return;
                         var index = parseInt(cell.attr('data-index'), 10);
                         header = this.get('owner.content._headers.rowHeaders')[index];
-                        if (!header) return false;
-                        clickDelegate.rowHeaderClicked(header, target, index);
+                        clickDelegate.rowHeaderClicked(header, $target, index);
                     }
                     return true;
                 }
@@ -471,27 +477,33 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
             }
 
             label = '<div class="label">%@</div>';
-            var resizeHandle = "";
-            buffer.attr('class', (i % 2 === 0 ? "even-col" : "odd-col"));
-            if (type === 'column' && !header.hasOwnProperty('children')) { // Leaf node
-                buffer.attr('data-index', i);
-                // Mark the leafIndex, so when sorting it's trivial to find the correct field to sort by
-                buffer.attr('data-leaf-index', header.leafIndex);
-                if (this.get('isResizable') && this.get('renderColumnHeader')) {
-                    resizeHandle = '<div class="resize-handle">&nbsp;</div>';
+            var resizeHandle = '';
+            var clickable = false;
+            if (type === 'column') {
+                if (!header.hasOwnProperty('children')) { // Leaf node
+                    buffer.attr('data-index', i);
+                    // Mark the leafIndex, so when sorting it's trivial to find the correct field to sort by
+                    buffer.attr('data-leaf-index', header.leafIndex);
+                    if (this.get('isResizable') && this.get('renderColumnHeader')) {
+                        resizeHandle = '<div class="resize-handle">&nbsp;</div>';
+                    }
+
+                    var headerSortDelegate = this.get('tableViewDelegate');
+                    if (headerSortDelegate && headerSortDelegate.getSortForHeader) {
+                        var activeSort = headerSortDelegate.getSortForHeader(header);
+                        sortDirection = activeSort ? activeSort.direction : null;
+                    }
+                    var sortClass = sortDirection ? 'sort-%@'.fmt(sortDirection) : '';
+                    label = '<div class="label ' + sortClass + '">%@</div>';
                 }
 
-                var headerSortDelegate = this.get('tableViewDelegate');
-                if (headerSortDelegate && headerSortDelegate.getSortForHeader) {
-                    var activeSort = headerSortDelegate.getSortForHeader(header);
-                    sortDirection = activeSort ? activeSort.direction : null;
+                if (this.get('isColumnHeaderClickable') && header.get('isClickable')) {
+                    clickable = true;
                 }
-                var sortClass = sortDirection ? 'sort-%@'.fmt(sortDirection) : '';
-                label = '<div class="label ' + sortClass + '">%@</div>';
             } else if (type === 'row') {
                 buffer.attr('data-index', header.dataIndex);
                 if (this.get('renderColumnHeader')) {
-                    if (this.get("isResizable")) {
+                    if (this.get('isResizable')) {
                         if (header.hasOwnProperty('children')) {
                             // Ensure that resize-handle covers the whole height of the cell border. Mere child count
                             // does not suffice with multi-level row headers.
@@ -502,11 +514,15 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                         }
                     }
                     if (this.get('isRowHeaderClickable') && header.get('isClickable')) {
+                        clickable = true;
                         label = '%@';
                     }
                 }
             }
 
+            var classes = i % 2 === 0 ? ['even-col'] : ['odd-col'];
+            if (clickable) classes.push('clickable');
+            buffer.attr('class', classes.join(' '));
             buffer.pushOpeningTag(); // td
             buffer.push('<div class="content-container">');
             buffer.push(resizeHandle);
