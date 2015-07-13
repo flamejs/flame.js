@@ -11,7 +11,7 @@ Flame.TableCell.prototype.content = function() {
     return this.formattedValue();
 };
 
-Flame.TableCell.prototype.showEditor= function() {
+Flame.TableCell.prototype.showEditor = function() {
     return false;
 };
 
