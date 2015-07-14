@@ -69,7 +69,8 @@ Flame.AlertPanelMessageView = Flame.View.extend({
             this.set('parentView.messageViewWidth', this.$().width());
         },
         allowWrapping: true,
-        value: alias('parentView.message')
+        value: alias('parentView.message'),
+        isSelectable: true
     })
 });
 
