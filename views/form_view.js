@@ -250,8 +250,7 @@ Flame.FormView = Flame.View.extend({
         }
         jQuery.extend(settings, this._buildValidationObservers(descriptor.get('validation')));
         var type = descriptor.get('type') || 'text';
-
-        if (descriptor.options || descriptor.optionsBinding) type = 'select';
+        if (descriptor.options || descriptor.optionsBinding || Ember.meta(descriptor).descs.options) type = 'select';
 
         // If a text field (or similar), emulate good old html forms that submit when hitting return by
         // clicking on the default button. This also prevents submitting of disabled forms.
