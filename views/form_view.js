@@ -235,7 +235,7 @@ Flame.FormView = Flame.View.extend({
             layout: layout,
             value: Ember.computed.alias('parentView.parentView.object.%@'.fmt(property)),
             isValid: Ember.computed.notEqual('parentView.parentView.object.%@IsValid'.fmt(property), false),
-            isDisabled: descriptor.isDisabled ? descriptor.isDisabled : Ember.computed.equal('parentView.parentView.object.%@IsDisabled'.fmt(property), true)
+            isDisabled: (descriptor.isDisabled || Ember.meta(descriptor).descs.isDisabled) ? descriptor.isDisabled : Ember.computed.equal('parentView.parentView.object.%@IsDisabled'.fmt(property), true)
         };
 
         if (this.get('defaultFocus') === property) {
@@ -271,6 +271,9 @@ Flame.FormView = Flame.View.extend({
     },
 
     _buildControlView: function(settings, type, descriptor) {
+        if (Ember.meta(descriptor).descs.isDisabled) {
+            settings.isDisabled = Ember.meta(descriptor).descs.isDisabled;
+        }
         switch (type) {
             case 'readonly':
                 // readonly fields are selectable by default
