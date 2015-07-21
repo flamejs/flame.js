@@ -6,5 +6,13 @@ Flame.TableHeader = Ember.Object.extend({
 
     createCell: function(data) {
         throw new Error('Not implemented');
+    },
+
+    cssClasses: function() {
+        return [];
+    },
+
+    cssClassesString: function() {
+        return this.cssClasses().join(' ');
     }
 });

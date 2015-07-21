@@ -478,6 +478,12 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
 
             label = '<div class="label">%@</div>';
             var resizeHandle = '';
+            var cssClasses = [];
+
+            cssClasses.push(i % 2 === 0 ? "even-col" : "odd-col");
+            cssClasses = cssClasses.concat(header.cssClasses());
+            buffer.attr('class', cssClasses.join(' '));
+
             var clickable = false;
             if (type === 'column') {
                 if (!header.hasOwnProperty('children')) { // Leaf node
