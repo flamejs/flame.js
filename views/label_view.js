@@ -7,6 +7,7 @@ Flame.LabelView = Flame.View.extend(Flame.ActionSupport, {
     isSelectable: false,
     isDisabled: false,
     allowWrapping: false,
+    textOverflow: null,
 
     handlebars: '{{view.value}}',
 
@@ -17,6 +18,7 @@ Flame.LabelView = Flame.View.extend(Flame.ActionSupport, {
             !this.get('allowWrapping')) {
             buffer.style('line-height', height + 'px');
         }
+        if (this.get('textOverflow')) buffer.style('text-overflow', this.get('textOverflow'));
         this._super(buffer);
     },
 
