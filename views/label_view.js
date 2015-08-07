@@ -8,17 +8,19 @@ Flame.LabelView = Flame.View.extend(Flame.ActionSupport, {
     isDisabled: false,
     allowWrapping: false,
     textOverflow: null,
+    whiteSpace: null,
 
     handlebars: '{{view.value}}',
 
     beforeRender: function(buffer) {
         var height = this.get('layout.height');
         if (this.get('useAbsolutePosition') &&
-            !Ember.isNone(height) &&
-            !this.get('allowWrapping')) {
+                !Ember.isNone(height) &&
+                !this.get('allowWrapping')) {
             buffer.style('line-height', height + 'px');
         }
         if (this.get('textOverflow')) buffer.style('text-overflow', this.get('textOverflow'));
+        if (this.get('whiteSpace')) buffer.style('white-space', this.get('whiteSpace'));
         this._super(buffer);
     },
 
