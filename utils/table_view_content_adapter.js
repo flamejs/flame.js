@@ -17,7 +17,7 @@ Flame.TableViewContentAdapter = Ember.Object.extend({
             this._processHeader(columnHeaderRows, columnHeaders[i], 'columns', 0, false, i);
         }
 
-        columnHeaderRows.maxDepth = Math.max.apply(Math, this.get('columnLeafs').mapProperty('depth'));
+        columnHeaderRows.maxDepth = Math.max.apply(Math, this.get('columnLeafs').mapBy('depth'));
         for (i = 0; i < this.get('columnLeafs').length; i++) {
             var colLeaf = this.get('columnLeafs')[i];
             colLeaf.rowspan = columnHeaderRows.maxDepth - colLeaf.depth + 1;
@@ -36,7 +36,7 @@ Flame.TableViewContentAdapter = Ember.Object.extend({
             this._processHeader(rowHeaderRows, rowHeaders[i], 'rows', 0, i === 0, i);
         }
 
-        rowHeaderRows.maxDepth = Math.max.apply(Math, this.get('rowLeafs').mapProperty('depth'));
+        rowHeaderRows.maxDepth = Math.max.apply(Math, this.get('rowLeafs').mapBy('depth'));
         for (i = 0; i < this.get('rowLeafs').length; i++) {
             var rowLeaf = this.get('rowLeafs')[i];
             rowLeaf.colspan = rowHeaderRows.maxDepth - rowLeaf.depth + 1;

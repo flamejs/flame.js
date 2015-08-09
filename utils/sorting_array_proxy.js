@@ -224,7 +224,7 @@ Flame.SortingArrayProxy = Ember.ArrayProxy.extend({
         // Preserve the original sort keys. If there are new items without sortKeys,
         // use the previous items key, or zero in case its the first item
         var keys = [];
-        content.mapProperty(sortKey).forEach(function(key, index) {
+        content.mapBy(sortKey).forEach(function(key, index) {
             if (key === undefined && index === 0) keys.push(0);
             else if (key === undefined) keys.push(keys[index - 1]);
             else keys.push(key);

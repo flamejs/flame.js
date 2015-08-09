@@ -197,7 +197,7 @@ Flame.FormView = Flame.View.extend({
             view = view.get('parentView');
         }
         // Collect all controls that can have keyResponder status
-        var controls = this.toArray().mapProperty('childViews')
+        var controls = this.toArray().mapBy('childViews')
             .reduce(function(a, b) { return a.concat(b); }).filter(function(view) {
             return view.get('acceptsKeyResponder') && view.get('isVisible');
         });
