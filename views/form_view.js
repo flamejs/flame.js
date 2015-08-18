@@ -70,7 +70,8 @@ Flame.FormView = Flame.View.extend({
             return Flame.View.extend({
                 layoutManager: Flame.VerticalStackLayoutManager.create({ topMargin: this._focusRingMargin, spacing: 0, bottomMargin: this._focusRingMargin }),
                 childViews: ['control'],
-                control: view
+                control: view,
+                isVisible: desc.isVisible === undefined ? true : desc.isVisible
             });
         }
 
