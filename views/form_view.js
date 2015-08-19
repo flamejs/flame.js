@@ -250,6 +250,7 @@ Flame.FormView = Flame.View.extend({
         }
         jQuery.extend(settings, this._buildValidationObservers(descriptor.get('validation')));
         var type = descriptor.get('type') || 'text';
+
         if (descriptor.options || descriptor.optionsBinding) type = 'select';
 
         // If a text field (or similar), emulate good old html forms that submit when hitting return by
@@ -323,7 +324,12 @@ Flame.FormView = Flame.View.extend({
                     settings.items = Ember.meta(descriptor).descs.options;
                 }
 
-                if (descriptor.get('allowNew')) {
+                if (descriptor.type === 'multiselect') {
+                    if (descriptor.formatTitle) {
+                        settings.formatTitle = descriptor.formatTitle;
+                    }
+                    return Flame.MultiselectionButtonView.extend(settings);
+                } else if (descriptor.get('allowNew')) {
                     return Flame.ComboBoxView.extend(settings);
                 } else {
                     return Flame.SelectButtonView.extend(settings);

@@ -1,7 +1,7 @@
 //= require ./panel
 //= require ./collection_view
+//= require ./menu_view_support
 //= require ../mixins/action_support
-//= require ./menu_scroll_view
 
 // Only to be used in Flame.MenuView. Represent menu items with normal JS objects as creation of one Ember object took
 // 3.5 ms on fast IE8 machine.
@@ -61,29 +61,9 @@ Flame.MenuItem.prototype.closeSubMenu = function() {
   Because of the implementation details, this menu will hold values of undefined or null as the same as not set. Thus,
   no selectable menu item must have such value their value.
 */
-Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
-    classNames: ['flame-menu'],
-    childViews: ['contentView'],
-    contentView: Flame.MenuScrollView,
-    dimBackground: false,
-    allowClosingByCancelButton: true,
-    subMenuKey: 'subMenu',
-    itemTitleKey: 'title',
-    /* Attribute that can be used to indicate a disabled menu item. The item will be disabled only if
-     * isEnabled === false, not some falseish value. */
-    itemEnabledKey: 'isEnabled',
-    itemCheckedKey: 'isChecked',
-    itemValueKey: 'value',
-    itemActionKey: 'action',
-    itemHeight: 21,
-    /* Margin between the menu and top/bottom of the viewport. */
-    menuMargin: 12,
-    minWidth: null, // Defines minimum width of menu
-    items: null,
+Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, Flame.MenuViewSupport, {
     parentMenu: null,
-    value: null,
-    _allItemsDoNotFit: true,
-    _anchorElement: null,
+    subMenuKey: 'subMenu',
     _menuItems: null,
     _highlightIndex: -1, // Currently highlighted index.
     _userHighlightIndex: -1, // User selected highlighted index
@@ -96,17 +76,6 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     init: function() {
         this._super();
         this._needToRecreateItems();
-    },
-
-    _calculateMenuWidth: function() {
-        var items = this.get('items') || [];
-        if (Ember.get(items, 'length') === 0) {
-            return;
-        }
-        var itemTitleKey = this.get('itemTitleKey');
-        var allTitles = items.map(function(item) { return Ember.get(item, itemTitleKey); });
-        // Give the menus a 16px breathing space to account for sub menu indicator, and to give some right margin (+18px for the padding)
-        return Flame.measureString(allTitles, 'ember-view flame-view flame-list-item-view flame-menu-item-view', 'title').width + 16 + 18;
     },
 
     _createMenuItems: function() {
@@ -250,45 +219,6 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
         this._updateMenuSize();
     },
 
-    _updateMenuSize: function() {
-        var anchorElement = this.get('_anchorElement');
-        // These values come from the CSS but we still need to know them here. Is there a better way?
-        var paddingTop = 5;
-        var paddingBottom = 5;
-        var borderWidth = 1;
-        var totalPadding = paddingTop + paddingBottom;
-        var margin = this.get('menuMargin');
-        var menuOuterHeight = this.get('_menuItems').get('length') * this.get('itemHeight') + totalPadding + 2 * borderWidth;
-        var wh = $(window).height();
-        var anchorTop = anchorElement.offset().top;
-        var anchorHeight = anchorElement.outerHeight();
-        var layout = this.get('layout');
-
-        var isSubMenu = !Ember.isNone(this.get('parentMenu'));
-        var spaceDownwards = wh - anchorTop + (isSubMenu ? (borderWidth + paddingTop) : (-anchorHeight));
-        var needScrolling = false;
-
-        if (menuOuterHeight + margin * 2 <= wh) {
-            if (isSubMenu && spaceDownwards >= menuOuterHeight + margin) {
-                layout.set('top', anchorTop - (borderWidth + paddingTop));
-            } else if (spaceDownwards < menuOuterHeight + margin) {
-                layout.set('top', wh - (menuOuterHeight + margin));
-            }
-        } else {
-            // Constrain menu height
-            menuOuterHeight = wh - 2 * margin;
-            layout.set('top', margin);
-            needScrolling = true;
-        }
-        layout.set('height', menuOuterHeight);
-        if (!layout.width) {
-            var menuWidth = Math.max(this.get('minWidth') || 0, this._calculateMenuWidth());
-            layout.set('width', menuWidth);
-        }
-        this.notifyPropertyChange('layout');
-        this.set('contentView.needScrolling', needScrolling);
-    },
-
     close: function() {
         if (this.isDestroyed) { return; }
         this.set('_highlightIndex', -1);
@@ -328,15 +258,6 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     insertNewline: function() {
         this.makeSelection();
         return true;
-    },
-
-    keyPress: function(event) {
-        var key = String.fromCharCode(event.which);
-        if (event.which > 31 && key !== '') { // Skip control characters.
-            this._doKeySearch(key);
-            return true;
-        }
-        return false;
     },
 
     handleMouseEvents: function(event) {
@@ -474,24 +395,12 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
         this.set('_highlightIndex', this.get('_userHighlightIndex'));
     }.observes('_userHighlightIndex'),
 
-    _clearKeySearch: function() {
-        if (!Ember.isNone(this._timer)) {
-            Ember.run.cancel(this._timer);
-        }
-        this._searchKey = '';
-    },
-
     _doKeySearch: function(key) {
-        this._searchKey = (this._searchKey || '') + key;
+        this._super(key);
         var index = this._findByName(this._searchKey);
         if (index >= 0) {
             this.set('_highlightIndex', index);
         }
-
-        if (!Ember.isNone(this._timer)) {
-            Ember.run.cancel(this._timer);
-        }
-        this._timer = Ember.run.later(this, this._clearKeySearch, 1000);
     },
 
     _indexToId: function(index) {
