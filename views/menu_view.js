@@ -426,7 +426,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, {
     },
 
     _findByName: function(name) {
-        var re = new RegExp('^' + name.replace(/[\^$*+?.(){}\[\]|]/g, "\\$&"), 'i');
+        var re = new RegExp('^' + name.replace(/[\^$*+?.(){}\[\]|\\]/g, "\\$&"), 'i');
         var titleKey = this.get('itemTitleKey');
         return this._findIndex(function(menuItem) {
             return re.test(Ember.get(menuItem, titleKey));
