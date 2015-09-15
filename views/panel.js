@@ -41,13 +41,12 @@ Flame.Panel = Flame.View.extend({
 
     titleView: Flame.View.extend(Flame.Statechart, {
         layout: { left: 0, right: 0, height: 'height', bottomPadding: 1 },
-        classNames: ['flame-panel-title'],
         isVisible: Ember.computed.notEqual('parentView.title', null),
         initialFlameState: 'idle',
         childViews: ['headerView'],
 
         height: function() {
-            return this.get('parentView.headerView.height') || 26;
+            return this.get('parentView.headerView.height') || 36;
         }.property('parentView.headerView.height'),
 
         headerView: function() {
@@ -55,6 +54,7 @@ Flame.Panel = Flame.View.extend({
         }.property('parentView.headerView'),
 
         labelView: Flame.LabelView.extend({
+            classNames: ['flame-panel-title'],
             layout: { left: 4, right: 4, top: 2 },
             textAlign: Flame.ALIGN_CENTER,
             value: Ember.computed.alias('parentView.parentView.title')
