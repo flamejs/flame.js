@@ -33,9 +33,8 @@ Flame.TabView = Flame.View.extend({
             previousTabs.forEach(function(tab, i) {
                 if (Ember.isNone(tabs.findBy('value', tab.value))) {
                     var tabBarView = this.get('tabBarView');
-                    tabBarView.forEach(function(tabView) {
-                        if (tabView.get('value') === tab.value) tabBarView.removeChild(tabView);
-                    });
+                    var view = tabBarView.find(function(tabView) { return tabView.get('value') === tab.value; });
+                    if (view) tabBarView.removeChild(view);
                 }
             }, this);
         }
