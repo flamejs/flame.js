@@ -109,7 +109,7 @@ Flame.LayoutSupport = {
     _translateLayout: function(layout, buffer) {
         var cssLayout = {};
 
-        if (layout.maxHeight !== undefined) {
+        if (layout.maxHeight !== undefined && layout.overflow === undefined) {
             cssLayout.overflow = 'auto';
         }
 

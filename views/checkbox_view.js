@@ -2,6 +2,7 @@
 
 // A checkbox. The state of the checkbox is indicated by the isSelected property.
 Flame.CheckboxView = Flame.ButtonView.extend({
+    displayProperties: ['title'],
     classNames: ['flame-checkbox-view'],
     isSticky: true,
 
