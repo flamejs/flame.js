@@ -122,11 +122,14 @@ Ember.mixin(Flame, {
                 this.propertyDidChange('currentKeyResponder');
                 return view;
             }
-            else return undefined;
         },
 
         replace: function(view) {
-            if (this.current() !== view) {
+            var current = this.current();
+            if (current !== view) {
+                if (current && !(current instanceof Ember.View)) {
+                    current.blur();
+                }
                 this.pop();
                 return this.push(view);
             }
