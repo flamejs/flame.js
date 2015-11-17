@@ -35,11 +35,13 @@ Flame.SelectButtonView = Flame.ButtonView.extend({
         if (Ember.isNone(itemList)) return foundItem;
         itemList.forEach(function(item) {
             var subMenu = Ember.get(item, subMenuKey);
-            if (subMenu) {
+            if (Ember.get(item, itemValueKey) === value) {
+                foundItem = item;
+                return;
+            }
+            if (!Ember.isEmpty(subMenu)) {
                 var possiblyFound = this._findItem(subMenu);
                 if (!Ember.isNone(possiblyFound)) foundItem = possiblyFound;
-            } else if (Ember.get(item, itemValueKey) === value) {
-                foundItem = item;
             }
         }, this);
         return foundItem;
@@ -61,7 +63,7 @@ Flame.SelectButtonView = Flame.ButtonView.extend({
         // This has to be created dynamically to set the selectButtonView reference (parentView does not work
         // because a menu is added on the top level of the view hierarchy, not as a child of this view)
         var self = this;
-        Flame.MenuView.createWithMixins({
+        var properties = {
             selectButtonView: this,
             itemTitleKey: this.get('itemTitleKey'),
             itemValueKey: this.get('itemValueKey'),
@@ -74,6 +76,10 @@ Flame.SelectButtonView = Flame.ButtonView.extend({
                 self.gotoFlameState('idle');
                 this._super();
             }
-        }).popup(this);
+        };
+
+        if (this.get('isSelectable')) properties.isSelectable = this.get('isSelectable');
+
+        Flame.MenuView.createWithMixins(properties).popup(this);
     }
 });

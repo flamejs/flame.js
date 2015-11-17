@@ -309,6 +309,7 @@ Flame.FormView = Flame.View.extend({
             case 'select':
                 settings.itemValueKey = descriptor.itemValueKey || 'value';
                 settings.subMenuKey = descriptor.subMenuKey || 'subMenu';
+                if (descriptor.isSelectable) settings.isSelectable = descriptor.isSelectable;
                 if (descriptor.optionsBinding) {
                     settings.itemTitleKey = descriptor.itemTitleKey || 'name';
                     settings.itemsBinding = descriptor.optionsBinding;

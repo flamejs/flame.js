@@ -35,10 +35,6 @@ Flame.MenuItem.prototype.isEnabled = function() {
     return !(this.isDisabled || (this.subMenuItems && this.subMenuItems.length === 0));
 };
 
-Flame.MenuItem.prototype.isSelectable = function() {
-    return this.isEnabled() && !this.subMenuItems;
-};
-
 Flame.MenuItem.prototype.$ = function() {
     return Ember.$('#%@'.fmt(this.id));
 };
@@ -187,6 +183,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, Flame.MenuViewSupport, 
     // This function is here to break the dependency between MenuView and MenuItemView
     createSubMenu: function(subMenuItems) {
         return this.get('subMenu').create({
+            isSelectable: this.isSelectable,
             items: subMenuItems,
             parentMenu: this,
             subMenuKey: this.get('subMenuKey'),
@@ -296,7 +293,13 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, Flame.MenuViewSupport, 
 
     mouseEntered: function(index) {
         this.set('_userHighlightIndex', index);
-        this._tryOpenSubmenu(false);
+        var pointedItem = this.get('_menuItems').objectAt(index);
+        if (pointedItem.subMenuView) {
+            pointedItem.subMenuView.set('_userHighlightIndex', -1);
+            this.set('_internalSelection', {isSet: true, value: pointedItem.item});
+        } else {
+            this._tryOpenSubmenu(false);
+        }
         return true;
     },
 
@@ -376,12 +379,16 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, Flame.MenuViewSupport, 
         if (!Ember.isNone(newItem)) {
             this._toggleClass('is-selected', index);
             newItem.isSelected = true;
-            if (newItem.isSelectable()) {
+            if (this.isSelectable(newItem)) {
                 internalSelection = { isSet: true, value: newItem.item };
             }
         }
         this.set('_internalSelection', internalSelection);
     }.observes('_highlightIndex'),
+
+    isSelectable: function(menuItem) {
+        return menuItem.isEnabled() && Ember.isEmpty(menuItem.subMenuItems);
+    },
 
     /**
       We only want to allow selecting menu items after the user has moved the mouse. We update
@@ -426,6 +433,9 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, Flame.MenuViewSupport, 
             if (Ember.isNone(subMenu)) {
                 subMenu = this.createSubMenu(subMenuItems);
                 item.subMenuView = subMenu;
+            } else {
+                item.subMenuView.set('_userHighlightIndex', -1);
+                item.subMenuView.set('internalSelection', { isSet: false, value: null });
             }
             subMenu.popup(item.$(), this.get('subMenuPosition') || Flame.POSITION_RIGHT);
             if (selectItem) subMenu._selectNext(1);
