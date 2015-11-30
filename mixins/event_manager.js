@@ -122,11 +122,14 @@ Ember.mixin(Flame, {
                 this.propertyDidChange('currentKeyResponder');
                 return view;
             }
-            else return undefined;
         },
 
         replace: function(view) {
-            if (this.current() !== view) {
+            var current = this.current();
+            if (current !== view) {
+                if (current && !(current instanceof Ember.View)) {
+                    current.blur();
+                }
                 this.pop();
                 return this.push(view);
             }
@@ -136,7 +139,7 @@ Ember.mixin(Flame, {
 
 // Set up a handler on the document for key events.
 Ember.$(document).on('keydown.flame keypress.flame', null, function(event, triggeringManager) {
-    if (Flame.keyResponderStack.current() !== undefined && Flame.keyResponderStack.current().get('isVisible')) {
+    if (Flame.keyResponderStack.current() instanceof Ember.View && Flame.keyResponderStack.current().get('isVisible')) {
         return Flame.keyResponderStack.current().handleKeyEvent(event, Flame.keyResponderStack.current());
     }
     return true;
@@ -159,7 +162,7 @@ Ember.$(window).on('mouseup', function(event) {
 // pointer no longer is on top of that view. Without this, you get inconsistencies with buttons and all controls that handle
 // mouse click events. The ember event dispatcher always first looks up 'eventManager' property on the view that's
 // receiving an event, and lets that handle the event, if defined. So this should be mixed in to all the Flame views.
-Flame.EventManager = {
+Flame.EventManager = Ember.Mixin.create({
     // Set to true in your view if you want to accept key responder status (which is needed for handling key events)
     acceptsKeyResponder: false,
 
@@ -237,14 +240,14 @@ Flame.EventManager = {
         },
 
         keyDown: function(event) {
-            if (Flame.keyResponderStack.current() !== undefined && Flame.keyResponderStack.current().get('isVisible')) {
+            if (Flame.keyResponderStack.current() instanceof Ember.View && Flame.keyResponderStack.current().get('isVisible')) {
                 return Flame.keyResponderStack.current().handleKeyEvent(event, Flame.keyResponderStack.current());
             }
             return true;
         },
 
         keyPress: function(event) {
-            if (Flame.keyResponderStack.current() !== undefined && Flame.keyResponderStack.current().get('isVisible')) {
+            if (Flame.keyResponderStack.current() instanceof Ember.View && Flame.keyResponderStack.current().get('isVisible')) {
                 return Flame.keyResponderStack.current().handleKeyEvent(event, Flame.keyResponderStack.current());
             }
             return true;
@@ -265,4 +268,4 @@ Flame.EventManager = {
             else return false;
         }
     }
-};
+});

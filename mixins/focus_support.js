@@ -1,4 +1,4 @@
-Flame.FocusSupport = {
+Flame.FocusSupport = Ember.Mixin.create({
     // To make text fields/areas behave consistently with our concept of key responder, we have to also
     // tell the browser to focus/blur the input field
     didBecomeKeyResponder: function() {
@@ -23,4 +23,4 @@ Flame.FocusSupport = {
             if (document.hasFocus()) this.resignKeyResponder();
         }
     }
-};
+});
