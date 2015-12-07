@@ -6,18 +6,19 @@ Flame.TableSortSupport = {
         throw new Error('Not implemented!');
     },
 
-    columnHeaderClicked: function(header, targetElement) {
+    columnHeaderClicked: function(header, targetElement, tableView) {
         if (!header.get('isLeaf')) return;
-        this._showSortMenu(header, this._sortMenuOptions(header), targetElement);
+        this._showSortMenu(header, this._sortMenuOptions(header), targetElement, tableView);
     },
 
-    _showSortMenu: function(header, options, anchorView) {
+    _showSortMenu: function(header, options, anchorView, tableView) {
+        var self = this;
         Flame.MenuView.create({
             minWidth: anchorView.outerWidth(),
             items: options,
-            target: this,
-            action: 'sortContent',
-            payload: Ember.computed.alias('value')
+            action: function() {
+                self.sortContent(this.get('value'), tableView);
+            }
         }).popup(anchorView);
     },
 
