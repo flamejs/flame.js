@@ -156,7 +156,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
                         var level = parseInt($target.closest('tr').attr('class').match(/level\-(\d+)/)[1], 10);
                         var row = this.get('owner.contentAdapter.columnHeaderRows')[level - 1];
                         header = row[$target.closest('tr').find('td').index($target.closest('td'))];
-                        clickDelegate.columnHeaderClicked(header, $target);
+                        clickDelegate.columnHeaderClicked(header, $target, this.get('owner'));
                     }
                     return true;
                 } else if ($target.closest('.row-header').length) {
