@@ -228,6 +228,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
                     var index = [rowIndex, columnIndex];
                     tableViewDelegate.mouseUp(event, cell, dataCell, index, this.get('owner'));
                 }
+                this.get('owner').notifySelectionChange();
             }
         },
 
@@ -385,10 +386,6 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         insertBacktab: function(event) {
             this.get('owner').invokeStateMethod('moveLeft');
             return true;
-        },
-
-        enterState: function() {
-            this.get('owner').notifySelectionChange();
         },
 
         exitState: function() {
