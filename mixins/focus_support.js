@@ -3,7 +3,13 @@ Flame.FocusSupport = Ember.Mixin.create({
     // tell the browser to focus/blur the input field
     didBecomeKeyResponder: function() {
         var $element = this.$();
-        if ($element) $element.focus();
+        // Webkit browsers jump the caret to the end of the (text)input on programmatical focus,
+        // so we wait minimally for the browser to do its focusing and see if ours is still needed
+        if ($element) {
+            Ember.run.next(function() {
+                if (document.activeElement !== $element[0]) $element.focus();
+            });
+        }
     },
 
     didLoseKeyResponder: function() {
