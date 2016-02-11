@@ -39,7 +39,11 @@ Flame.ArrayTableController = Flame.DataTableController.extend(Flame.TableSortSup
                 };
             }),
             columnHeaders: this.get('columns').map(function(column, i) {
-                return { label: Ember.get(column, 'label'), property: Ember.get(column, 'property') };
+                var columnHeader = { label: Ember.get(column, 'label'), property: Ember.get(column, 'property') };
+                if (!Ember.isNone(Ember.get(column, 'renderWidth'))) {
+                    columnHeader.render_width = Ember.get(column, 'renderWidth');
+                }
+                return columnHeader;
             })
         };
     }.property('content.[]', 'columns', 'headerProperty', 'rowHeadersClickable'),
