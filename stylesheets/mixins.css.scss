@@ -40,7 +40,6 @@ $default-font-size: 13px;
 }
 
 @mixin user-select($user-select) {
-    // -ms-user-select is only supported in IE >= 10. See ie_user_select.js for workaround.
     -ms-user-select: $user-select;
     -webkit-user-select: $user-select;
     user-select: $user-select;
