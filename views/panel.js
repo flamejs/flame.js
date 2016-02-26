@@ -274,7 +274,7 @@ Flame.Panel = Flame.View.extend({
     popup: function(anchor, position) {
         if (!this.get('isShown')) {
             if (this.get('isModal')) {
-                var modalPane = this.get('_modalPane');
+                var modalPane = this.get('modalPane');
                 modalPane.set('parentPanel', this);
                 modalPane.get('layout').zIndex = Flame._zIndexCounter;
                 Ember.run(function() {
