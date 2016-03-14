@@ -1,6 +1,5 @@
 import View from '../view';
 import Panel, { POSITION_RIGHT, POSITION_LEFT } from './panel';
-import CollectionView from './collection_view';
 import MenuView from './menu_view';
 import ActionSupport from '../mixins/action_support';
 import MenuViewSupport from '../mixins/menu_view_support';

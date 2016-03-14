@@ -9,5 +9,6 @@
     "latedef": "nofunc",
     "trailing": true,
     "nonbsp": true,
+    "esnext": true,
     "predef": ["Ember", "Handlebars", "Flame", "FlameImageUrlPrefix", "DocumentFragment"]
 }

@@ -238,15 +238,6 @@ In the future, we hope to implement lazy rendering for list and tree views, so t
 
 Flame.js is not meant to be 1:1 compatible with SproutCore 1.x, but migrating an existing SC1.x application should still be fairly straightforward. You can get a long way by just replacing ‘SC.’ with ‘Flame.’. More complicated views, like lists and trees, are gonna need some more tweaking. You could probably use array and object proxies as before, although those are not really necessary with Ember. The SproutCore data store should also work with Ember+Flame.
 
-## Building Flame from source
-
-Building Flame from source requires Ruby. To install the dependencies, run ```bundle install``` in the flame.js directory. After that run ```rake``` to build Flame. This will create a build directory in which you find the javascript sources (both plain and minified), stylesheets and images. Flame also requires jQuery 1.7+ and Ember 0.9.4+.
-
-### Specifying image_path
-
-By default, the generated javascript and CSS files will expect images to be found in an ```images``` directory and uses a relative path to find them. If you wish to have your images in a different location, you can specify the optional ```image_path``` when building flame, e.g.:
-``` rake image_path=/assets/images ```
-
 ## Testing
 
 ```rake jshint``` will run the javascript sources through to JSHint, which will require JSHint and node.js to be installed.

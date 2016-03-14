@@ -1,4 +1,58 @@
 /**
+  A helper class for the drag helper, represents a potential insert location in a list/tree.
+  See docs for ListViewDragHelper above for details.
+*/
+const Path = Ember.Object.extend({
+    array: [],
+    position: 'i',
+    root: null,
+
+    getView: function() {
+        var view, i, len = this.array.length, listView = this.root;
+        for (i = 0; i < len; i++) {
+            var index = this.array[i];
+            view = listView.objectAt(index);
+            if (i < len - 1) {
+                listView = view.get('childListView');
+            }
+        }
+        return view;
+    },
+
+    getNestedListView: function() {
+        return this.getView().get('childListView');
+    },
+
+    up: function() {
+        var newArray = this.array.slice(0, this.array.length - 1);
+        return Path.create({array: newArray, position: 'a', root: this.root});
+    },
+
+    down: function() {
+        var newArray = Ember.copy(this.array);
+        var newPosition;
+        var nestedChildrenCount = this.getNestedListView().get('content.length');
+        if (nestedChildrenCount > 0) {
+            newArray.push(nestedChildrenCount - 1);
+            newPosition = 'a';
+        } else {
+            newPosition = 'i';
+        }
+        return Path.create({array: newArray, position: newPosition, root: this.root});
+    },
+
+    // Ignores the position letter
+    equals: function(other) {
+        var len1 = this.array.length, len2 = other.array.length;
+        if (len1 !== len2) return false;
+        for (var i = 0; i < len1; i++) {
+            if (this.array[i] !== other.array[i]) return false;
+        }
+        return true;
+    }
+});
+
+/**
   This helper class hides the ugly details of doing dragging in list views and tree views.
 
   One challenge in the implementation is how to designate a specific potential drop position.
@@ -344,59 +398,5 @@ export default Ember.Object.extend({
                 Ember.run.scheduleOnce('afterRender', this, this.updateDisplay, event, this.mouseMoveCounter);
             }
         }
-    }
-});
-
-/**
-  A helper class for the drag helper, represents a potential insert location in a list/tree.
-  See docs for ListViewDragHelper above for details.
-*/
-const Path = Ember.Object.extend({
-    array: [],
-    position: 'i',
-    root: null,
-
-    getView: function() {
-        var view, i, len = this.array.length, listView = this.root;
-        for (i = 0; i < len; i++) {
-            var index = this.array[i];
-            view = listView.objectAt(index);
-            if (i < len - 1) {
-                listView = view.get('childListView');
-            }
-        }
-        return view;
-    },
-
-    getNestedListView: function() {
-        return this.getView().get('childListView');
-    },
-
-    up: function() {
-        var newArray = this.array.slice(0, this.array.length - 1);
-        return Path.create({array: newArray, position: 'a', root: this.root});
-    },
-
-    down: function() {
-        var newArray = Ember.copy(this.array);
-        var newPosition;
-        var nestedChildrenCount = this.getNestedListView().get('content.length');
-        if (nestedChildrenCount > 0) {
-            newArray.push(nestedChildrenCount - 1);
-            newPosition = 'a';
-        } else {
-            newPosition = 'i';
-        }
-        return Path.create({array: newArray, position: newPosition, root: this.root});
-    },
-
-    // Ignores the position letter
-    equals: function(other) {
-        var len1 = this.array.length, len2 = other.array.length;
-        if (len1 !== len2) return false;
-        for (var i = 0; i < len1; i++) {
-            if (this.array[i] !== other.array[i]) return false;
-        }
-        return true;
     }
 });

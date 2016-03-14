@@ -5,7 +5,7 @@ export default function TableCell(opts) {
             this[key] = opts[key];
         }
     }
-};
+}
 
 TableCell.prototype.content = function() {
     return this.formattedValue();

@@ -35,7 +35,7 @@ export function nearest(key, macro) {
         }
         return this.get(propertyName);
     });
-};
+}
 
 var IS_PATH_REGEX = /[\.]/,
     PATH_SPLIT_REGEX = /([^\.]+)(\..*)/;
