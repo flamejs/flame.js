@@ -1,18 +1,22 @@
-//= require ./image_view
-//= require ./panel
-//= require ./label_view
-//= require ./button_view
+import View from '../view';
+import Panel from '../views/panel';
+import ButtonView from '../views/button_view';
+import LabelView from '../views/label_view';
+import ImageView from '../views/image_view';
+import VerticalStackLayoutManager from '../layout_managers/vertical_stack_layout_manager';
+import { nearest } from '../utils/computed_nearest';
+import { image } from '../utils/images';
+import { measureString } from '../utils/string_measurement';
 
-var alias = Ember.computed.alias,
-    nearest = Flame.computed.nearest;
+const { alias } = Ember.computed;
 
-Flame.AlertPanel = Flame.Panel.extend();
+const AlertPanel = Panel.extend();
 
-Flame.AlertPanel.INFO_ICON = Flame.image('info_icon.svg');
-Flame.AlertPanel.WARN_ICON = Flame.image('warn_icon.svg');
-Flame.AlertPanel.ERROR_ICON = Flame.image('error_icon.svg');
+export const INFO_ICON = image('info_icon.svg');
+export const WARN_ICON = image('warn_icon.svg');
+export const ERROR_ICON = image('error_icon.svg');
 
-Flame.AlertPanelButtonView = Flame.View.extend({
+export const AlertPanelButtonView = View.extend({
     layout: { width: '100%', right: 0, height: 30 },
     childViews: ['cancelButtonView', 'confirmButtonView'],
     cancelButtonTitle: 'Cancel',
@@ -23,7 +27,7 @@ Flame.AlertPanelButtonView = Flame.View.extend({
     isConfirmDisabled: false,
     alertPanelView: null,
 
-    cancelButtonView: Flame.ButtonView.extend({
+    cancelButtonView: ButtonView.extend({
         layout: { width: 90, bottom: 2, right: 110 },
         title: alias('parentView.cancelButtonTitle'),
         isVisible: alias('parentView.isCancelVisible'),
@@ -33,7 +37,7 @@ Flame.AlertPanelButtonView = Flame.View.extend({
         }
     }),
 
-    confirmButtonView: Flame.ButtonView.extend({
+    confirmButtonView: ButtonView.extend({
         layout: { width: 90, bottom: 2, right: 2 },
         title: alias('parentView.confirmButtonTitle'),
         isVisible: alias('parentView.isConfirmVisible'),
@@ -45,25 +49,25 @@ Flame.AlertPanelButtonView = Flame.View.extend({
     })
 });
 
-Flame.AlertPanelMessageView = Flame.View.extend({
+export const AlertPanelMessageView = View.extend({
     layout: { left: 10, right: 2, height: 'measuredHeight' },
     childViews: ['iconView', 'messageView'],
     messageViewWidth: 0,
     measuredHeight: function() {
         var width  = "width: %@px;".fmt(this.get('messageViewWidth'));
-        var parentClasses = this.nearestOfType(Flame.AlertPanel).get('classNames').join(' ');
+        var parentClasses = this.nearestOfType(AlertPanel).get('classNames').join(' ');
         var elementClasses = this.get('messageView.classNames').join(' ');
-        var computedMessageViewHeight = Flame.measureString(this.get('message'), parentClasses, elementClasses, width).height;
+        var computedMessageViewHeight = measureString(this.get('message'), parentClasses, elementClasses, width).height;
         return Math.max(Math.min(computedMessageViewHeight, 600), 50);
     }.property('message', 'messageViewWidth'),
     message: null,
 
-    iconView: Flame.ImageView.extend({
+    iconView: ImageView.extend({
         layout: { left: 10 },
         value: nearest('icon')
     }),
 
-    messageView: Flame.LabelView.extend({
+    messageView: LabelView.extend({
         layout: { left: 75, right: 2, height: null },
         didInsertElement: function() {
             this.set('parentView.messageViewWidth', this.$().width());
@@ -74,12 +78,12 @@ Flame.AlertPanelMessageView = Flame.View.extend({
     })
 });
 
-Flame.AlertPanel.reopen({
+AlertPanel.reopen({
     layout: { centerX: 0, centerY: -50, width: 400 },
 
-    layoutManager: Flame.VerticalStackLayoutManager.create(),
+    layoutManager: VerticalStackLayoutManager.create(),
     classNames: ['flame-alert-panel'],
-    icon: Flame.AlertPanel.INFO_ICON,
+    icon: INFO_ICON,
     isModal: true,
     allowClosingByClickingOutside: false,
     allowMoving: true,
@@ -91,15 +95,15 @@ Flame.AlertPanel.reopen({
     confirmButtonTitle: 'OK',
     cancelButtonTitle: 'Cancel',
 
-    contentView: Flame.View.extend({
+    contentView: View.extend({
         layout: { left: 15, right: 15, top: 36, bottom: 15 },
-        layoutManager: Flame.VerticalStackLayoutManager.create({ topMargin: 20, bottomMargin: 17, spacing: 10 }),
+        layoutManager: VerticalStackLayoutManager.create({ topMargin: 20, bottomMargin: 17, spacing: 10 }),
         childViews: ['messageView', 'buttonView'],
 
-        messageView: Flame.AlertPanelMessageView.extend({
+        messageView: AlertPanelMessageView.extend({
             message: nearest('message')
         }),
-        buttonView: Flame.AlertPanelButtonView.extend({
+        buttonView: AlertPanelButtonView.extend({
             confirmButtonTitle: nearest('confirmButtonTitle'),
             cancelButtonTitle: nearest('cancelButtonTitle'),
             alertPanelView: alias('parentView.parentView'),
@@ -124,19 +128,21 @@ Flame.AlertPanel.reopen({
     }
 });
 
-Flame.AlertPanel.reopenClass({
+AlertPanel.reopenClass({
     info: function(config) {
-        config = jQuery.extend(config || {}, {icon: Flame.AlertPanel.INFO_ICON, isCancelVisible: false});
+        config = jQuery.extend(config || {}, { icon: INFO_ICON, isCancelVisible: false });
         return this.createWithMixins(config);
     },
 
     warn: function(config) {
-        config = jQuery.extend(config || {}, {icon: Flame.AlertPanel.WARN_ICON});
+        config = jQuery.extend(config || {}, { icon: WARN_ICON });
         return this.createWithMixins(config);
     },
 
     error: function(config) {
-        config = jQuery.extend(config || {}, {icon: Flame.AlertPanel.ERROR_ICON});
+        config = jQuery.extend(config || {}, { icon: ERROR_ICON });
         return this.createWithMixins(config);
     }
 });
+
+export default AlertPanel;

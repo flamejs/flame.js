@@ -1,10 +1,11 @@
-//= require ./text_field_view
+import TextFieldView from './text_field_view';
+import ButtonView from './button_view';
 
-Flame.SearchTextFieldView = Flame.TextFieldView.extend({
+export default TextFieldView.extend({
     classNames: ['flame-search-field'],
     childViews: ['textField', 'clearButton'],
 
-    clearButton: Flame.ButtonView.extend({
+    clearButton: ButtonView.extend({
         resetClassNames: true,
         layout: { right: 5, top: 2 },
         isVisible: Ember.computed.bool('parentView.value'),

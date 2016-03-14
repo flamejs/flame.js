@@ -39,7 +39,7 @@
   Here V is not ItemView but others are. Then A and Y should return itself, X should return V, and
   1 to 4 and Z should return null.
 */
-Flame.ListViewDragHelper = Ember.Object.extend({
+export default Ember.Object.extend({
     listView: undefined,
     lastPageX: undefined,
     yOffset: undefined,
@@ -51,7 +51,7 @@ Flame.ListViewDragHelper = Ember.Object.extend({
 
     // Creates a clone of the dragged element and dims the original
     initReorder: function() {
-        var newItemPath = Flame.ListViewDragHelper.Path.create({array: this.itemPath, root: this.listView});
+        var newItemPath = Path.create({array: this.itemPath, root: this.listView});
         this.itemPath = newItemPath;
         // XXX very ugly...
         this.reorderCssClass = this.isTree() ? '.flame-tree-item-view-container' : '.flame-list-item-view';
@@ -161,7 +161,7 @@ Flame.ListViewDragHelper = Ember.Object.extend({
 
         // First remove the view, the content item and the DOM element from their current parent.
         // If moving inside the same parent, use a special startMoving+endMoving API provided by
-        // Flame.SortingArrayProxy to protect against non-modifiable arrays (the sort property is
+        // SortingArrayProxy to protect against non-modifiable arrays (the sort property is
         // still updated).
         if (sourceContent === targetContent && sourceContent.startMoving) sourceContent.startMoving();
         sourceParent.removeObject(view);
@@ -194,7 +194,9 @@ Flame.ListViewDragHelper = Ember.Object.extend({
     },
 
     isTree: function() {
-        return this.listView instanceof Flame.TreeView;  // XXX ugly
+        // Can't check if it's an instance of TreeView since that would set up
+        // a circular dependency.
+        return this.listView.classNames.contains('flame-tree-view');  // XXX ugly
     },
 
     // Considering the current drag position, works out if the dragged element should be moved to a new location
@@ -310,7 +312,7 @@ Flame.ListViewDragHelper = Ember.Object.extend({
             listView = view.get('parentView');
         } while (listView.get('isNested') && (view = listView.get('parentView')) !== undefined);
 
-        return Flame.ListViewDragHelper.Path.create({array: pathArray, root: this.listView});
+        return Path.create({array: pathArray, root: this.listView});
     },
 
     _updateDraggingCloneAndScrollPosition: function(event) {
@@ -349,7 +351,7 @@ Flame.ListViewDragHelper = Ember.Object.extend({
   A helper class for the drag helper, represents a potential insert location in a list/tree.
   See docs for ListViewDragHelper above for details.
 */
-Flame.ListViewDragHelper.Path = Ember.Object.extend({
+const Path = Ember.Object.extend({
     array: [],
     position: 'i',
     root: null,
@@ -372,7 +374,7 @@ Flame.ListViewDragHelper.Path = Ember.Object.extend({
 
     up: function() {
         var newArray = this.array.slice(0, this.array.length - 1);
-        return Flame.ListViewDragHelper.Path.create({array: newArray, position: 'a', root: this.root});
+        return Path.create({array: newArray, position: 'a', root: this.root});
     },
 
     down: function() {
@@ -385,7 +387,7 @@ Flame.ListViewDragHelper.Path = Ember.Object.extend({
         } else {
             newPosition = 'i';
         }
-        return Flame.ListViewDragHelper.Path.create({array: newArray, position: newPosition, root: this.root});
+        return Path.create({array: newArray, position: newPosition, root: this.root});
     },
 
     // Ignores the position letter

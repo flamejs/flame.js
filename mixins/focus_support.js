@@ -1,4 +1,6 @@
-Flame.FocusSupport = Ember.Mixin.create({
+import { keyResponderStack } from './event_manager';
+
+export default Ember.Mixin.create({
     // To make text fields/areas behave consistently with our concept of key responder, we have to also
     // tell the browser to focus/blur the input field
     didBecomeKeyResponder: function() {
@@ -18,13 +20,13 @@ Flame.FocusSupport = Ember.Mixin.create({
     },
 
     focusIn: function() {
-        if (Flame.keyResponderStack.current() !== this) {
+        if (keyResponderStack.current() !== this) {
             this.becomeKeyResponder();
         }
     },
 
     focusOut: function() {
-        if (Flame.keyResponderStack.current() === this) {
+        if (keyResponderStack.current() === this) {
             // If focus was lost from the document, keep the "local" focus intact
             if (document.hasFocus()) this.resignKeyResponder();
         }

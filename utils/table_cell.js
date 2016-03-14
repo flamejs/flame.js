@@ -1,4 +1,4 @@
-Flame.TableCell = function TableCell(opts) {
+export default function TableCell(opts) {
     this.value = null;
     for (var key in opts) {
         if (opts.hasOwnProperty(key)) {
@@ -7,51 +7,51 @@ Flame.TableCell = function TableCell(opts) {
     }
 };
 
-Flame.TableCell.prototype.content = function() {
+TableCell.prototype.content = function() {
     return this.formattedValue();
 };
 
-Flame.TableCell.prototype.showEditor = function() {
+TableCell.prototype.showEditor = function() {
     return false;
 };
 
-Flame.TableCell.prototype.showReadOnlyEditor = function() {
+TableCell.prototype.showReadOnlyEditor = function() {
     return false;
 };
 
-Flame.TableCell.prototype.formattedValue = function() {
+TableCell.prototype.formattedValue = function() {
     return this.value === null ? '' : this.value;
 };
 
-Flame.TableCell.prototype.editableValue = function() {
+TableCell.prototype.editableValue = function() {
     throw new Error('Not implemented');
 };
 
-Flame.TableCell.prototype.validate = function(newValue) {
+TableCell.prototype.validate = function(newValue) {
     return true;
 };
 
-Flame.TableCell.prototype.formatValueForBackend = function(value) {
+TableCell.prototype.formatValueForBackend = function(value) {
     throw new Error('Not implemented');
 };
 
-Flame.TableCell.prototype.isEditable = function() {
+TableCell.prototype.isEditable = function() {
     return false;
 };
 
-Flame.TableCell.prototype.isCopyable = function() {
+TableCell.prototype.isCopyable = function() {
     return true;
 };
 
-Flame.TableCell.prototype.isPastable = function() {
+TableCell.prototype.isPastable = function() {
     return true;
 };
 
 // Returns an array of CSS classes for this cell
-Flame.TableCell.prototype.cssClasses = function() {
+TableCell.prototype.cssClasses = function() {
     return [];
 };
 
-Flame.TableCell.prototype.cssClassesString = function() {
+TableCell.prototype.cssClassesString = function() {
     return this.cssClasses().join(' ');
 };

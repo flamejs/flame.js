@@ -1,20 +1,23 @@
-//= require ./label_view
+import View from '../view';
+import Statechart, { State } from '../statechart';
+import LabelView, { ALIGN_CENTER } from './label_view';
+import { notEqual } from '../utils/computed';
+
+export const POSITION_BELOW =  1 << 0;
+export const POSITION_RIGHT =  1 << 1;
+export const POSITION_LEFT =   1 << 2;
+export const POSITION_ABOVE =  1 << 3;
+export const POSITION_MIDDLE = 1 << 4;
 
 // When multiple panels with modal panes are shown at the same time, we need this to get them to stack on
 // top of each other. If they use a static z-index, all the panels would appear on top of all the modal panes.
-Flame._zIndexCounter = 100;
-
-Flame.reopen({
-    POSITION_BELOW:  1 << 0,
-    POSITION_RIGHT:  1 << 1,
-    POSITION_LEFT:   1 << 2,
-    POSITION_ABOVE:  1 << 3,
-    POSITION_MIDDLE: 1 << 4
-});
+export const zIndexCounter = {
+    value: 100
+};
 
 // A pop-up panel, modal or non-modal. The panel is destroyed on closing by default. If you intend to reuse the same
 // panel instance, set destroyOnClose: false.
-Flame.Panel = Flame.View.extend({
+const Panel = View.extend({
     classNames: ['flame-panel'],
     childViews: ['titleView', 'contentView', 'resizeView'],
     destroyOnClose: true,
@@ -39,10 +42,10 @@ Flame.Panel = Flame.View.extend({
         this._super();
     },
 
-    titleView: Flame.View.extend(Flame.Statechart, {
+    titleView: View.extend(Statechart, {
         layout: { left: 0, right: 0, height: 'height', bottomPadding: 1 },
         classNames: ['flame-panel-title'],
-        isVisible: Ember.computed.notEqual('parentView.title', null),
+        isVisible: notEqual('parentView.title', null),
         initialFlameState: 'idle',
         childViews: ['headerView'],
 
@@ -54,13 +57,13 @@ Flame.Panel = Flame.View.extend({
             return this.get('parentView.headerView') || this.get('labelView');
         }.property('parentView.headerView'),
 
-        labelView: Flame.LabelView.extend({
+        labelView: LabelView.extend({
             layout: { left: 4, right: 4, top: 2 },
-            textAlign: Flame.ALIGN_CENTER,
+            textAlign: ALIGN_CENTER,
             value: Ember.computed.alias('parentView.parentView.title')
         }),
 
-        idle: Flame.State.extend({
+        idle: State.extend({
             mouseDown: function(event) {
                 var owner = this.get('owner');
                 if (!owner.get('parentView.allowMoving')) {
@@ -81,7 +84,7 @@ Flame.Panel = Flame.View.extend({
             }
         }),
 
-        moving: Flame.State.extend({
+        moving: State.extend({
             enterState: function() {
                 this.element = this.get('owner.parentView').$();
                 this.windowHeight = jQuery(window).height();
@@ -105,11 +108,11 @@ Flame.Panel = Flame.View.extend({
                 this.mouseMove(this.normalizeTouchEvents(event));
                 return true;
             },
-            mouseUp: Flame.State.gotoFlameState('idle'),
-            touchEnd: Flame.State.gotoFlameState('idle'),
+            mouseUp: State.gotoFlameState('idle'),
+            touchEnd: State.gotoFlameState('idle'),
             exitState: function() {
                 // Save panel layout
-                var layoutPersistenceKey = this.get('owner').nearestOfType(Flame.Panel).get('layoutPersistenceKey');
+                var layoutPersistenceKey = this.get('owner').nearestOfType(Panel).get('layoutPersistenceKey');
                 if (layoutPersistenceKey) {
                     var panelLayouts = JSON.parse(localStorage.getItem('panelLayouts')) || {};
                     panelLayouts[layoutPersistenceKey] = {
@@ -121,7 +124,7 @@ Flame.Panel = Flame.View.extend({
         })
     }),
 
-    resizeView: Flame.View.extend(Flame.Statechart, {
+    resizeView: View.extend(Statechart, {
         layout: { bottom: 3, right: 3, height: 16, width: 16 },
         ignoreLayoutManager: true,
         classNames: ['flame-resize-thumb'],
@@ -129,7 +132,7 @@ Flame.Panel = Flame.View.extend({
         initialFlameState: 'idle',
         isResizing: false,
 
-        idle: Flame.State.extend({
+        idle: State.extend({
             enterState: function(event) {
                 this.set('owner.isResizing', false);
             },
@@ -152,7 +155,7 @@ Flame.Panel = Flame.View.extend({
                 return true;
             }
         }),
-        resizing: Flame.State.extend({
+        resizing: State.extend({
             enterState: function(event) {
                 this.set('owner.isResizing', true);
             },
@@ -173,14 +176,14 @@ Flame.Panel = Flame.View.extend({
                 this.mouseMove(this.normalizeTouchEvents(event));
                 return true;
             },
-            mouseUp: Flame.State.gotoFlameState('idle'),
-            touchEnd: Flame.State.gotoFlameState('idle')
+            mouseUp: State.gotoFlameState('idle'),
+            touchEnd: State.gotoFlameState('idle')
         })
     }),
 
     // This is the pane that's used to obscure the background if isModal === true
     modalPane: function() {
-        return Flame.View.create({
+        return View.create({
             layout: { left: 0, top: 0, right: 0, bottom: 0 },
             classNames: ['flame-modal-pane'],
             classNameBindings: ['parentPanel.dimBackground'],
@@ -225,7 +228,7 @@ Flame.Panel = Flame.View.extend({
     },
 
     _layoutRelativeTo: function(anchor, position) {
-        position = position || Flame.POSITION_BELOW;
+        position = position || POSITION_BELOW;
 
         var layout = this.get('layout');
         var anchorElement = anchor instanceof jQuery ? anchor : anchor.$();
@@ -238,16 +241,16 @@ Flame.Panel = Flame.View.extend({
 
         var dimensions = this._getDimensionsForAnchorElement(anchorElement);
 
-        if (position & (Flame.POSITION_BELOW | Flame.POSITION_ABOVE)) {
-            layout.top = offset.top + ((position & Flame.POSITION_BELOW) ? dimensions.height : -layout.height);
+        if (position & (POSITION_BELOW | POSITION_ABOVE)) {
+            layout.top = offset.top + ((position & POSITION_BELOW) ? dimensions.height : -layout.height);
             layout.left = offset.left;
-            if (position & Flame.POSITION_MIDDLE) {
+            if (position & POSITION_MIDDLE) {
                 layout.left = layout.left - (layout.width / 2) + (dimensions.width / 2);
             }
-        } else if (position & (Flame.POSITION_RIGHT | Flame.POSITION_LEFT)) {
+        } else if (position & (POSITION_RIGHT | POSITION_LEFT)) {
             layout.top = offset.top;
-            layout.left = offset.left + ((position & Flame.POSITION_RIGHT) ? dimensions.width : -layout.width);
-            if (position & Flame.POSITION_MIDDLE) {
+            layout.left = offset.left + ((position & POSITION_RIGHT) ? dimensions.width : -layout.width);
+            if (position & POSITION_MIDDLE) {
                 layout.top = layout.top - (layout.height / 2) + (dimensions.height / 2);
             }
         } else {
@@ -262,8 +265,8 @@ Flame.Panel = Flame.View.extend({
             layout.movedX = true;
         }
         // ... and vertically
-        if ((position & Flame.POSITION_BELOW && (layout.top + layout.height > $window.height() - 10) && offset.top - layout.height >= 0) ||
-            (position & Flame.POSITION_ABOVE && (layout.top < 0))) {
+        if ((position & POSITION_BELOW && (layout.top + layout.height > $window.height() - 10) && offset.top - layout.height >= 0) ||
+            (position & POSITION_ABOVE && (layout.top < 0))) {
             layout.movedY = true;
         } else if (layout.top < 0) {
             layout.top = 10;
@@ -276,7 +279,7 @@ Flame.Panel = Flame.View.extend({
             if (this.get('isModal')) {
                 var modalPane = this.get('modalPane');
                 modalPane.set('parentPanel', this);
-                modalPane.get('layout').zIndex = Flame._zIndexCounter;
+                modalPane.get('layout').zIndex = zIndexCounter.value;
                 Ember.run(function() {
                     modalPane.append();
                 });
@@ -286,8 +289,8 @@ Flame.Panel = Flame.View.extend({
             if (anchor) {
                 this.set('layout', this._layoutRelativeTo(anchor, position));
             }
-            this.get('layout').zIndex = Flame._zIndexCounter + 10;
-            Flame._zIndexCounter += 100;
+            this.get('layout').zIndex = zIndexCounter.value + 10;
+            zIndexCounter.value += 100;
 
             this.append();
             this.set('isShown', true);
@@ -320,7 +323,7 @@ Flame.Panel = Flame.View.extend({
             this.set('isShown', false);
             this.set('isVisible', false);
             if (this.get('acceptsKeyResponder')) this.resignKeyResponder();
-            Flame._zIndexCounter -= 100;
+            zIndexCounter.value -= 100;
 
             if (this.get('destroyOnClose')) this.destroy();
         }
@@ -331,3 +334,5 @@ Flame.Panel = Flame.View.extend({
         if (defaultFocus) defaultFocus.becomeKeyResponder();
     }
 });
+
+export default Panel;

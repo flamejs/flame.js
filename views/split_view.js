@@ -1,9 +1,10 @@
-//= require ./split_view_divider_view_base
+import View from '../view';
+import SplitViewDividerViewBase from './split_view_divider_view_base';
 
-Flame.SplitView = Flame.View.extend({
+export default View.extend({
     allowResizing: true,
     dividerThickness: 7,
-    dividerView: Flame.View.extend(Flame.SplitViewDividerViewBase),
+    dividerView: View.extend(SplitViewDividerViewBase),
 
     didInsertElement: function() {
         this._updateLayout();

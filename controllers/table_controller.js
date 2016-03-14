@@ -1,15 +1,15 @@
 var readOnly = Ember.computed.readOnly;
 
 /**
-  A controller that you need to use when displaying an Flame.TableView. You need to
+  A controller that you need to use when displaying an TableView. You need to
   define _headers property and call pushDataBatch to render data (can be called
-  several times to render data in batches). The headers should be Flame.TableHeader
+  several times to render data in batches). The headers should be TableHeader
   objects.
 
   There are two refined subclasses of this controller, DataTableController and
   ArrayTableController, which you may find easier to use for simple tables.
 */
-Flame.TableController = Ember.Object.extend({
+export default Ember.Object.extend({
     dirtyCells: [],
     valuesOn: 'column',
     isLoading: false,

@@ -1,5 +1,6 @@
-//= require ./list_view
-//= require ./tree_item_view
+import ListView from './list_view';
+import TreeItemView from './tree_item_view';
+import { mouseResponder } from '../mixins/event_manager';
 
 /*
   A tree view displays a hierarchy of nested items. The items may all be of the same type, or there can be several
@@ -25,7 +26,7 @@
 
   If you don't want to use handlebars templates for the item views, you can alternatively define property
   'itemViewClass', which will then be used for all item types and levels. The class you name must extend
-  Flame.TreeItemView, and must also render the nested list view. See comments in TreeItemView for more info.
+  TreeItemView, and must also render the nested list view. See comments in TreeItemView for more info.
 
   TODO:
    - when selection changes, scroll the selected item to be fully visible (esp. important for keyboard selection)
@@ -34,11 +35,11 @@
    - Syncing reorderings back to the tree content source
    - keyboard support
  */
-Flame.TreeView = Flame.ListView.extend({
+export default ListView.extend({
     classNames: ['flame-tree-view'],
     classNameBindings: ['isNested', 'nestingLevel'],
     defaultIsExpanded: false,
-    itemViewClass: Flame.TreeItemView,
+    itemViewClass: TreeItemView,
     isNested: false,
     clickTogglesIsExpanded: true,
     /* Whether to use absolute positioning for the items and nested lists. Currently it makes things quite tricky
@@ -73,7 +74,7 @@ Flame.TreeView = Flame.ListView.extend({
             dragHelper.get('itemPath').insertAt(0, this.get('parentView.contentIndex'));
             parentTreeView.startReordering(dragHelper, event);
         } else {
-            Flame.set('mouseResponderView', this);  // XXX a bit ugly...
+            mouseResponder.set('current', this);  // XXX a bit ugly...
             this._super(dragHelper, event);
         }
     },
@@ -89,5 +90,4 @@ Flame.TreeView = Flame.ListView.extend({
     rootTreeView: function() {
         return this.get('parentTreeView.rootTreeView') || this;
     }.property('parentTreeView.rootTreeView').volatile()
-
 });

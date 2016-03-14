@@ -1,4 +1,8 @@
-Flame.SelectButtonView = Flame.ButtonView.extend({
+import ButtonView from './button_view';
+import MenuView from './menu_view';
+import { image } from '../utils/images';
+
+export default ButtonView.extend({
     classNames: ['flame-select-button-view'],
     items: [],
     value: undefined,
@@ -10,7 +14,7 @@ Flame.SelectButtonView = Flame.ButtonView.extend({
 
     handlebars: function() {
         var itemTitleKey = this.get('itemTitleKey');
-        return '<label {{bind-attr title="view._selectedMenuItem.%@"}}>{{view._selectedMenuItem.%@}}</label><div><img src="%@"></div>'.fmt(itemTitleKey, itemTitleKey, Flame.image('select_button_arrow.svg'));
+        return '<label {{bind-attr title="view._selectedMenuItem.%@"}}>{{view._selectedMenuItem.%@}}</label><div><img src="%@"></div>'.fmt(itemTitleKey, itemTitleKey, image('select_button_arrow.svg'));
     }.property('itemTitleKey'),
 
     _selectedMenuItem: function() {
@@ -80,6 +84,6 @@ Flame.SelectButtonView = Flame.ButtonView.extend({
 
         if (this.get('isSelectable')) properties.isSelectable = this.get('isSelectable');
 
-        Flame.MenuView.createWithMixins(properties).popup(this);
+        MenuView.createWithMixins(properties).popup(this);
     }
 });

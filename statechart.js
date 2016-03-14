@@ -10,7 +10,7 @@ function createProxyMethod(methodName) {
     };
 }
 
-Flame.State = Ember.Object.extend({
+const State = Ember.Object.extend({
     gotoFlameState: function(stateName) {
         this.get('owner').gotoFlameState(stateName);
     },
@@ -47,7 +47,7 @@ Flame.State = Ember.Object.extend({
     }
 });
 
-Flame.State.reopenClass({
+State.reopenClass({
     gotoFlameState: function(stateName, returnValue) {
         return function() {
             this.gotoFlameState(stateName);
@@ -56,7 +56,9 @@ Flame.State.reopenClass({
     }
 });
 
-Flame.Statechart = {
+export { State };
+
+export default Ember.Mixin.create({
     initialFlameState: null,
     currentFlameState: undefined,
 
@@ -77,7 +79,7 @@ Flame.Statechart = {
             // Look for defined states and initialize them
             for (key in this) {
                 state = this[key];
-                if (Flame.State.detect(state)) {
+                if (State.detect(state)) {
                     this[key] = state.create({ owner: this, name: key });
                     this._setupProxyMethods(this[key]);
                 }
@@ -109,7 +111,7 @@ Flame.Statechart = {
         if (currentFlameState === newState) {
             return;
         }
-        if (!Ember.isNone(newState) && newState instanceof Flame.State) {
+        if (!Ember.isNone(newState) && newState instanceof State) {
             if (!Ember.isNone(currentFlameState)) {
                 if (currentFlameState.exitState) currentFlameState.exitState();
             }
@@ -125,7 +127,7 @@ Flame.Statechart = {
             args[i - 1] = arguments[i];
         }
         var state = this.get('currentFlameState');
-        Ember.assert('Cannot invoke state method without having a current state!', !Ember.isNone(state) && state instanceof Flame.State);
+        Ember.assert('Cannot invoke state method without having a current state!', !Ember.isNone(state) && state instanceof State);
         var method = state[methodName];
         if (typeof method === 'function') {
             return method.apply(state, args);
@@ -134,4 +136,4 @@ Flame.Statechart = {
             return !this._handleKeyEvent.apply(this, args);
         }
     }
-};
+});

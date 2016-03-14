@@ -1,6 +1,6 @@
 var eventHandlers = {
     interpretKeyEvents: function(event) {
-        var mapping = event.shiftKey ? Flame.MODIFIED_KEY_BINDINGS : Flame.KEY_BINDINGS;
+        var mapping = event.shiftKey ? MODIFIED_KEY_BINDINGS : KEY_BINDINGS;
         var eventName = mapping[event.keyCode];
         if (eventName && this[eventName]) {
             var handler = this[eventName];
@@ -26,7 +26,7 @@ var eventHandlers = {
             // Note that in jQuery, the contract is that event handler should return
             // true to allow default handling, false to prevent it. But in Ember, event handlers return true if they handled the event,
             // false if they didn't, so we want to invert that return value here.
-            return !handler.call(Flame.keyResponderStack.current(), event, Flame.keyResponderStack.current());
+            return !handler.call(keyResponderStack.current(), event, keyResponderStack.current());
         }
         return this._handleKeyEvent(emberEvent, event, view);
     },
@@ -34,7 +34,7 @@ var eventHandlers = {
     _handleKeyEvent: function(eventName, event, view) {
         if (eventName === 'keyDown') { // Try to hand down the event to a more specific key event handler
             var result = this.interpretKeyEvents(event);
-            if (result === Flame.ALLOW_BROWSER_DEFAULT_HANDLING) return true;
+            if (result === ALLOW_BROWSER_DEFAULT_HANDLING) return true;
             if (result) return false;
         }
         if (this.get('parentView')) {
@@ -47,7 +47,7 @@ var eventHandlers = {
 Ember.View.reopen(eventHandlers);
 Ember.TextSupport.reopen(eventHandlers);
 
-Flame.KEY_BINDINGS = {
+const KEY_BINDINGS = {
     8: 'deleteBackward',
     9: 'insertTab',
     13: 'insertNewline',
@@ -60,7 +60,7 @@ Flame.KEY_BINDINGS = {
     46: 'deleteForward'
 };
 
-Flame.MODIFIED_KEY_BINDINGS = {
+const MODIFIED_KEY_BINDINGS = {
     8: 'deleteForward',
     9: 'insertBacktab',
     37: 'moveLeftAndModifySelection',
@@ -69,91 +69,91 @@ Flame.MODIFIED_KEY_BINDINGS = {
     40: 'moveDownAndModifySelection'
 };
 
-// See Flame.TextFieldView for details on what this is needed for
-Flame.ALLOW_BROWSER_DEFAULT_HANDLING = {};  // Just a marker value
+// See TextFieldView for details on what this is needed for
+export const ALLOW_BROWSER_DEFAULT_HANDLING = {};  // Just a marker value
 
-Ember.mixin(Flame, {
-    mouseResponderView: undefined, // Which view handled the last mouseDown event?
+export const mouseResponder = Ember.Object.create({
+    current: undefined // Which view handled the last mouseDown event?
+});
 
-    /*
-      Holds a stack of key responder views. With this we can neatly handle restoring the previous key responder
-      when some modal UI element is closed. There's a few simple rules that governs the usage of the stack:
-       - mouse click does .replace (this should also be used for programmatically taking focus when not a modal element)
-       - opening a modal UI element does .push
-       - closing a modal element does .pop
+/**
+  Holds a stack of key responder views. With this we can neatly handle restoring the previous key responder
+  when some modal UI element is closed. There's a few simple rules that governs the usage of the stack:
+   - mouse click does .replace (this should also be used for programmatically taking focus when not a modal element)
+   - opening a modal UI element does .push
+   - closing a modal element does .pop
 
-      Also noteworthy is that a view will be signaled that it loses the key focus only when it's popped off the
-      stack, not when something is pushed on top. The idea is that when a modal UI element is opened, we know
-      that the previously focused view will re-gain the focus as soon as the modal element is closed. So if the
-      previously focused view was e.g. in the middle of some edit operation, it shouldn't cancel that operation.
-    */
-    keyResponderStack: Ember.Object.createWithMixins({
-        _stack: [],
+  Also noteworthy is that a view will be signaled that it loses the key focus only when it's popped off the
+  stack, not when something is pushed on top. The idea is that when a modal UI element is opened, we know
+  that the previously focused view will re-gain the focus as soon as the modal element is closed. So if the
+  previously focused view was e.g. in the middle of some edit operation, it shouldn't cancel that operation.
+*/
+export const keyResponderStack = Ember.Object.createWithMixins({
+    _stack: [],
 
-        // Observer-friendly version of getting current
-        currentKeyResponder: function() {
-            return this.current();
-        }.property().volatile(),
+    // Observer-friendly version of getting current
+    currentKeyResponder: function() {
+        return this.current();
+    }.property().volatile(),
 
-        current: function() {
-            var length = this._stack.get('length');
-            if (length > 0) return this._stack.objectAt(length - 1);
-            else return undefined;
-        },
+    current: function() {
+        var length = this._stack.get('length');
+        if (length > 0) return this._stack.objectAt(length - 1);
+        else return undefined;
+    },
 
-        push: function(view) {
-            if (!Ember.isNone(view)) {
-                if (view.willBecomeKeyResponder) view.willBecomeKeyResponder();
-                if (view.set && !view.isDestroyed) view.set('isFocused', true);
-                this._stack.push(view);
-                if (view.didBecomeKeyResponder) view.didBecomeKeyResponder();
-                this.propertyDidChange('currentKeyResponder');
-            }
-            return view;
-        },
-
-        pop: function() {
-            if (this._stack.get('length') > 0) {
-                var current = this.current();
-                if (current && current.willLoseKeyResponder) current.willLoseKeyResponder();  // Call before popping, could make a difference
-                var view = this._stack.pop();
-                if (view.set && !view.isDestroyed) view.set('isFocused', false);
-                if (view.didLoseKeyResponder) view.didLoseKeyResponder();
-                this.propertyDidChange('currentKeyResponder');
-                return view;
-            }
-        },
-
-        replace: function(view) {
-            var current = this.current();
-            if (current !== view) {
-                if (current && !(current instanceof Ember.View)) {
-                    current.blur();
-                }
-                this.pop();
-                return this.push(view);
-            }
+    push: function(view) {
+        if (!Ember.isNone(view)) {
+            if (view.willBecomeKeyResponder) view.willBecomeKeyResponder();
+            if (view.set && !view.isDestroyed) view.set('isFocused', true);
+            this._stack.push(view);
+            if (view.didBecomeKeyResponder) view.didBecomeKeyResponder();
+            this.propertyDidChange('currentKeyResponder');
         }
-    })
+        return view;
+    },
+
+    pop: function() {
+        if (this._stack.get('length') > 0) {
+            var current = this.current();
+            if (current && current.willLoseKeyResponder) current.willLoseKeyResponder();  // Call before popping, could make a difference
+            var view = this._stack.pop();
+            if (view.set && !view.isDestroyed) view.set('isFocused', false);
+            if (view.didLoseKeyResponder) view.didLoseKeyResponder();
+            this.propertyDidChange('currentKeyResponder');
+            return view;
+        }
+    },
+
+    replace: function(view) {
+        var current = this.current();
+        if (current !== view) {
+            if (current && !(current instanceof Ember.View)) {
+                current.blur();
+            }
+            this.pop();
+            return this.push(view);
+        }
+    }
 });
 
 // Set up a handler on the document for key events.
 Ember.$(document).on('keydown.flame keypress.flame', null, function(event, triggeringManager) {
-    if (Flame.keyResponderStack.current() instanceof Ember.View && Flame.keyResponderStack.current().get('isVisible')) {
-        return Flame.keyResponderStack.current().handleKeyEvent(event, Flame.keyResponderStack.current());
+    if (keyResponderStack.current() instanceof Ember.View && keyResponderStack.current().get('isVisible')) {
+        return keyResponderStack.current().handleKeyEvent(event, keyResponderStack.current());
     }
     return true;
 });
 
 // Handle mouseUp outside of the window
 Ember.$(window).on('mouseup', function(event) {
-    var mouseResponderView = Flame.get('mouseResponderView');
+    var mouseResponderView = mouseResponder.get('current');
     if (mouseResponderView !== undefined) {
         // Something (e.g. AJAX callback) may remove the responderView from DOM between mouseDown
         // and mouseUp. In that case return true to ignore the event.
         if (mouseResponderView.get('_state') !== 'inDOM') return true;
 
-        Flame.set('mouseResponderView', undefined);
+        mouseResponder.set('current', undefined);
         return !mouseResponderView.get('eventManager')._dispatch('mouseUp', event, mouseResponderView);
     }
 });
@@ -162,7 +162,7 @@ Ember.$(window).on('mouseup', function(event) {
 // pointer no longer is on top of that view. Without this, you get inconsistencies with buttons and all controls that handle
 // mouse click events. The ember event dispatcher always first looks up 'eventManager' property on the view that's
 // receiving an event, and lets that handle the event, if defined. So this should be mixed in to all the Flame views.
-Flame.EventManager = Ember.Mixin.create({
+export default Ember.Mixin.create({
     // Set to true in your view if you want to accept key responder status (which is needed for handling key events)
     acceptsKeyResponder: false,
 
@@ -172,14 +172,14 @@ Flame.EventManager = Ember.Mixin.create({
       set to false. If mouseDown returned true but 'acceptsKeyResponder' is false, this call is propagated to the parent view.
 
       If called with no parameters or with replace = true, the current key responder is first popped off the stack and this
-      view is then pushed. See comments for Flame.keyResponderStack above for more insight.
+      view is then pushed. See comments for keyResponderStack above for more insight.
     */
     becomeKeyResponder: function(replace) {
         if (this.get('acceptsKeyResponder') !== false && !this.get('isDisabled')) {
             if (replace === undefined || replace === true) {
-                Flame.keyResponderStack.replace(this);
+                keyResponderStack.replace(this);
             } else {
-                Flame.keyResponderStack.push(this);
+                keyResponderStack.push(this);
             }
         } else {
             var parent = this.get('parentView');
@@ -193,35 +193,35 @@ Flame.EventManager = Ember.Mixin.create({
       will be the next view in the stack, if any.
     */
     resignKeyResponder: function() {
-        Flame.keyResponderStack.pop();
+        keyResponderStack.pop();
     },
 
     eventManager: {
         mouseDown: function(event, view) {
             view.becomeKeyResponder();  // Becoming a key responder is independent of mouseDown handling
-            Flame.set('mouseResponderView', undefined);
+            mouseResponder.set('current', undefined);
             var handlingView = this._dispatch('mouseDown', event, view);
             if (handlingView) {
-                Flame.set('mouseResponderView', handlingView);
+                mouseResponder.set('current', handlingView);
             }
             return !handlingView;
         },
 
         mouseUp: function(event, view) {
-            var mouseResponderView = Flame.get('mouseResponderView');
+            var mouseResponderView = mouseResponder.get('current');
             if (mouseResponderView !== undefined) {
                 // Something (e.g. AJAX callback) may remove the responderView from DOM between mouseDown
                 // and mouseUp. In that case return true to ignore the event.
                 if (mouseResponderView.get('_state') !== 'inDOM') return true;
 
                 view = mouseResponderView;
-                Flame.set('mouseResponderView', undefined);
+                mouseResponder.set('current', undefined);
             }
             return !this._dispatch('mouseUp', event, view);
         },
 
         mouseMove: function(event, view) {
-            var mouseResponderView = Flame.get('mouseResponderView');
+            var mouseResponderView = mouseResponder.get('current');
             if (mouseResponderView !== undefined) {
                 // Something (e.g. AJAX callback) may remove the responderView from DOM between mouseDown
                 // and/or mouseMove. In that case return true to ignore the event.
@@ -233,22 +233,22 @@ Flame.EventManager = Ember.Mixin.create({
         },
 
         doubleClick: function(event, view) {
-            if (Flame.get('mouseResponderView') !== undefined) {
-                view = Flame.get('mouseResponderView');
+            if (mouseResponder.get('current') !== undefined) {
+                view = mouseResponder.get('current');
             }
             return !this._dispatch('doubleClick', event, view);
         },
 
         keyDown: function(event) {
-            if (Flame.keyResponderStack.current() instanceof Ember.View && Flame.keyResponderStack.current().get('isVisible')) {
-                return Flame.keyResponderStack.current().handleKeyEvent(event, Flame.keyResponderStack.current());
+            if (keyResponderStack.current() instanceof Ember.View && keyResponderStack.current().get('isVisible')) {
+                return keyResponderStack.current().handleKeyEvent(event, keyResponderStack.current());
             }
             return true;
         },
 
         keyPress: function(event) {
-            if (Flame.keyResponderStack.current() instanceof Ember.View && Flame.keyResponderStack.current().get('isVisible')) {
-                return Flame.keyResponderStack.current().handleKeyEvent(event, Flame.keyResponderStack.current());
+            if (keyResponderStack.current() instanceof Ember.View && keyResponderStack.current().get('isVisible')) {
+                return keyResponderStack.current().handleKeyEvent(event, keyResponderStack.current());
             }
             return true;
         },
@@ -260,7 +260,7 @@ Flame.EventManager = Ember.Mixin.create({
             var handler = view.get(eventName);
             if (handler) {
                 var result = handler.call(view, event, view);
-                if (result === Flame.ALLOW_BROWSER_DEFAULT_HANDLING) return false;
+                if (result === ALLOW_BROWSER_DEFAULT_HANDLING) return false;
                 else if (result) return view;
             }
             var parentView = view.get('parentView');

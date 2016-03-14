@@ -1,6 +1,7 @@
-//= require ./collection_view
-//= require ./list_item_view
-//= require ./list_view_drag_helper
+import CollectionView from './collection_view';
+import ListItemView from './list_item_view';
+import ListViewDragHelper from './list_view_drag_helper';
+import Statechart, { State } from '../statechart';
 
 /**
   Displays a list of items. Allows reordering if allowReordering is true.
@@ -10,7 +11,7 @@
   updated, which causes flickering. Thus we update the DOM directly, and sneakily update the content and childViews
   arrays while suppressing the observers.
 */
-Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
+export default CollectionView.extend(Statechart, {
     classNames: ['flame-list-view'],
     classNameBindings: ['isFocused'],
     acceptsKeyResponder: true,
@@ -25,7 +26,7 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
         this._selectionDidChange();
     },
 
-    itemViewClass: Flame.ListItemView.extend({
+    itemViewClass: ListItemView.extend({
         templateContext: function(key, value) {
             return value !== undefined ? value : Ember.get(this, 'content');
         }.property('content'),
@@ -145,7 +146,7 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
         return true;
     },
 
-    idle: Flame.State.extend({
+    idle: State.extend({
         moveUp: function() { return this.get('owner').changeSelection(-1); },
         moveDown: function() { return this.get('owner').changeSelection(1); },
 
@@ -158,7 +159,7 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
             if (owner.get('allowReordering') && itemIndex !== undefined) {
                 if (owner.allowReorderingItem(itemIndex)) {
                     var childView = owner.objectAt(itemIndex);
-                    owner.set('dragHelper', Flame.ListViewDragHelper.create({
+                    owner.set('dragHelper', ListViewDragHelper.create({
                         listView: owner,
                         lastPageX: event.pageX,
                         lastPageY: event.pageY,
@@ -199,9 +200,9 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
         return this.mouseMove(event);  // Handle also this event in the new state
     },
 
-    mouseButtonPressed: Flame.State.extend({
-        mouseUpOnItem: Flame.State.gotoFlameState('idle'),
-        mouseUp: Flame.State.gotoFlameState('idle'),
+    mouseButtonPressed: State.extend({
+        mouseUpOnItem: State.gotoFlameState('idle'),
+        mouseUp: State.gotoFlameState('idle'),
 
         mouseMove: function(event) {
             var owner = this.get('owner');
@@ -213,7 +214,7 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
             return true;
         },
 
-        touchEnd: Flame.State.gotoFlameState('idle'),
+        touchEnd: State.gotoFlameState('idle'),
 
         touchMove: function(event) {
             this.mouseMove(this.normalizeTouchEvents(event));
@@ -221,21 +222,21 @@ Flame.ListView = Flame.CollectionView.extend(Flame.Statechart, {
         }
     }),
 
-    reordering: Flame.State.extend({
+    reordering: State.extend({
         mouseMove: function(event, view, scheduled) {
             var dragHelper = this.get('owner.dragHelper');
             Ember.run.scheduleOnce('afterRender', dragHelper, 'updateDisplay', event);
             return true;
         },
 
-        mouseUp: Flame.State.gotoFlameState('idle'),
+        mouseUp: State.gotoFlameState('idle'),
 
         touchMove: function(event) {
             this.mouseMove(this.normalizeTouchEvents(event));
             return true;
         },
 
-        touchEnd: Flame.State.gotoFlameState('idle'),
+        touchEnd: State.gotoFlameState('idle'),
 
         // Start reorder drag operation
         enterState: function() {

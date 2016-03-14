@@ -1,4 +1,6 @@
-Flame.TableSortSupport = {
+import MenuView from '../views/menu_view';
+
+export default {
     sortAscendingCaption: 'Sort ascending...',
     sortDescendingCaption: 'Sort descending...',
 
@@ -13,7 +15,7 @@ Flame.TableSortSupport = {
 
     _showSortMenu: function(header, options, anchorView, tableView) {
         var self = this;
-        Flame.MenuView.create({
+        MenuView.create({
             minWidth: anchorView.outerWidth(),
             items: options,
             action: function() {

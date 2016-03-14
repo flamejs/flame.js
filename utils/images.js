@@ -1,11 +1,3 @@
-//= require ./images_url
-
-Ember.mixin(Flame, {
-    image: function(imageUrl) {
-        if (typeof FlameImageUrlPrefix === 'undefined') {
-            return (Flame.imagePath || '') + imageUrl;
-        } else {
-            return FlameImageUrlPrefix + imageUrl;
-        }
-    }
-});
+export function image(imageUrl) {
+    return `/assets/images/${imageUrl}`;
+}

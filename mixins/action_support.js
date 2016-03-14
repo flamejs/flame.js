@@ -11,7 +11,7 @@
 
   If payload is not defined, it defaults to the view itself.
 */
-Flame.ActionSupport = {
+export default Ember.Mixin.create({
     target: null,
     action: null,
     payload: null,
@@ -46,4 +46,4 @@ Flame.ActionSupport = {
 
     beforeAction: function(view) {},
     afterAction: function(view) {}
-};
+});

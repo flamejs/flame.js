@@ -1,12 +1,13 @@
-//= require ./lazy_list_item_view
+import LazyListItemView, { MouseIsDownState } from './lazy_list_item_view';
+import { image } from '../utils/images';
 
-Flame.LazyTreeItemView = Flame.LazyListItemView.extend({
+export default LazyListItemView.extend({
     classNames: ['flame-tree-item-view'],
     itemContent: '{{view.content}}',
     isExpanded: false,
 
-    collapsedImage: Flame.image('disclosure_triangle_right.svg'),
-    expandedImage: Flame.image('disclosure_triangle_down.svg'),
+    collapsedImage: image('disclosure_triangle_right.svg'),
+    expandedImage: image('disclosure_triangle_down.svg'),
 
     handlebars: function() {
         return '{{{view.disclosureImage}}} <span>' + this.get('itemContent') + '</span>';
@@ -55,7 +56,7 @@ Flame.LazyTreeItemView = Flame.LazyListItemView.extend({
         return '<img src="%@">'.fmt(this.get('isExpanded') ? this.get('expandedImage') : this.get('collapsedImage'));
     }.property('isExpanded', 'content', 'expandedImage', 'collapsedImage'),
 
-    mouseIsDown: Flame.LazyListViewStates.MouseIsDown.extend({
+    mouseIsDown: MouseIsDownState.extend({
         mouseUp: function(event) {
             var owner = this.get('owner');
             if (owner.isExpandable()) {

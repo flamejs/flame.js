@@ -1,6 +1,6 @@
 var readOnly = Ember.computed.readOnly;
 
-Flame.TableViewContentAdapter = Ember.Object.extend({
+export default Ember.Object.extend({
     content: null,
 
     headers: readOnly('content._headers'),

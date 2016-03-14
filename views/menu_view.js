@@ -1,11 +1,13 @@
-//= require ./panel
-//= require ./collection_view
-//= require ./menu_view_support
-//= require ../mixins/action_support
+import View from '../view';
+import Panel, { POSITION_RIGHT, POSITION_LEFT } from './panel';
+import CollectionView from './collection_view';
+import MenuView from './menu_view';
+import ActionSupport from '../mixins/action_support';
+import MenuViewSupport from '../mixins/menu_view_support';
 
-// Only to be used in Flame.MenuView. Represent menu items with normal JS objects as creation of one Ember object took
+// Only to be used in MenuView. Represent menu items with normal JS objects as creation of one Ember object took
 // 3.5 ms on fast IE8 machine.
-Flame.MenuItem = function MenuItem(opts) {
+const MenuItem = function MenuItem(opts) {
     for (var key in opts) {
         if (opts.hasOwnProperty(key)) {
             this[key] = opts[key];
@@ -13,7 +15,7 @@ Flame.MenuItem = function MenuItem(opts) {
     }
 };
 
-Flame.MenuItem.prototype.renderToBuffer = function(buffer) {
+MenuItem.prototype.renderToBuffer = function(buffer) {
     var classes = ['flame-view', 'flame-list-item-view', 'flame-menu-item-view'];
     if (this.isSelected) classes.push('is-selected');
     if (!this.isEnabled()) classes.push('is-disabled');
@@ -31,15 +33,15 @@ Flame.MenuItem.prototype.renderToBuffer = function(buffer) {
     );
 };
 
-Flame.MenuItem.prototype.isEnabled = function() {
+MenuItem.prototype.isEnabled = function() {
     return !(this.isDisabled || (this.subMenuItems && this.subMenuItems.length === 0));
 };
 
-Flame.MenuItem.prototype.$ = function() {
+MenuItem.prototype.$ = function() {
     return Ember.$('#%@'.fmt(this.id));
 };
 
-Flame.MenuItem.prototype.closeSubMenu = function() {
+MenuItem.prototype.closeSubMenu = function() {
     var subMenu = this.subMenuView;
     if (!Ember.isNone(subMenu)) {
         subMenu.close();
@@ -57,7 +59,7 @@ Flame.MenuItem.prototype.closeSubMenu = function() {
   Because of the implementation details, this menu will hold values of undefined or null as the same as not set. Thus,
   no selectable menu item must have such value their value.
 */
-Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, Flame.MenuViewSupport, {
+export default Panel.extend(ActionSupport, MenuViewSupport, {
     parentMenu: null,
     subMenuKey: 'subMenu',
     _menuItems: null,
@@ -86,7 +88,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, Flame.MenuViewSupport, 
             menuItems;
         menuItems = (items || []).map(function(item, i) {
             // Only show the selection on the main menu, not in the submenus.
-            return new Flame.MenuItem({
+            return new MenuItem({
                 item: item,
                 isSelected: valueIsSet ? Ember.get(item, itemValueKey) === selectedValue : false,
                 isDisabled: Ember.get(item, itemEnabledKey) === false,
@@ -118,7 +120,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, Flame.MenuViewSupport, 
 
     _createMenuView: function() {
         var items = this.get('_menuItems');
-        return Flame.View.create({
+        return View.create({
             useAbsolutePosition: false,
             render: function(buffer) {
                 items.forEach(function(menuItem) { menuItem.renderToBuffer(buffer); });
@@ -152,7 +154,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, Flame.MenuViewSupport, 
     },
 
     subMenu: function() {
-        return Flame.MenuView.extend({
+        return MenuView.extend({
             isModal: false,
 
             popup: function(anchor, position) {
@@ -168,12 +170,12 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, Flame.MenuViewSupport, 
             _layoutRelativeTo: function(anchor, position) {
                 var layout = this._super(anchor, position);
                 // If already positioned on the left, nothing else needs to be checked.
-                if (this.get('subMenuPosition') === Flame.POSITION_LEFT) return layout;
+                if (this.get('subMenuPosition') === POSITION_LEFT) return layout;
 
                 if (layout.movedX) {
                     // Any further opened submenu should be opened on the left side.
-                    this.set('subMenuPosition', Flame.POSITION_LEFT);
-                    layout = this._super(anchor, Flame.POSITION_LEFT);
+                    this.set('subMenuPosition', POSITION_LEFT);
+                    layout = this._super(anchor, POSITION_LEFT);
                 }
                 return layout;
             }
@@ -437,7 +439,7 @@ Flame.MenuView = Flame.Panel.extend(Flame.ActionSupport, Flame.MenuViewSupport, 
                 item.subMenuView.set('_userHighlightIndex', -1);
                 item.subMenuView.set('internalSelection', { isSet: false, value: null });
             }
-            subMenu.popup(item.$(), this.get('subMenuPosition') || Flame.POSITION_RIGHT);
+            subMenu.popup(item.$(), this.get('subMenuPosition') || POSITION_RIGHT);
             if (selectItem) subMenu._selectNext(1);
             return true;
         }

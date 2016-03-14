@@ -1,10 +1,10 @@
-//= require ./split_view
+import SplitView from './split_view';
 
 /**
   VerticalSplitView divides the current view between leftView and rightView using a vertical
   dividerView.
 */
-Flame.VerticalSplitView = Flame.SplitView.extend({
+export default SplitView.extend({
     classNames: ['flame-vertical-split-view'],
     childViews: ['leftView', 'dividerView', 'rightView'],
     leftWidth: 100,

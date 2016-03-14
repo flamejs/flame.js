@@ -1,8 +1,10 @@
-Flame.SplitViewDividerViewBase = Ember.Mixin.create(Flame.Statechart, {
+import Statechart, { State } from '../statechart';
+
+export default Ember.Mixin.create(Statechart, {
     classNames: ['flame-split-view-divider'],
     initialFlameState: 'idle',
 
-    idle: Flame.State.extend({
+    idle: State.extend({
         mouseDown: function(event) {
             var parentView = this.get('owner.parentView');
             if (!parentView.get('allowResizing')) return false;
@@ -25,7 +27,7 @@ Flame.SplitViewDividerViewBase = Ember.Mixin.create(Flame.Statechart, {
         }
     }),
 
-    resizing: Flame.State.extend({
+    resizing: State.extend({
         mouseMove: function(event) {
             this.get('owner.parentView').resize(event);
             return true;
@@ -39,8 +41,8 @@ Flame.SplitViewDividerViewBase = Ember.Mixin.create(Flame.Statechart, {
             return true;
         },
 
-        mouseUp: Flame.State.gotoFlameState('idle'),
-        touchEnd: Flame.State.gotoFlameState('idle'),
+        mouseUp: State.gotoFlameState('idle'),
+        touchEnd: State.gotoFlameState('idle'),
 
         exitState: function() {
             var parentView = this.get('owner.parentView');

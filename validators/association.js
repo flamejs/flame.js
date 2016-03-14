@@ -1,4 +1,6 @@
-Flame.Validator.association = Flame.Validator.create({
+import { Validator } from '../validations';
+
+export default Validator.create({
     validate: function(target, key, forceRevalidation) {
         if (forceRevalidation === undefined) {
             forceRevalidation = false;

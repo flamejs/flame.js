@@ -7,7 +7,7 @@
   for any item results in the entire array being emptied and then re-populated.) Usage:
 
     array = [{index: 4, name: 'foo'}, {index: 1, name: 'bar'}]
-    sortedArray = Flame.SortingArrayProxy.create({sortKey: 'index', source: array})
+    sortedArray = SortingArrayProxy.create({sortKey: 'index', source: array})
 
   Now if you reorder the proxy (with removeAt+insertAt pair), the index property will be updated
   on each item. If new items are added to the source, they appear in the proxy array in the correct
@@ -28,7 +28,7 @@
   sorting obviously changes the item indexes, and rewriting all operations and observers on the fly
   sounds like too difficult to implement.)
 */
-Flame.SortingArrayProxy = Ember.ArrayProxy.extend({
+export default Ember.ArrayProxy.extend({
     sortKey: 'position',
     parent: null,
     _suppressObservers: false,
@@ -269,5 +269,4 @@ Flame.SortingArrayProxy = Ember.ArrayProxy.extend({
             this._suppressObservers = false;
         }
     }
-
 });

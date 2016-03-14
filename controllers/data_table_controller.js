@@ -1,11 +1,13 @@
-//= require ./table_controller
+import TableController from './table_controller';
+import TableHeader from '../utils/table_header';
+import TableCell from '../utils/table_cell';
 
-/*
+/**
   A helper class that accepts the table data as a two-dimensional array (array of rows, where
   each row is an array of cell values for that row). Example:
 
-  Flame.TableView.extend({
-      content: Flame.DataTableController.create({
+  TableView.extend({
+      content: DataTableController.create({
           headers: {
               columnHeaders: [{label: 'Col1'}, {label: 'Col2'}],
               rowHeaders: [{label: 'Row1'}, {label: 'Row2'}, {label: 'Row3'}]
@@ -20,8 +22,8 @@
 
   If you need a bit of customization, you can override properties 'headerClass' and 'cellClass'.
   Also have a look at ArrayTableController.
- */
-Flame.DataTableController = Flame.TableController.extend({
+*/
+export default TableController.extend({
     headers: null,
     data: null,
 
@@ -53,14 +55,14 @@ Flame.DataTableController = Flame.TableController.extend({
 
     headerClass: function() {
         var cellClass = this.get('cellClass');
-        return Flame.TableHeader.extend({
+        return TableHeader.extend({
             createCell: function(cellData) {
                 return new cellClass({value: cellData.value});
             }
         });
     }.property(),
 
-    cellClass: Flame.TableCell,
+    cellClass: TableCell,
 
     _transformData: function(data) {
         var flatData = [];
@@ -80,5 +82,4 @@ Flame.DataTableController = Flame.TableController.extend({
             this.pushDataBatch(this._transformData(data));
         }
     }.observes('headers')
-
 });

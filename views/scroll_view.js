@@ -1,5 +1,7 @@
+import View from '../view';
+
 /**
-  Flame.ScrollView provides a scrollable container. In the DOM this is just a div
+  ScrollView provides a scrollable container. In the DOM this is just a div
   with `overflow: auto`.
 
   When the ScrollView is scrolled, it will notify each child view that implements
@@ -11,7 +13,7 @@
        * the ScrollView should fire an update when the ScrollView is resized (either
          due to the window being resized, or due to a HorizontalSplitView).
 */
-Flame.ScrollView = Flame.View.extend({
+export default View.extend({
     classNames: ['scroll-view'],
     /** Last known vertical scroll offset */
     lastScrollY: 0,

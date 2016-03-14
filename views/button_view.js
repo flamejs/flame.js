@@ -1,4 +1,8 @@
-Flame.ButtonView = Flame.View.extend(Flame.ActionSupport, Flame.Statechart, {
+import View from '../view';
+import ActionSupport from '../mixins/action_support';
+import Statechart, { State } from '../statechart';
+
+export default View.extend(ActionSupport, Statechart, {
     defaultHeight: 24,
     classNames: ['flame-button-view'],
     classNameBindings: ['isHovered', 'isActive', 'isSelected', 'isDisabled', 'isDefault', 'isFocused'],
@@ -28,7 +32,7 @@ Flame.ButtonView = Flame.View.extend(Flame.ActionSupport, Flame.Statechart, {
         return true;
     },
 
-    idle: Flame.State.extend({
+    idle: State.extend({
         mouseEnter: function() {
             this.gotoFlameState('hover');
             return true;
@@ -49,7 +53,7 @@ Flame.ButtonView = Flame.View.extend(Flame.ActionSupport, Flame.Statechart, {
         }
     }),
 
-    hover: Flame.State.extend({
+    hover: State.extend({
         mouseLeave: function() {
             this.gotoFlameState('idle');
             return true;
@@ -81,7 +85,7 @@ Flame.ButtonView = Flame.View.extend(Flame.ActionSupport, Flame.Statechart, {
         }
     }),
 
-    mouseDownInside: Flame.State.extend({
+    mouseDownInside: State.extend({
         _handleClick: function() {
             var owner = this.get('owner');
             owner.fireAction();
@@ -116,7 +120,7 @@ Flame.ButtonView = Flame.View.extend(Flame.ActionSupport, Flame.Statechart, {
         }
     }),
 
-    mouseDownOutside: Flame.State.extend({
+    mouseDownOutside: State.extend({
         mouseUp: function() {
             this.gotoFlameState('idle');
             return true;

@@ -1,7 +1,10 @@
-//= require ./table_data_view
+import View from '../view';
+import TableDataView from './table_data_view';
+import TableViewContentAdapter from '../utils/table_view_content_adapter';
+import Statechart, { State } from '../statechart';
+import { measureString } from '../utils/string_measurement';
 
-var alias = Ember.computed.alias,
-    readOnly = Ember.computed.readOnly;
+const { alias, readOnly } = Ember.computed;
 
 var unbindScroll = function() {
     var scrollable = this.get('scrollable');
@@ -10,7 +13,7 @@ var unbindScroll = function() {
     }
 };
 
-Flame.TableView = Flame.View.extend(Flame.Statechart, {
+export default View.extend(Statechart, {
     MIN_COLUMN_WIDTH: 30,
 
     classNames: ['flame-table-view'],
@@ -36,19 +39,19 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
 
     defaultColumnWidth: 88,
     rowHeaderWidth: null,
-    content: null, // Set to a Flame.TableController
+    content: null, // Set to a TableController
     allowRefresh: true,
     batchUpdates: true,
     useAutoWidth: false,
     tableViewDelegate: null,
 
     contentAdapter: function() {
-        return Flame.TableViewContentAdapter.create({
+        return TableViewContentAdapter.create({
             content: this.get('content')
         });
     }.property('content'),
 
-    tableDataView: Flame.TableDataView.extend({
+    tableDataView: TableDataView.extend({
         data: readOnly('parentView.content._data'),
         content: readOnly('parentView.content'),
         dirtyCells: alias('parentView.content.dirtyCells'),
@@ -85,7 +88,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
      However, if user clicks the resize-handle the view goes to resizing state. The first mouseup event moves the view
      back to idle state, where the second redundant mouseup gets eaten silently.
     */
-    idle: Flame.State.extend({
+    idle: State.extend({
         mouseDown: function(event) {
             this.gotoFlameState('clickInProgress');
 
@@ -124,10 +127,10 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
             if (!!target.closest('.column-header').length && (index = target.closest('td').attr('data-leaf-index'))) {
                 header = this.get('owner.content.columnLeafs')[index];
 
-                var columnDimensions = Flame.measureString(owner.getColumnContents(header), 'ember-view');
+                var columnDimensions = measureString(owner.getColumnContents(header), 'ember-view');
 
                 var isBold = target.closest('td').css('font-weight') === 'bold';
-                var headerLabelDimensions = Flame.measureString(owner.getLeafHeaderLabel(header), 'ember-view', 'label', isBold ? 'font-weight:bold;' : '');
+                var headerLabelDimensions = measureString(owner.getLeafHeaderLabel(header), 'ember-view', 'label', isBold ? 'font-weight:bold;' : '');
 
                 var width = Math.max(columnDimensions.width, headerLabelDimensions.width) + 40;
 
@@ -143,7 +146,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         }
     }),
 
-    clickInProgress: Flame.State.extend({
+    clickInProgress: State.extend({
         mouseUp: function(event) {
             this.gotoFlameState('idle');
             var clickDelegate = this.get('owner.tableViewDelegate');
@@ -178,7 +181,7 @@ Flame.TableView = Flame.View.extend(Flame.Statechart, {
         }
     }),
 
-    resizing: Flame.State.extend({
+    resizing: State.extend({
         enterState: function() {
             var cell = this.get('owner.resizingCell');
             var $table = cell.closest('table');

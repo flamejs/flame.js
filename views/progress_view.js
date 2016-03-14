@@ -1,4 +1,6 @@
-Flame.ProgressView = Flame.View.extend({
+import View from '../view';
+
+export default View.extend({
     classNames: ['flame-progress-view'],
 
     value: null,

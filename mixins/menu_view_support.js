@@ -1,9 +1,10 @@
-//= require ./menu_scroll_view
+import MenuScrollView from '../views/menu_scroll_view';
+import { measureString } from '../utils/string_measurement';
 
-Flame.MenuViewSupport = Ember.Mixin.create({
+export default Ember.Mixin.create({
     classNames: ['flame-menu'],
     childViews: ['contentView'],
-    contentView: Flame.MenuScrollView,
+    contentView: MenuScrollView,
     dimBackground: false,
     allowClosingByCancelButton: true,
     menuMargin: 12,
@@ -67,7 +68,7 @@ Flame.MenuViewSupport = Ember.Mixin.create({
         var itemTitleKey = this.get('itemTitleKey');
         var allTitles = items.map(function(item) { return Ember.get(item, itemTitleKey); });
         // Give the menus a 16px breathing space to account for sub menu indicator, and to give some right margin (+18px for the padding)
-        return Flame.measureString(allTitles, 'ember-view flame-view flame-list-item-view flame-menu-item-view', 'title').width + 16 + 18;
+        return measureString(allTitles, 'ember-view flame-view flame-list-item-view flame-menu-item-view', 'title').width + 16 + 18;
     },
 
     keyPress: function(event) {

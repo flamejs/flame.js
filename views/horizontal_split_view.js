@@ -1,10 +1,10 @@
-//= require ./split_view
+import SplitView from './split_view';
 
 /**
   HotizontalSplitView divides the current view between topView and bottomView using a horizontal
   dividerView.
 */
-Flame.HorizontalSplitView = Flame.SplitView.extend({
+export default SplitView.extend({
     classNames: ['flame-horizontal-split-view'],
     childViews: ['topView', 'dividerView', 'bottomView'],
     topHeight: 100,
@@ -20,7 +20,7 @@ Flame.HorizontalSplitView = Flame.SplitView.extend({
     _resizeStartBottomHeight: undefined,
 
     init: function() {
-        Ember.assert('Flame.HorizontalSplitView needs topView and bottomView!', !!this.get('topView') && !!this.get('bottomView'));
+        Ember.assert('HorizontalSplitView needs topView and bottomView!', !!this.get('topView') && !!this.get('bottomView'));
         this._super();
 
         if (this.get('flex') === 'bottom') this.set('bottomHeight', undefined);

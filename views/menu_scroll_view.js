@@ -1,4 +1,6 @@
-Flame.MenuScrollViewButton = Flame.View.extend({
+import View from '../view';
+
+const MenuScrollViewButton = View.extend({
     classNames: ['scroll-element'],
     classNameBindings: ['directionClass', 'isShown'],
 
@@ -30,7 +32,7 @@ Flame.MenuScrollViewButton = Flame.View.extend({
     mouseUp: function() { return true; }
 });
 
-Flame.MenuScrollView = Flame.View.extend({
+export default View.extend({
     classNames: ['menu-scroll-view'],
     needScrolling: false,
     scrollDirection: 0,
@@ -39,12 +41,12 @@ Flame.MenuScrollView = Flame.View.extend({
     childViews: ['upArrow', 'viewPort', 'downArrow'],
     scrollSize: 10, // How many pixels to scroll per scroll
 
-    viewPort: Flame.View.extend({
+    viewPort: View.extend({
         classNames: ['scroll-view-viewport']
     }),
 
-    upArrow: Flame.MenuScrollViewButton.extend({direction: 'up', layout: { height: 20, top: 0, width: '100%' }}),
-    downArrow: Flame.MenuScrollViewButton.extend({direction: 'down', layout: { height: 20, bottom: 0, width: '100%' }}),
+    upArrow: MenuScrollViewButton.extend({direction: 'up', layout: { height: 20, top: 0, width: '100%' }}),
+    downArrow: MenuScrollViewButton.extend({direction: 'down', layout: { height: 20, bottom: 0, width: '100%' }}),
 
     willDestroyElement: function() {
         this._super();

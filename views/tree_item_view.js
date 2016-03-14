@@ -1,3 +1,9 @@
+import View from '../view';
+import TreeView from './tree_view';
+import ListItemView from './list_item_view';
+import DisclosureView from './disclosure_view';
+import VerticalStackLayoutManager from '../layout_managers/vertical_stack_layout_manager';
+
 /*
   A child view in a TreeView. In most cases you don't need to extend this, you can instead define
   a handlebarsMap on the tree view. If you want to use a custom view instead of handlebars, consider
@@ -8,7 +14,7 @@
   TODO Should perhaps extract the class definition used in treeItemViewClass into a separate subclass
        for easier extending.
  */
-Flame.TreeItemView = Flame.ListItemView.extend({
+export default ListItemView.extend({
     useAbsolutePositionBinding: 'parentView.rootTreeView.useAbsolutePositionForItems',
     classNames: ['flame-tree-item-view'],
     classNameBindings: ['parentView.nestingLevel'],
@@ -75,7 +81,7 @@ Flame.TreeItemView = Flame.ListItemView.extend({
     // This view class is responsible for rendering a single item in the tree. It's not the same thing as
     // the itemViewClass, because in the tree view that class is responsible for rendering the item AND
     // possible nested list view, if the item has children.
-    treeItemViewClass: Flame.View.extend({
+    treeItemViewClass: View.extend({
         useAbsolutePosition: false,
         layout: { top: 0, left: 0, right: 0, height: 20 },
         classNames: ['flame-tree-item-view-content'],
@@ -112,7 +118,7 @@ Flame.TreeItemView = Flame.ListItemView.extend({
     },
 
     // The view class displaying a disclosure view that allows expanding/collapsing possible children
-    toggleButton: Flame.DisclosureView.extend({
+    toggleButton: DisclosureView.extend({
         classNames: ['flame-tree-view-toggle'],
         ignoreLayoutManager: true,
         useAbsolutePosition: false,
@@ -125,9 +131,9 @@ Flame.TreeItemView = Flame.ListItemView.extend({
     // TODO Don't create a new CLASS EACH AND EVERY TIME this property is called! Using just a cacheable won't do
     // because then a new class would still be created for each instance of a Tree.
     nestedTreeView: function() {
-        return Flame.TreeView.extend({
+        return TreeView.extend({
             useAbsolutePosition: this.get('parentView.rootTreeView.useAbsolutePositionForItems'),
-            layoutManager: Flame.VerticalStackLayoutManager.create({ topMargin: 0, spacing: 0, bottomMargin: 0 }),
+            layoutManager: VerticalStackLayoutManager.create({ topMargin: 0, spacing: 0, bottomMargin: 0 }),
             layout: { top: 0, left: 0, right: 0 },
             classNames: ['flame-tree-view-nested'],
             isVisible: Ember.computed.bool('parentView.isExpanded'), // Ember isVisible handling considers undefined to be visible

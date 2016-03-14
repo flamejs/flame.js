@@ -1,6 +1,13 @@
+import View from '../view';
+import MenuView from './menu_view';
+import Statechart, { State } from '../statechart';
+import { ALLOW_BROWSER_DEFAULT_HANDLING } from '../mixins/event_manager';
+
+import '../utils/jquery_util';
+
 var isWebKit = /webkit/i.test(window.navigator.userAgent);
 
-Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
+export default View.extend(Statechart, {
     classNames: ['flame-table-data-view'],
     acceptsKeyResponder: true,
     batchUpdates: true,
@@ -14,7 +21,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
 
     initialFlameState: 'loaded',
 
-    loaded: Flame.State.extend({
+    loaded: State.extend({
         mouseDown: function(event) {
             var owner = this.get('owner');
             if (owner.selectCell(owner._cellForTarget(event.target), false)) {
@@ -36,7 +43,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         }
     }),
 
-    mouseIsDown: Flame.State.extend({
+    mouseIsDown: State.extend({
         lastTarget: null,
 
         mouseMove: function(event) {
@@ -57,7 +64,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         }
     }),
 
-    selected: Flame.State.extend({
+    selected: State.extend({
         cellUp: function(cell) {
             return jQuery(cell.parent().prev().children()[cell.attr('data-index')]);
         },
@@ -396,7 +403,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
     }),
 
     // Used to allow users to select text from read-only cells
-    selectingReadOnly: Flame.State.extend({
+    selectingReadOnly: State.extend({
         cancel: function(event) {
             this.get('owner')._cancelEditingOrSelecting();
             return true;
@@ -475,18 +482,18 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
         }
     }),
 
-    editing: Flame.State.extend({
+    editing: State.extend({
         cancel: function(event) {
             this.get('owner')._cancelEditingOrSelecting();
             return true;
         },
 
         moveLeft: function() {
-            return Flame.ALLOW_BROWSER_DEFAULT_HANDLING;
+            return ALLOW_BROWSER_DEFAULT_HANDLING;
         },
 
         moveRight: function() {
-            return Flame.ALLOW_BROWSER_DEFAULT_HANDLING;
+            return ALLOW_BROWSER_DEFAULT_HANDLING;
         },
 
         insertNewline: function(event) {
@@ -545,7 +552,7 @@ Flame.TableDataView = Flame.View.extend(Flame.Statechart, {
             if (!dataCell.showEditor(selectedCell, owner, owner.get('content'))) {
                 // No special editor, use one of the defaults
                 if (options) { // Drop down menu for fields with a fixed set of options
-                    var menu = Flame.MenuView.createWithMixins({
+                    var menu = MenuView.createWithMixins({
                         minWidth: selectedCell.outerWidth(),
                         parent: owner, // Reference to the cube table view
                         items: options.map(function(o) {

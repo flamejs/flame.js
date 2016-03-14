@@ -1,12 +1,14 @@
-//= require ./text_field_view
+import TextFieldView, { TextField } from './text_field_view';
+import AutocompleteMenuView from './autocomplete_menu_view';
+import Statechart, { State } from '../statechart';
 
-Flame.AutocompleteTextFieldView = Flame.TextFieldView.extend(Flame.Statechart, Flame.ActionSupport, {
+export default TextFieldView.extend(Statechart, {
     _autocompleteView: null,
     _lastQueuedQuery: null,
     autocompleteDelegate: null,
     initialFlameState: 'idle',
 
-    textField: Flame.TextField.extend({
+    textField: TextField.extend({
         _debounce: null,
 
         keyUp: function(event) {
@@ -29,7 +31,7 @@ Flame.AutocompleteTextFieldView = Flame.TextFieldView.extend(Flame.Statechart, F
         }
     }),
 
-    idle: Flame.State.extend({
+    idle: State.extend({
         enterState: function() {
             var lastQuery = this.get('owner._lastQueuedQuery');
             if (lastQuery) {
@@ -49,7 +51,7 @@ Flame.AutocompleteTextFieldView = Flame.TextFieldView.extend(Flame.Statechart, F
         }
     }),
 
-    requesting: Flame.State.extend({
+    requesting: State.extend({
         enterState: function() {
             this.get('owner')._closeAutocompleteMenu();
         },
@@ -77,7 +79,7 @@ Flame.AutocompleteTextFieldView = Flame.TextFieldView.extend(Flame.Statechart, F
 
     _showAutocompleteMenu: function(options) {
         if (!this._autocompleteMenu || this._autocompleteMenu.isDestroyed) {
-            this._autocompleteMenu = Flame.AutocompleteMenuView.create({
+            this._autocompleteMenu = AutocompleteMenuView.create({
                 minWidth: this.$().width(),
                 target: this,
                 textField: this.get('textField'),

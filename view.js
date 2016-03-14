@@ -1,7 +1,6 @@
-//= require_tree ./mixins
-//= require ./layout_manager
-//= require_self
-//= require_tree ./views
+import ViewSupport from './mixins/view_support';
+import LayoutSupport from './mixins/layout_support';
+import EventManager from './mixins/event_manager';
 
 Ember.View.reopen({
     // Finds the first descendant view for which given property evaluates to true. Proceeds depth-first.
@@ -21,20 +20,14 @@ Ember.View.reopen({
     }
 });
 
-Flame.reopen({
-    ALIGN_LEFT: 'align-left',
-    ALIGN_RIGHT: 'align-right',
-    ALIGN_CENTER: 'align-center',
-
-    FOCUS_RING_MARGIN: 3
-});
+const _templateCache = {};
 
 /**
   Base class for Flame views. Can be used to hold child views or render a template. In Ember, you normally either use
   Ember.View for rendering a template or Ember.ContainerView to render child views. But we want to support both here, so
-  that we can use e.g. Flame.ListItemView for items in list views, and the app can decide whether to use a template or not.
+  that we can use e.g. ListItemView for items in list views, and the app can decide whether to use a template or not.
 */
-Flame.View = Ember.ContainerView.extend(Flame.ViewSupport, Flame.LayoutSupport, Flame.EventManager, {
+const View = Ember.ContainerView.extend(ViewSupport, LayoutSupport, EventManager, {
     isFocused: false, // Does this view currently have key focus?
 
     init: function() {
@@ -103,7 +96,7 @@ Flame.View = Ember.ContainerView.extend(Flame.ViewSupport, Flame.LayoutSupport, 
     },
 
     // For Ember 1.0, removeChild on ContainerViews expects there not to be any SimpleHandlebarsView children
-    // Flame.View extends ContainerView, but it allows templates, so there will be SimpleHandlebarsViews children.
+    // View extends ContainerView, but it allows templates, so there will be SimpleHandlebarsViews children.
     // This is the Ember.View implementation of removeChild for when there is a template.
     removeChild: function(view) {
         if (this.get('template')) {
@@ -127,12 +120,12 @@ Flame.View = Ember.ContainerView.extend(Flame.ViewSupport, Flame.LayoutSupport, 
     // Compiles given handlebars template, with caching to make it perform better. (Called repetitively e.g.
     // when rendering a list view whose item views use a template.)
     _compileTemplate: function(template) {
-        var compiled = Flame._templateCache[template];
+        var compiled = _templateCache[template];
         if (!compiled) {
-            Flame._templateCache[template] = compiled = Ember.Handlebars.compile(template);
+            _templateCache[template] = compiled = Ember.Handlebars.compile(template);
         }
         return compiled;
     }
 });
 
-Flame._templateCache = {};
+export default View;

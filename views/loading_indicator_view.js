@@ -1,5 +1,8 @@
-Flame.LoadingIndicatorView = Flame.ImageView.extend({
+import ImageView from './image_view';
+import { image } from '../utils/images';
+
+export default ImageView.extend({
     layout: { width: 16, height: 16 },
     classNames: ['loading-indicator'],
-    value: Flame.image('loading.gif')
+    value: image('loading.gif')
 });

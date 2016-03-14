@@ -1,8 +1,10 @@
-//= require ./list_item_view
+import ListItemView from './list_item_view';
+import Statechart, { State } from '../statechart';
+import { image } from '../utils/images';
 
-Flame.LazyListViewStates = {};
+import '../utils/jquery_util';
 
-Flame.LazyListViewStates.MouseIsDown = Flame.State.extend({
+export const MouseIsDownState = State.extend({
     xOffset: null,
     yOffset: null,
 
@@ -35,7 +37,7 @@ Flame.LazyListViewStates.MouseIsDown = Flame.State.extend({
     }
 });
 
-Flame.LazyListItemView = Flame.ListItemView.extend(Flame.Statechart, {
+export default ListItemView.extend(Statechart, {
     layout: { left: 0, right: 0, height: 25 },
     flameStates: ['idle', 'mouseIsDown', 'dragging'],
     initialFlameState: 'idle',
@@ -61,15 +63,15 @@ Flame.LazyListItemView = Flame.ListItemView.extend(Flame.Statechart, {
         return true;
     },
 
-    idle: Flame.State.extend({
+    idle: State.extend({
         mouseDown: function() {
             this.gotoFlameState('mouseIsDown');
         }
     }),
 
-    mouseIsDown: Flame.LazyListViewStates.MouseIsDown,
+    mouseIsDown: MouseIsDownState,
 
-    dragging: Flame.State.extend({
+    dragging: State.extend({
         clone: null,
         indicator: null,
         scrollViewOffset: null, // Cache this for performance reasons
@@ -84,7 +86,7 @@ Flame.LazyListItemView = Flame.ListItemView.extend(Flame.Statechart, {
             this.clone = this.$().safeClone();
             this.clone.addClass('dragged-clone');
             this.clone.draggingInfo = { currentIndex: this.get('owner.contentIndex') };
-            this.indicator = jQuery('<div class="indicator"><img src="%@"></div>'.fmt(Flame.image('reorder_indicator.svg'))).hide();
+            this.indicator = jQuery('<div class="indicator"><img src="%@"></div>'.fmt(image('reorder_indicator.svg'))).hide();
             $listView.append(this.clone);
             $listView.append(this.indicator);
         },

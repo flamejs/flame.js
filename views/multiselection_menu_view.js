@@ -1,12 +1,13 @@
-//= require ./panel
-//= require ./collection_view
-//= require ./menu_view_support
-//= require ../mixins/action_support
+import View from '../view';
+import Panel from './panel';
+import CollectionView from './collection_view';
+import ActionSupport from '../mixins/action_support';
+import MenuViewSupport from '../mixins/menu_view_support';
 
 /**
   A one-level multiselection menu. Can be used with a MultiselectionButtonView
 */
-Flame.MultiselectionMenuView = Flame.Panel.extend(Flame.ActionSupport, Flame.MenuViewSupport, {
+export default Panel.extend(ActionSupport, MenuViewSupport, {
     _highlightedItem: null,
 
     init: function() {
@@ -34,9 +35,9 @@ Flame.MultiselectionMenuView = Flame.Panel.extend(Flame.ActionSupport, Flame.Men
 
     _createMenuView: function() {
         var self = this;
-        return Flame.CollectionView.createWithMixins({
+        return CollectionView.createWithMixins({
                 content: this.get('items'),
-                itemViewClass: Flame.View.extend({
+                itemViewClass: View.extend({
                     classNames: ['flame-view', 'flame-list-item-view', 'flame-menu-item-view'],
                     classNameBindings: ['isSelected', 'isDisabled'],
                     attributeBindings: ['tooltip:title'],

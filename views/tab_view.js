@@ -1,4 +1,7 @@
-Flame.TabView = Flame.View.extend({
+import View from '../view';
+import ButtonView from './button_view';
+
+export default View.extend({
     classNames: ['flame-tab-view'],
     childViews: ['tabBarView', 'contentView'],
     tabs: null,
@@ -68,7 +71,7 @@ Flame.TabView = Flame.View.extend({
             buttonConfig.classNameBindings = ['tabView.%@.%@'.fmt(tab.value, tab.tabClass)];
         }
 
-        tabBarView.insertAt(index, tabBarView.createChildView(Flame.ButtonView.createWithMixins(buttonConfig)));
+        tabBarView.insertAt(index, tabBarView.createChildView(ButtonView.createWithMixins(buttonConfig)));
 
         var view = this.get(tab.value);
         Ember.assert('View for tab %@ not defined!'.fmt(tab.value), !!view);
@@ -105,12 +108,12 @@ Flame.TabView = Flame.View.extend({
         }
     }.observes('nowShowing').on('init'),
 
-    tabBarView: Flame.View.extend({
+    tabBarView: View.extend({
         classNames: ['flame-tab-view-tabs'],
         layout: { left: 0, top: 0, right: 0, height: 'parentView.tabsHeight' }
     }),
 
-    contentView: Flame.View.extend({
+    contentView: View.extend({
         classNames: ['flame-tab-view-content'],
         layout: { left: 0, top: 'parentView.tabsHeight', right: 0, bottom: 0 }
     })

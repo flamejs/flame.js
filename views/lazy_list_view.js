@@ -1,12 +1,13 @@
-//= require ./list_view
+import ListView from './list_view';
+import ScrollView from './scroll_view';
 
 /**
-  Flame.ListView has the problem that it creates and renders a view for each and
+  ListView has the problem that it creates and renders a view for each and
   every item in the collection that it displays. For large collections this will be
   terribly slow and inefficient.
 
-  Flame.LazyListView is a drop-in alternative for Flame.ListView that only renders
-  item views that are visible within the Flame.ScrollView this list view is contained
+  LazyListView is a drop-in alternative for ListView that only renders
+  item views that are visible within the ScrollView this list view is contained
   in. Additionally item views will be recycled, i.e. item views that scroll off the
   visible area will be reused to show items that have become visible by scrolling.
 
@@ -15,7 +16,7 @@
   with the `bufferSize` property. Setting this to 10 will render 5 extra views on
   top and 5 on the bottom.
 
-  Flame.LazyListView currently only works correctly when used within a Flame.ScrollView.
+  LazyListView currently only works correctly when used within a ScrollView.
 
   TODO * variable row height
        * spacing between items
@@ -23,7 +24,7 @@
   @class LazyListView
   @extends ListView
 */
-Flame.LazyListView = Flame.ListView.extend({
+export default ListView.extend({
     classNames: ['flame-lazy-list-view'],
     /** The default height of one row in the LazyListView */
     itemHeight: 25,
@@ -80,7 +81,7 @@ Flame.LazyListView = Flame.ListView.extend({
     },
 
     _updateScrollPosition: function() {
-        var scrollView = this.nearestOfType(Flame.ScrollView);
+        var scrollView = this.nearestOfType(ScrollView);
         if (scrollView && scrollView.get('element')) {
             var element = scrollView.get('element');
             this._lastScrollHeight = element.offsetHeight;
@@ -201,7 +202,7 @@ Flame.LazyListView = Flame.ListView.extend({
 
       @param row {Number} The row number for which we want a view.
       @param attributes {Object} Attributes that should be used when a new view is created.
-      @returns {Flame.ItemView} A fully instantiated view that renders the given row.
+      @returns {ItemView} A fully instantiated view that renders the given row.
     */
     viewForRow: function(row, attributes) {
         var itemHeight = this.itemHeightForRow(row);

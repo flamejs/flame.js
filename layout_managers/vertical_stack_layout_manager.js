@@ -1,16 +1,18 @@
+import LayoutManager from '../layout_manager';
+
 /**
   VerticalStackLayoutManager is a layout manager that stacks the children vertically, with optional
   top margin, spacing and bottom margin. Use in your view e.g. like this;
 
    layout: { right: 220, top: 60, width: 200 },
-   layoutManager: Flame.VerticalStackLayoutManager.create({ spacing: 10 }),
+   layoutManager: VerticalStackLayoutManager.create({ spacing: 10 }),
 
   Each child view should define layout.height. For the parent view it's set automatically. Should any
   of the child views change their height, the layout is updated automatically. If a childView has
   property 'ignoreLayoutManager' set to true, its layout is not affected nor considered here.
   Similarly, elements with isVisible false are ignored.
 */
-Flame.VerticalStackLayoutManager = Flame.LayoutManager.extend({
+export default LayoutManager.extend({
     topMargin: 0,
     bottomMargin: 0,
     spacing: 0,

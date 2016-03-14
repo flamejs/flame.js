@@ -1,6 +1,6 @@
-//= require ./menu_view
+import MenuView from './menu_view';
 
-Flame.AutocompleteMenuView = Flame.MenuView.extend({
+export default MenuView.extend({
     keyPress: function(event) {
         return false;
     },

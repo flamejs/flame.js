@@ -1,4 +1,6 @@
-Flame.ImageView = Flame.View.extend({
+import View from '../view';
+
+export default View.extend({
     imageHeight: null,
     imageWidth: null,
     value: null,

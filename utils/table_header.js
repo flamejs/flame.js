@@ -1,4 +1,4 @@
-Flame.TableHeader = Ember.Object.extend({
+export default Ember.Object.extend({
     isClickable: true,
 
     headerLabel: Ember.computed.alias('label'),

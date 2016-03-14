@@ -1,4 +1,6 @@
-Flame.ListItemView = Flame.View.extend({
+import View from '../view';
+
+export default View.extend({
     useAbsolutePosition: false,
     classNames: ['flame-list-item-view'],
     classNameBindings: ['isSelected', 'parentView.allowReordering', 'isDragged'],

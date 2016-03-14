@@ -1,7 +1,7 @@
-//= require ./data_table_controller
-//= require ../utils/table_sort_support
+import DataTableController from './data_table_controller';
+import TableSortSupport from '../mixins/table_sort_support';
 
-Flame.ArrayTableController = Flame.DataTableController.extend(Flame.TableSortSupport, {
+export default DataTableController.extend(TableSortSupport, {
     content: [],  // Set to an array of objects to display (rows)
     columns: [],  // Set to an array of labels+properties to display for each object (columns)
                   // e.g. {property: 'firstName', label: 'First Name'}

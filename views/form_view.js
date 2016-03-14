@@ -1,7 +1,24 @@
+import View from '../view';
+import VerticalStackLayoutManager from '../layout_managers/vertical_stack_layout_manager';
+import ButtonView from './button_view';
+import MultiselectionButtonView from './multiselection_button_view';
+import AutocompleteTextFieldView from './autocomplete_text_field_view';
+import SelectButtonView from './select_button_view';
+import LabelView, { ALIGN_RIGHT } from './label_view';
+import TextFieldView from './text_field_view';
+import TextAreaView from './text_area_view';
+import CheckboxView from './checkbox_view';
+import ComboBoxView from './combo_box_view';
+import ErrorMessageView from './error_message_view';
+import { zIndexCounter } from './panel';
+import { keyResponderStack } from '../mixins/event_manager';
+import { nearest } from '../utils/computed_nearest';
+import { notEqual } from '../utils/computed';
+
 // You must set on object to 'object' that the form manipulates (or use a binding)
 // Optionally you can set a defaultTarget, that will be used to set the default target for any actions
 // triggered from the form (button clicks and default submit via hitting enter)
-Flame.FormView = Flame.View.extend({
+export default View.extend({
     classNames: ['form-view'],
     tagName: 'form',
 
@@ -16,7 +33,7 @@ Flame.FormView = Flame.View.extend({
     columnSpacing: 10,
     buttonSpacing: 15,
     labelWidth: 150,
-    labelAlign: Flame.ALIGN_RIGHT,
+    labelAlign: ALIGN_RIGHT,
     buttonWidth: 90,
     controlWidth: null,// set this if you want to force a set control width
     defaultFocus: null,
@@ -26,7 +43,7 @@ Flame.FormView = Flame.View.extend({
         this._super();
 
         if (!this.get('layoutManager')) {
-            this.set('layoutManager', Flame.VerticalStackLayoutManager.create({
+            this.set('layoutManager', VerticalStackLayoutManager.create({
                 topMargin: this.get('topMargin'),
                 spacing: this.get('rowSpacing'),
                 bottomMargin: this.get('bottomMargin')
@@ -67,8 +84,8 @@ Flame.FormView = Flame.View.extend({
         }
         if (view) {
             // The FormView expects all controls to be within another view
-            return Flame.View.extend({
-                layoutManager: Flame.VerticalStackLayoutManager.create({ topMargin: this._focusRingMargin, spacing: 0, bottomMargin: this._focusRingMargin }),
+            return View.extend({
+                layoutManager: VerticalStackLayoutManager.create({ topMargin: this._focusRingMargin, spacing: 0, bottomMargin: this._focusRingMargin }),
                 childViews: ['control'],
                 control: view,
                 isVisible: desc.isVisible === undefined ? true : desc.isVisible
@@ -77,7 +94,7 @@ Flame.FormView = Flame.View.extend({
 
         view = {
             layout: { left: this.get('leftMargin'), right: this.get('rightMargin') },
-            layoutManager: Flame.VerticalStackLayoutManager.create({ topMargin: this._focusRingMargin, spacing: 0, bottomMargin: this._focusRingMargin }),
+            layoutManager: VerticalStackLayoutManager.create({ topMargin: this._focusRingMargin, spacing: 0, bottomMargin: this._focusRingMargin }),
             childViews: ['label', 'control'],
 
             isVisible: desc.isVisible === undefined ? true : desc.isVisible,
@@ -92,7 +109,7 @@ Flame.FormView = Flame.View.extend({
             view.isVisibleBinding = descriptor.get('isVisibleBinding');
         }
 
-        return Flame.View.extend(view);
+        return View.extend(view);
     },
 
     _createChildViewWithLayout: function(view, parent, leftMargin, rightMargin) {
@@ -104,7 +121,7 @@ Flame.FormView = Flame.View.extend({
     },
 
     _buildLabel: function(descriptor) {
-        return Flame.LabelView.extend({
+        return LabelView.extend({
             layout: { left: 0, width: this.get('labelWidth'), top: this._focusRingMargin },
             ignoreLayoutManager: true,
             textAlign: this.get('labelAlign'),
@@ -116,7 +133,7 @@ Flame.FormView = Flame.View.extend({
 
     _buildButtons: function(buttons) {
         var formView = this;
-        return Flame.View.extend({
+        return View.extend({
             layout: { left: this.get('leftMargin'), right: this.get('rightMargin'), topMargin: this.get('buttonSpacing'), height: 30 },
             init: function() {
                 this._super();
@@ -132,7 +149,7 @@ Flame.FormView = Flame.View.extend({
 
     _buildButton: function(descriptor, right) {
         if (!descriptor.target) {
-            descriptor.target = Flame.computed.nearest('defaultTarget');
+            descriptor.target = nearest('defaultTarget');
         }
 
         if (!descriptor.layout) {
@@ -140,7 +157,7 @@ Flame.FormView = Flame.View.extend({
         }
         descriptor.layout.top = this._focusRingMargin;
 
-        return Flame.ButtonView.extend(descriptor);
+        return ButtonView.extend(descriptor);
     },
 
     _buildValidationObservers: function(validationMessage) {
@@ -171,13 +188,13 @@ Flame.FormView = Flame.View.extend({
                     // This is strictly not necessary, but currently you can save invalid form with enter, which then fails here
                     if (Ember.isNone(offset)) return;
 
-                    var zIndex = Flame._zIndexCounter;
+                    var zIndex = zIndexCounter.value;
                     var errorMessage = validationMessage;
                     if (jQuery.isFunction(validationMessage)) {
                         // XXX This will only work with controls with the value in the 'value' property
                         errorMessage = validationMessage(this.get('value'));
                     }
-                    var errorView = Flame.ErrorMessageView.create({
+                    var errorView = ErrorMessageView.create({
                         layout: { top: offset.top - 7, left: offset.left + element.outerWidth() - 4, width: null, height: null, zIndex: zIndex },
                         value: errorMessage,
                         parentView: self,
@@ -192,7 +209,7 @@ Flame.FormView = Flame.View.extend({
     },
 
     _performTab: function(direction) {
-        var view = Flame.keyResponderStack.current();
+        var view = keyResponderStack.current();
         // Text fields and text areas wrap around their Ember equivalent (which have the actual keyResponder status)
         if (view instanceof Ember.TextField || view instanceof Ember.TextArea) {
             view = view.get('parentView');
@@ -234,7 +251,7 @@ Flame.FormView = Flame.View.extend({
         var settings = {
             layout: layout,
             value: Ember.computed.alias('parentView.parentView.object.%@'.fmt(property)),
-            isValid: Ember.computed.notEqual('parentView.parentView.object.%@IsValid'.fmt(property), false),
+            isValid: notEqual('parentView.parentView.object.%@IsValid'.fmt(property), false),
             isDisabled: descriptor.isDisabled ? descriptor.isDisabled : Ember.computed.equal('parentView.parentView.object.%@IsDisabled'.fmt(property), true)
         };
 
@@ -278,24 +295,24 @@ Flame.FormView = Flame.View.extend({
                 settings.isSelectable = descriptor.get('isSelectable') !== false;
                 settings.attributeBindings = ['title'];
                 settings.titleBinding = 'value';
-                return Flame.LabelView.extend(settings);
+                return LabelView.extend(settings);
             case 'text':
                 settings.name = Ember.isNone(descriptor.name) ? descriptor.property : descriptor.name;
                 if (descriptor.isAutocomplete) {
                     settings.autocompleteDelegate = descriptor.autocompleteDelegate;
-                    return Flame.AutocompleteTextFieldView.extend(settings);
+                    return AutocompleteTextFieldView.extend(settings);
                 }
                 if (descriptor.setValueOnEachKeyUp === false) settings.setValueOnEachKeyUp = false;
-                return Flame.TextFieldView.extend(settings);
+                return TextFieldView.extend(settings);
             case 'textarea':
                 settings.layout.height = descriptor.height || 70;
-                return Flame.TextAreaView.extend(settings);
+                return TextAreaView.extend(settings);
             case 'password':
                 settings.isPassword = true;
                 settings.name = Ember.isNone(descriptor.name) ? descriptor.property : descriptor.name;
-                return Flame.TextFieldView.extend(settings);
+                return TextFieldView.extend(settings);
             case 'html':
-                return Flame.LabelView.extend(jQuery.extend(settings, {
+                return LabelView.extend(jQuery.extend(settings, {
                     escapeHTML: false,
                     formatter: function(val) {
                         return val === null ? '' : val;
@@ -305,7 +322,7 @@ Flame.FormView = Flame.View.extend({
                 settings.title = descriptor.label;
                 settings.isSelected = settings.value;
                 delete settings.value;
-                return Flame.CheckboxView.extend(settings);
+                return CheckboxView.extend(settings);
             case 'select':
                 settings.itemValueKey = descriptor.itemValueKey || 'value';
                 settings.subMenuKey = descriptor.subMenuKey || 'subMenu';
@@ -329,11 +346,11 @@ Flame.FormView = Flame.View.extend({
                     if (descriptor.formatTitle) {
                         settings.formatTitle = descriptor.formatTitle;
                     }
-                    return Flame.MultiselectionButtonView.extend(settings);
+                    return MultiselectionButtonView.extend(settings);
                 } else if (descriptor.get('allowNew')) {
-                    return Flame.ComboBoxView.extend(settings);
+                    return ComboBoxView.extend(settings);
                 } else {
-                    return Flame.SelectButtonView.extend(settings);
+                    return SelectButtonView.extend(settings);
                 }
         }
         throw new Error('Invalid control type %@'.fmt(type));

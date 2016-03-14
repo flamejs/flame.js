@@ -1,4 +1,6 @@
-Flame.RadioButtonView = Flame.CheckboxView.extend({
+import CheckboxView from './checkbox_view';
+
+export default CheckboxView.extend({
     classNames: ['flame-radio-button-view'],
 
     action: function() {

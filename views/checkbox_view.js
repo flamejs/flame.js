@@ -1,7 +1,8 @@
-//= require ./button_view
+import ButtonView from './button_view';
+import { image } from '../utils/images';
 
 // A checkbox. The state of the checkbox is indicated by the isSelected property.
-Flame.CheckboxView = Flame.ButtonView.extend({
+export default ButtonView.extend({
     displayProperties: ['title'],
     classNames: ['flame-checkbox-view'],
     isSticky: true,
@@ -16,7 +17,7 @@ Flame.CheckboxView = Flame.ButtonView.extend({
     },
 
     renderCheckMark: function(buffer) {
-        var imgUrl = Flame.image('checkmark.svg');
+        var imgUrl = image('checkmark.svg');
         buffer.push('<div class="flame-view flame-checkbox-checkmark" style="left: 4px; top: 2px;"><img src="' + imgUrl + '"></div>');
     }
 });

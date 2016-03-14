@@ -1,8 +1,12 @@
-var alias = Ember.computed.alias,
-    trueFalse = Flame.computed.trueFalse,
-    equal = Ember.computed.equal;
+import View from '../view';
+import ActionSupport from '../mixins/action_support';
+import EventManager, { ALLOW_BROWSER_DEFAULT_HANDLING } from '../mixins/event_manager';
+import FocusSupport from '../mixins/focus_support';
+import { trueFalse } from '../utils/computed';
 
-Flame.TextField = Ember.TextField.extend(Flame.EventManager, Flame.FocusSupport, {
+const { alias, equal } = Ember.computed;
+
+export const TextField = Ember.TextField.extend(EventManager, FocusSupport, {
     classNameBindings: ['isInvalid', 'isEditableLabel', 'isFocused'],
     acceptsKeyResponder: true,
     type: trueFalse('parentView.isPassword', 'password', 'text'),
@@ -19,7 +23,7 @@ Flame.TextField = Ember.TextField.extend(Flame.EventManager, Flame.FocusSupport,
 
     init: function() {
         this._super();
-        // This would normally call `interpretKeyEvents`, but Flame.EventManager
+        // This would normally call `interpretKeyEvents`, but EventManager
         // already does this on `keyDown`.
         this.off('keyUp');
         this.off('input');
@@ -59,10 +63,10 @@ Flame.TextField = Ember.TextField.extend(Flame.EventManager, Flame.FocusSupport,
     // all work. But if any ancestor had a handler returning true, the input field would break, because
     // true return value signals jQuery to cancel browser's default handling. It cannot be remedied by
     // returning true here, because that has the same effect, thus we need a special return value (which
-    // Flame.EventManager handles specially by stopping the parent propagation).
-    mouseDown: function() { return Flame.ALLOW_BROWSER_DEFAULT_HANDLING; },
-    mouseMove: function() { return Flame.ALLOW_BROWSER_DEFAULT_HANDLING; },
-    mouseUp: function() { return Flame.ALLOW_BROWSER_DEFAULT_HANDLING; }
+    // EventManager handles specially by stopping the parent propagation).
+    mouseDown: function() { return ALLOW_BROWSER_DEFAULT_HANDLING; },
+    mouseMove: function() { return ALLOW_BROWSER_DEFAULT_HANDLING; },
+    mouseUp: function() { return ALLOW_BROWSER_DEFAULT_HANDLING; }
 });
 
 /**
@@ -70,7 +74,7 @@ Flame.TextField = Ember.TextField.extend(Flame.EventManager, Flame.FocusSupport,
   and IE don't support setting the `right` CSS property (used by LayoutSupport)
   on input fields.
 */
-Flame.TextFieldView = Flame.View.extend(Flame.ActionSupport, {
+export default View.extend(ActionSupport, {
     classNames: ['flame-text'],
     childViews: ['textField'],
     acceptsKeyResponder: true,
@@ -102,5 +106,5 @@ Flame.TextFieldView = Flame.View.extend(Flame.ActionSupport, {
         return this.fireAction();
     },
 
-    textField: Flame.TextField
+    textField: TextField
 });

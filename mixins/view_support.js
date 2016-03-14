@@ -1,4 +1,7 @@
-Flame.ViewSupport = {
+import View from '../view';
+import { bindPrefixedBindings } from '../utils/prefixed_binding';
+
+export default Ember.Mixin.create({
     concatenatedProperties: ['displayProperties'],
     displayProperties: [],
     resetClassNames: false,
@@ -14,7 +17,7 @@ Flame.ViewSupport = {
             this.addObserver(property, this, this.rerender);
         }
 
-        // Remove classNames up to Flame.View to make it easier to define custom
+        // Remove classNames up to View to make it easier to define custom
         // styles for buttons, checkboxes etc...
         // We only want to do this in the init of class that sets the flag
         if (this.get('resetClassNames') && Object.getPrototypeOf) {
@@ -35,7 +38,7 @@ Flame.ViewSupport = {
 
     createChildView: function(view, attrs) {
         view = this._super(view, attrs);
-        if (view instanceof Ember.View && Flame._bindPrefixedBindings(view)) {
+        if (view instanceof Ember.View && bindPrefixedBindings(view)) {
             Ember.finishChains(view);
         }
         return view;
@@ -43,20 +46,20 @@ Flame.ViewSupport = {
 
     /**
       Collects the classNames that were defined in super classes, but not
-      classNames in Flame.View or superclasses that are above it in the
+      classNames in View or superclasses that are above it in the
       class hierarchy.
     */
     _collectSuperClassNames: function() {
         var superClassNames = [];
         var superClass = Object.getPrototypeOf(Object.getPrototypeOf(this));
-        while (superClass && superClass.constructor !== Flame.View) {
+        while (superClass && superClass.constructor !== View) {
             superClassNames.pushObjects(superClass.classNames || []);
             superClass = Object.getPrototypeOf(superClass);
         }
-        // Add back the classNames from Flame.View and deeper
-        if (superClass.constructor === Flame.View) {
+        // Add back the classNames from View and deeper
+        if (superClass.constructor === View) {
             superClassNames.removeObjects(superClass.classNames);
         }
         return superClassNames;
     }
-};
+});

@@ -1,7 +1,7 @@
 /**
   Support for defining the layout with a hash, e.g. layout: { left: 10, top: 10, width: 100, height: 30 }
 */
-Flame.LayoutSupport = {
+export default {
     useAbsolutePosition: true,
     layout: { left: 0, right: 0, top: 0, bottom: 0 },
     defaultWidth: undefined,

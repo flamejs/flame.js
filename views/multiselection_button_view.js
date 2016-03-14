@@ -1,4 +1,8 @@
-Flame.MultiselectionButtonView = Flame.ButtonView.extend({
+import ButtonView from './button_view';
+import MultiselectionMenuView from './multiselection_menu_view';
+import { image } from '../utils/images';
+
+export default ButtonView.extend({
     classNames: ['flame-select-button-view'],
     items: [],
     value: undefined,
@@ -21,7 +25,7 @@ Flame.MultiselectionButtonView = Flame.ButtonView.extend({
     },
 
     handlebars: '<label {{bind-attr title=view._selectedMultipleItemValue}}>{{view._selectedMultipleItemValue}}</label>' +
-                '<div><img src="%@"></div>'.fmt(Flame.image('select_button_arrow.svg')),
+                '<div><img src="%@"></div>'.fmt(image('select_button_arrow.svg')),
 
     _selectedMultipleItemValue: function() {
         return this.formatTitle(this.get('value'));
@@ -42,7 +46,7 @@ Flame.MultiselectionButtonView = Flame.ButtonView.extend({
         this.set('_menuOpen', true);
 
         var self = this;
-        Flame.MultiselectionMenuView.createWithMixins({
+        MultiselectionMenuView.createWithMixins({
             multiselectionButtonView: this,
             itemTitleKey: this.get('itemTitleKey'),
             itemValueKey: this.get('itemValueKey'),

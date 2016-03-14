@@ -60,84 +60,82 @@ Ember.mixin(Ember.Binding.prototype, {
 
 var IS_BINDING = /Binding$/;
 var PREFIXED_BINDING = /^(\^|\$)([^.]+)(.*)$/;
-Flame.reopen({
-    // Bind our custom prefixed bindings. This method has to be explicitly called after creating a new child view.
-    _bindPrefixedBindings: function(view) {
-        var foundPrefixedBindings = false;
-        for (var key in view) {
-            if (this._bindPrefixed(key, view)) {
-                foundPrefixedBindings = true;
-            }
+
+// Bind our custom prefixed bindings. This method has to be explicitly called after creating a new child view.
+export function bindPrefixedBindings(view) {
+    var foundPrefixedBindings = false;
+    for (var key in view) {
+        if (bindPrefixed(key, view)) {
+            foundPrefixedBindings = true;
         }
-        return foundPrefixedBindings;
-    },
-
-    _bindPrefixed: function(key, view) {
-        var foundPrefixedBindings = false;
-        if (IS_BINDING.test(key)) {
-            var binding = view[key];
-            Ember.assert('Expected an Ember.Binding!', binding instanceof Ember.Binding);
-
-            var m = binding._from.match(PREFIXED_BINDING);
-            if (m) {
-                foundPrefixedBindings = true;
-                var useValue = m[1] === '$';
-                var property = m[2];
-                var suffix = m[3];
-                var prefix;
-
-                if (useValue) {
-                    prefix = this._lookupValueOfProperty(view, property);
-                } else {
-                    prefix = this._lookupPathToProperty(view, property);
-                }
-                Ember.assert("Property '%@' was not found!".fmt(property), !Ember.isNone(prefix));
-                // Ember.assert("Don't use prefixed bindings to bind to a value in the parent view", prefix !== 'parentView.' + property);
-
-                var finalPath = prefix + suffix;
-                // Copy transformations and the ilk.
-                var newBinding = binding.copy();
-                newBinding._from = finalPath;
-                newBinding.connect(view);
-                // Make debugging easier
-                binding._resolved_form = newBinding._resolved_form = newBinding._from;
-                binding._unresolved_form = newBinding._unresolved_form = binding._from;
-            }
-        }
-        return foundPrefixedBindings;
-    },
-
-    _lookupValueOfProperty: function(view, propertyName) {
-        var cur = view, value;
-
-        while (value === undefined && value !== null && cur !== undefined && cur !== null) {
-            value = cur.get(propertyName);
-            cur = cur.get('parentView');
-        }
-
-        return value;
-    },
-
-    _lookupPathToProperty: function(view, propertyName) {
-        var path = [propertyName, 'parentView'];
-        var cur = view.get('parentView');
-        // Sometimes there's a binding but it hasn't 'kicked in' yet, so also check explicitly for a binding
-        var bindingPropertyName = propertyName + 'Binding';
-
-        while (!Ember.isNone(cur)) {
-            // It seems that earlier (at least 0.9.4) the constructor of the view contained plethora of properties,
-            // but nowadays (at least 0.9.6) the properties are there throughout the prototype-chain and not in the
-            // last prototype. Thus testing whether current objects prototype has the property does not give correct
-            // results.
-            // So we check if the current object has the property (perhaps some of its prototypes has it) or it has
-            // a binding for the property and in case it has, this object is the target of our binding.
-            if (typeof Ember.get(cur, propertyName) !== "undefined" || typeof Ember.get(cur, bindingPropertyName) !== "undefined") {
-                return path.reverse().join('.');
-            }
-            path.push('parentView');
-            cur = cur.get('parentView');
-        }
-
-        return undefined;
     }
-});
+    return foundPrefixedBindings;
+}
+
+function bindPrefixed(key, view) {
+    var foundPrefixedBindings = false;
+    if (IS_BINDING.test(key)) {
+        var binding = view[key];
+        Ember.assert('Expected an Ember.Binding!', binding instanceof Ember.Binding);
+
+        var m = binding._from.match(PREFIXED_BINDING);
+        if (m) {
+            foundPrefixedBindings = true;
+            var useValue = m[1] === '$';
+            var property = m[2];
+            var suffix = m[3];
+            var prefix;
+
+            if (useValue) {
+                prefix = lookupValueOfProperty(view, property);
+            } else {
+                prefix = lookupPathToProperty(view, property);
+            }
+            Ember.assert("Property '%@' was not found!".fmt(property), !Ember.isNone(prefix));
+
+            var finalPath = prefix + suffix;
+            // Copy transformations and the ilk.
+            var newBinding = binding.copy();
+            newBinding._from = finalPath;
+            newBinding.connect(view);
+            // Make debugging easier
+            binding._resolved_form = newBinding._resolved_form = newBinding._from;
+            binding._unresolved_form = newBinding._unresolved_form = binding._from;
+        }
+    }
+    return foundPrefixedBindings;
+}
+
+function lookupValueOfProperty(view, propertyName) {
+    var cur = view, value;
+
+    while (value === undefined && value !== null && cur !== undefined && cur !== null) {
+        value = cur.get(propertyName);
+        cur = cur.get('parentView');
+    }
+
+    return value;
+}
+
+function lookupPathToProperty(view, propertyName) {
+    var path = [propertyName, 'parentView'];
+    var cur = view.get('parentView');
+    // Sometimes there's a binding but it hasn't 'kicked in' yet, so also check explicitly for a binding
+    var bindingPropertyName = propertyName + 'Binding';
+
+    while (!Ember.isNone(cur)) {
+        // It seems that earlier (at least 0.9.4) the constructor of the view contained plethora of properties,
+        // but nowadays (at least 0.9.6) the properties are there throughout the prototype-chain and not in the
+        // last prototype. Thus testing whether current objects prototype has the property does not give correct
+        // results.
+        // So we check if the current object has the property (perhaps some of its prototypes has it) or it has
+        // a binding for the property and in case it has, this object is the target of our binding.
+        if (typeof Ember.get(cur, propertyName) !== "undefined" || typeof Ember.get(cur, bindingPropertyName) !== "undefined") {
+            return path.reverse().join('.');
+        }
+        path.push('parentView');
+        cur = cur.get('parentView');
+    }
+
+    return undefined;
+}

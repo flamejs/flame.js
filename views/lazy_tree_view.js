@@ -1,5 +1,5 @@
-//= require ./lazy_list_view
-//= require ./lazy_tree_item_view
+import LazyListView from './lazy_list_view';
+import LazyTreeItemView from './lazy_tree_item_view';
 
 /**
   The tree in the `LazyTreeView` is being rendered as a flat list, with items
@@ -10,9 +10,9 @@
   @class LazyTreeView
   @extends LazyListView
 */
-Flame.LazyTreeView = Flame.LazyListView.extend({
+export default LazyListView.extend({
     classNames: ['flame-tree-view', 'flame-lazy-tree-view'],
-    itemViewClass: Flame.LazyTreeItemView,
+    itemViewClass: LazyTreeItemView,
     _rowToItemCache: null,
     _itemToRowCache: null,
     _itemToLevelCache: null,
@@ -23,7 +23,7 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
     init: function() {
         this._invalidateRowCache();
         this._expandedItems = Ember.Set.create();
-        // Call the super-constructor last as Flame.ListView constructor calls #_selectionDidChange() which causes
+        // Call the super-constructor last as ListView constructor calls #_selectionDidChange() which causes
         // calls to #_setIsSelectedStatus() that calls #rowForItem() which expects the caches to be set up.
         this._super();
     },
@@ -142,7 +142,7 @@ Flame.LazyTreeView = Flame.LazyListView.extend({
          extra views to fill up the gap created at the bottom of the visible area.
          This also renders the subtree of the item we just expanded.
 
-      @param view {Flame.LazyListItemView} The view that was clicked to expand or collapse the item
+      @param view {LazyListItemView} The view that was clicked to expand or collapse the item
     */
     toggleItem: function(toggledView) {
         var item = toggledView.get('content');

@@ -1,7 +1,4 @@
-//= require_self
-//= require_tree ./validators
-
-Flame.Validator = Ember.Object.extend({
+const Validator = Ember.Object.extend({
     /**
       @param {Object} target the target object
       @param {String} key the target object property
@@ -40,7 +37,7 @@ Flame.Validator = Ember.Object.extend({
 
   Validations can only be set once to the object (this is usually done in the definition of the objects class).
 */
-Flame.Validatable = Ember.Mixin.create({
+const Validatable = Ember.Mixin.create({
     _propertyValidity: null,
     _objectIsValid: null,
     _validations: null,
@@ -106,10 +103,10 @@ Flame.Validatable = Ember.Mixin.create({
 
     _validate: function(validator, target, key, value) {
         var isValid = null;
-        if (validator instanceof Flame.Validator) {
+        if (validator instanceof Validator) {
             isValid = validator.validate(target, key);
         } else if (!Ember.isNone(validator)) {
-            // if not Flame.Validator, assume function
+            // if not Validator, assume function
             isValid = validator.call(this, value);
         }
         return isValid;
@@ -194,7 +191,7 @@ Flame.Validatable = Ember.Mixin.create({
     /**
       Add validation for
       @param {String} propertyName Name of the property we want to validate.
-      @param {Object} validator Flame.Validator or function that will handle the validation of this property.
+      @param {Object} validator Validator or function that will handle the validation of this property.
     */
     setValidationFor: function(propertyName, validator) {
         // TODO do this without setting computed properties, using only simple properties (i.e. the kind 'foo' is when
@@ -247,3 +244,5 @@ Flame.Validatable = Ember.Mixin.create({
         return this.set(key, value);
     }
 });
+
+export { Validator, Validatable };
