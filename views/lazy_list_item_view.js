@@ -129,6 +129,10 @@ Flame.LazyListItemView = Flame.ListItemView.extend(Flame.Statechart, {
         },
 
         finishDragging: function() {
+            // If user drags the items really quick, sometimes the draggingInfo still contains
+            // what enterState has set. This means that draggingInfo lacks some info like toPosition
+            // which then makes the items go in wrong places.
+            if (this.clone.draggingInfo && !this.clone.draggingInfo.hasOwnProperty("toPosition")) return;
             this.get('owner.parentView').moveItem(this.get('owner.contentIndex'), this.clone.draggingInfo);
         }
     })
