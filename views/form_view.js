@@ -217,8 +217,8 @@ export default View.extend({
         // Collect all controls that can have keyResponder status
         var controls = this.toArray().mapBy('childViews')
             .reduce(function(a, b) { return a.concat(b); }).filter(function(view) {
-            return view.get('acceptsKeyResponder') && view.get('isVisible');
-        });
+                return view.get('acceptsKeyResponder') && view.get('isVisible');
+            });
         if (Ember.isEmpty(controls)) return;
 
         // Pick out the next or previous control

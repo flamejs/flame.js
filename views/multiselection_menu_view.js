@@ -36,55 +36,55 @@ export default Panel.extend(ActionSupport, MenuViewSupport, {
     _createMenuView: function() {
         var self = this;
         return CollectionView.createWithMixins({
-                content: this.get('items'),
-                itemViewClass: View.extend({
-                    classNames: ['flame-view', 'flame-list-item-view', 'flame-menu-item-view'],
-                    classNameBindings: ['isSelected', 'isDisabled'],
-                    attributeBindings: ['tooltip:title'],
+            content: this.get('items'),
+            itemViewClass: View.extend({
+                classNames: ['flame-view', 'flame-list-item-view', 'flame-menu-item-view'],
+                classNameBindings: ['isSelected', 'isDisabled'],
+                attributeBindings: ['tooltip:title'],
 
-                    menu: self,
+                menu: self,
 
-                    handlebars: '{{#if view.isChecked}}<div class="flame-menu-item-view-checkmark"></div>{{/if}}{{view.content.title}}',
+                handlebars: '{{#if view.isChecked}}<div class="flame-menu-item-view-checkmark"></div>{{/if}}{{view.content.title}}',
 
-                    title: function() {
-                        return Ember.get(this.get('content'), self.get('itemTitleKey'));
-                    }.property('content'),
+                title: function() {
+                    return Ember.get(this.get('content'), self.get('itemTitleKey'));
+                }.property('content'),
 
-                    tooltip: function() {
-                        return Ember.get(this.get('content'), self.get('itemTooltipKey'));
-                    }.property('content'),
+                tooltip: function() {
+                    return Ember.get(this.get('content'), self.get('itemTooltipKey'));
+                }.property('content'),
 
-                    isDisabled: function() {
-                        return Ember.get(this.get('content'), self.get('itemEnabledKey')) === false;
-                    }.property('content'),
+                isDisabled: function() {
+                    return Ember.get(this.get('content'), self.get('itemEnabledKey')) === false;
+                }.property('content'),
 
-                    isSelected: function() {
-                        return this.get('menu._highlightedItem') === this.get('content');
-                    }.property('menu._highlightedItem'),
+                isSelected: function() {
+                    return this.get('menu._highlightedItem') === this.get('content');
+                }.property('menu._highlightedItem'),
 
-                    isChecked: function() {
-                        return this.get('menu.value').contains(this.get('content.value'));
-                    }.property('menu.value.[]'),
+                isChecked: function() {
+                    return this.get('menu.value').contains(this.get('content.value'));
+                }.property('menu.value.[]'),
 
-                    /* event listeners */
-                    mouseEnter: function() {
-                        this.set('menu._highlightedItem', this.get('content'));
-                    },
-                    mouseLeave: function() {
-                        this.set('menu._highlightedItem', null);
-                    },
-                    click: function(index) {
-                        this.set('menu._highlightedItem', this.get('content'));
-                        this.get('menu').selectHighlightedItem();
-                        return true;
-                    },
-                    menuResize: function() {
-                        if (self.get('_anchorElement')) {
-                            self._updateMenuSize();
-                        }
-                    }.observes('content').on('init')
-                })
-            });
+                /* event listeners */
+                mouseEnter: function() {
+                    this.set('menu._highlightedItem', this.get('content'));
+                },
+                mouseLeave: function() {
+                    this.set('menu._highlightedItem', null);
+                },
+                click: function(index) {
+                    this.set('menu._highlightedItem', this.get('content'));
+                    this.get('menu').selectHighlightedItem();
+                    return true;
+                },
+                menuResize: function() {
+                    if (self.get('_anchorElement')) {
+                        self._updateMenuSize();
+                    }
+                }.observes('content').on('init')
+            })
+        });
     },
 
     /**
