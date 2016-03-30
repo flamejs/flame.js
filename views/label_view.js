@@ -1,3 +1,5 @@
+import "../stylesheets/views/label_view.css.scss";
+
 import View from '../view';
 import ActionSupport from '../mixins/action_support';
 

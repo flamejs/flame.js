@@ -1,8 +1,9 @@
 import ListItemView from './list_item_view';
 import Statechart, { State } from '../statechart';
-import { image } from '../utils/images';
-
 import '../utils/jquery_util';
+
+import reorderIndicator from 'lib/flame/images/reorder_indicator.svg';
+import '../stylesheets/views/lazy_list_view.css.scss';
 
 export const MouseIsDownState = State.extend({
     xOffset: null,
@@ -86,7 +87,7 @@ export default ListItemView.extend(Statechart, {
             this.clone = this.$().safeClone();
             this.clone.addClass('dragged-clone');
             this.clone.draggingInfo = { currentIndex: this.get('owner.contentIndex') };
-            this.indicator = jQuery('<div class="indicator"><img src="%@"></div>'.fmt(image('reorder_indicator.svg'))).hide();
+            this.indicator = Ember.$(`<div class="indicator"><img src="${reorderIndicator}"></div>`).hide();
             $listView.append(this.clone);
             $listView.append(this.indicator);
         },

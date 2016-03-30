@@ -15,6 +15,8 @@ import { keyResponderStack } from '../mixins/event_manager';
 import { nearest } from '../utils/computed_nearest';
 import { notEqual } from '../utils/computed';
 
+import '../stylesheets/views/form_view.css.scss';
+
 // You must set on object to 'object' that the form manipulates (or use a binding)
 // Optionally you can set a defaultTarget, that will be used to set the default target for any actions
 // triggered from the form (button clicks and default submit via hitting enter)

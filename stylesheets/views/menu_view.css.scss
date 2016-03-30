@@ -46,13 +46,13 @@
 
             &.scroll-up {
                 &.is-shown {
-                    background-image: url('/images/triangle_up.svg');
+                    background-image: url('../../images/triangle_up.svg');
                 }
             }
 
             &.scroll-down {
                 &.is-shown {
-                    background-image: url('/images/triangle_down.svg');
+                    background-image: url('../../images/triangle_down.svg');
                 }
             }
         }
@@ -77,18 +77,18 @@
         color: white;
 
         .menu-indicator {
-            background: url('/images/triangle_right_white.svg') no-repeat 50% 50%;
+            background: url('../../images/triangle_right_white.svg') no-repeat 50% 50%;
         }
 
         .flame-menu-item-view-checkmark {
-            background: url('/images/checkmark_white.png') no-repeat 0 3px;
+            background: url('../../images/checkmark_white.png') no-repeat 0 3px;
         }
     }
 
     .flame-menu-item-view-checkmark {
         position: absolute;
         left: 4px;
-        background: url('/images/checkmark_grey.png') no-repeat 0 3px;
+        background: url('../../images/checkmark_grey.png') no-repeat 0 3px;
         width: 12px;
         height: 100%;
     }
@@ -99,6 +99,6 @@
         top: 0;
         width: 16px;
         height: 100%;
-        background: url('/images/triangle_right.svg') no-repeat 50% 50%;
+        background: url('../../images/triangle_right.svg') no-repeat 50% 50%;
     }
 }

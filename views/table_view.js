@@ -4,6 +4,8 @@ import TableViewContentAdapter from '../utils/table_view_content_adapter';
 import Statechart, { State } from '../statechart';
 import { measureString } from '../utils/string_measurement';
 
+import '../stylesheets/views/table_view.css.scss';
+
 const { alias, readOnly } = Ember.computed;
 
 var unbindScroll = function() {
@@ -204,7 +206,7 @@ export default View.extend(Statechart, {
                 // must account for row headers spanning multiple columns to get the right leafIndex and width
                 var remainingDepth = 0;
                 cell.nextAll().each(function() {
-                    remainingDepth += $(this).attr('colspan') || 1;
+                    remainingDepth += Ember.$(this).attr('colspan') || 1;
                 });
                 var leafIndex = totalDepth - remainingDepth - 1;
 

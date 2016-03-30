@@ -1,16 +1,20 @@
 import LazyListItemView, { MouseIsDownState } from './lazy_list_item_view';
-import { image } from '../utils/images';
+
+import '../stylesheets/views/lazy_tree_item_view.css.scss';
+
+import triangleDown from 'lib/flame/images/disclosure_triangle_down.svg';
+import triangleRight from 'lib/flame/images/disclosure_triangle_right.svg';
 
 export default LazyListItemView.extend({
     classNames: ['flame-tree-item-view'],
     itemContent: '{{view.content}}',
     isExpanded: false,
 
-    collapsedImage: image('disclosure_triangle_right.svg'),
-    expandedImage: image('disclosure_triangle_down.svg'),
+    collapsedImage: triangleRight,
+    expandedImage: triangleDown,
 
     handlebars: function() {
-        return '{{{view.disclosureImage}}} <span>' + this.get('itemContent') + '</span>';
+        return '{{{unbound view.disclosureImage}}} <span>' + this.get('itemContent') + '</span>';
     }.property('itemContent'),
 
     isExpandedDidChange: function() {

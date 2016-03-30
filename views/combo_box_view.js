@@ -1,7 +1,10 @@
 import ButtonView from './button_view';
 import SelectButtonView from './select_button_view';
 import TextFieldView from './text_field_view';
-import { image } from '../utils/images';
+
+import '../stylesheets/views/combo_box_view.css.scss';
+
+import selectButtonArrow from 'lib/flame/images/select_button_arrow.svg';
 
 export default SelectButtonView.extend({
     classNames: ['flame-combo-box-view'],
@@ -18,7 +21,7 @@ export default SelectButtonView.extend({
 
     buttonView: ButtonView.extend({
         acceptsKeyResponder: false,
-        handlebars: '<img src="%@">'.fmt(image('select_button_arrow.svg')),
+        handlebars: `<img src="${selectButtonArrow}">`,
         layout: { right: -2, width: 22, height: 22 },
 
         action: function() {

@@ -3,6 +3,8 @@ import ListItemView from './list_item_view';
 import ListViewDragHelper from './list_view_drag_helper';
 import Statechart, { State } from '../statechart';
 
+import '../stylesheets/views/list_view.css.scss';
+
 /**
   Displays a list of items. Allows reordering if allowReordering is true.
 

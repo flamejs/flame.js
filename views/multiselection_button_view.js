@@ -1,6 +1,7 @@
 import ButtonView from './button_view';
 import MultiselectionMenuView from './multiselection_menu_view';
-import { image } from '../utils/images';
+
+import selectButtonArrow from 'lib/flame/images/select_button_arrow.svg';
 
 export default ButtonView.extend({
     classNames: ['flame-select-button-view'],
@@ -24,8 +25,12 @@ export default ButtonView.extend({
         }
     },
 
-    handlebars: '<label {{bind-attr title=view._selectedMultipleItemValue}}>{{view._selectedMultipleItemValue}}</label>' +
-                '<div><img src="%@"></div>'.fmt(image('select_button_arrow.svg')),
+    handlebars: `<label {{bind-attr title=view._selectedMultipleItemValue}}>
+                    {{view._selectedMultipleItemValue}}
+                 </label>
+                 <div>
+                    <img src="${selectButtonArrow}">
+                 </div>`,
 
     _selectedMultipleItemValue: function() {
         return this.formatTitle(this.get('value'));

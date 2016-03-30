@@ -1,3 +1,5 @@
+import 'stylesheets/app/multi-select.css.scss';
+
 import View from '../view';
 import Panel from './panel';
 import CollectionView from './collection_view';
