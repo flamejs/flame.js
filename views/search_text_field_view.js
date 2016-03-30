@@ -9,8 +9,8 @@ export default TextFieldView.extend({
         resetClassNames: true,
         layout: { right: 5, top: 2 },
         isVisible: Ember.computed.bool('parentView.value'),
-        handlebars: '<img src="/assets/images/search_clear.svg">',
-
+        image: require('lib/flame/images/search_clear.svg'),
+        handlebars: "<img src='{{unbound view.image}}'>",
         action: function() {
             this.get('parentView').cancel();
         }

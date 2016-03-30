@@ -40,14 +40,5 @@ $default-font-size: 13px;
 }
 
 @mixin user-select($user-select) {
-    -ms-user-select: $user-select;
-    -webkit-user-select: $user-select;
     user-select: $user-select;
-    @if $user-select == none {
-        -moz-user-select: -moz-none;
-    } @else if $user-select == auto {
-        -moz-user-select: text;
-    } @else {
-        -moz-user-select: $user-select;
-    }
 }
