@@ -35,7 +35,7 @@ export default View.extend({
     labelWidth: 150,
     labelAlign: ALIGN_RIGHT,
     buttonWidth: 90,
-    controlWidth: null,// set this if you want to force a set control width
+    controlWidth: null, // set this if you want to force a set control width
     defaultFocus: null,
     _focusRingMargin: 3,
 
