@@ -1,0 +1,9 @@
+@import '../mixins';
+
+.popover-tooltip > .flame-view {
+    color: rgba(255, 255, 255, .87);
+    background-color: rgba(97, 97, 97, .9);
+    border: 0 !important;
+    border-radius: 3px;
+    @include no-box-shadow();
+}
