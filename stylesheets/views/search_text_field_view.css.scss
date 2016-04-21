@@ -2,9 +2,8 @@
     padding-right: 25px;
 
     & > input {
-        background: url('../../images/search.svg') no-repeat 4px 2px;
         border-radius: 10px;
-        background-color: white;
+        background: white url('../../images/search.svg') no-repeat 4px 2px;
         padding-left: 21px;
     }
 }
