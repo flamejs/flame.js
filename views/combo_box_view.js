@@ -2,7 +2,7 @@ import ButtonView from './button_view';
 import SelectButtonView from './select_button_view';
 import TextFieldView from './text_field_view';
 
-import '../stylesheets/views/combo_box_view.css.scss';
+import '../stylesheets/views/combo_box_view.scss';
 
 import selectButtonArrow from 'lib/flame/images/select_button_arrow.svg';
 

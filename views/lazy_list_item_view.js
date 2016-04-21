@@ -3,7 +3,7 @@ import Statechart, { State } from '../statechart';
 import '../utils/jquery_util';
 
 import reorderIndicator from 'lib/flame/images/reorder_indicator.svg';
-import '../stylesheets/views/lazy_list_view.css.scss';
+import '../stylesheets/views/lazy_list_view.scss';
 
 export const MouseIsDownState = State.extend({
     xOffset: null,

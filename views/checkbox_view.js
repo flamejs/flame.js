@@ -1,6 +1,6 @@
 import ButtonView from './button_view';
 
-import '../stylesheets/views/checkbox_view.css.scss';
+import '../stylesheets/views/checkbox_view.scss';
 
 import imgUrl from 'lib/flame/images/checkmark.svg';
 

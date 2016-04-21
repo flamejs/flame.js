@@ -2,7 +2,7 @@ import View from '../view';
 import ActionSupport from '../mixins/action_support';
 import Statechart, { State } from '../statechart';
 
-import '../stylesheets/views/button_view.css.scss';
+import '../stylesheets/views/button_view.scss';
 
 export default View.extend(ActionSupport, Statechart, {
     defaultHeight: 24,

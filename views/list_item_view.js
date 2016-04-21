@@ -1,6 +1,6 @@
 import View from '../view';
 
-import '../stylesheets/views/list_item_view.css.scss';
+import '../stylesheets/views/list_item_view.scss';
 
 export default View.extend({
     useAbsolutePosition: false,

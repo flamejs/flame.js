@@ -1,6 +1,6 @@
 import LabelView from './label_view';
 
-import '../stylesheets/views/disclosure_view.css.scss';
+import '../stylesheets/views/disclosure_view.scss';
 
 import triangleDown from 'lib/flame/images/disclosure_triangle_down.svg';
 import triangleRight from 'lib/flame/images/disclosure_triangle_right.svg';

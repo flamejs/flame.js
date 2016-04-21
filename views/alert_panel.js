@@ -7,7 +7,7 @@ import VerticalStackLayoutManager from '../layout_managers/vertical_stack_layout
 import { nearest } from '../utils/computed_nearest';
 import { measureString } from '../utils/string_measurement';
 
-import '../stylesheets/views/alert_panel.css.scss';
+import '../stylesheets/views/alert_panel.scss';
 
 const { alias } = Ember.computed;
 

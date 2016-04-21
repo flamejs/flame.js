@@ -1,6 +1,6 @@
 import ListItemView from './list_item_view';
 
-import '../stylesheets/views/stack_item_view.css.scss';
+import '../stylesheets/views/stack_item_view.scss';
 
 export default ListItemView.extend({
     useAbsolutePosition: true,

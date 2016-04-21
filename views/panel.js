@@ -1,4 +1,4 @@
-import '../stylesheets/views/panel.css.scss';
+import '../stylesheets/views/panel.scss';
 
 import View from '../view';
 import Statechart, { State } from '../statechart';

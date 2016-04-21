@@ -1,7 +1,7 @@
 import View from '../view';
 import ButtonView from './button_view';
 
-import '../stylesheets/views/tab_view.css.scss';
+import '../stylesheets/views/tab_view.scss';
 
 export default View.extend({
     classNames: ['flame-tab-view'],

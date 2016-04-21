@@ -1,7 +1,7 @@
 import TextFieldView from './text_field_view';
 import ButtonView from './button_view';
 
-import '../stylesheets/views/search_text_field_view.css.scss';
+import '../stylesheets/views/search_text_field_view.scss';
 
 import searchClear from 'lib/flame/images/search_clear.svg';
 

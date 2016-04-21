@@ -2,7 +2,7 @@ import LabelView, { ALIGN_CENTER } from './label_view';
 import Popover from './popover';
 import { measureString } from '../utils/string_measurement';
 
-import '../stylesheets/views/tooltip.css.scss';
+import '../stylesheets/views/tooltip.scss';
 
 export default Popover.extend({
     layout: { height: 25, width: 200 },

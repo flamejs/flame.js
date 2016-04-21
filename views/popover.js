@@ -11,7 +11,7 @@ import arrowLeft from 'lib/flame/images/arrow_left.png';
 import arrowDown from 'lib/flame/images/arrow_down.png';
 import arrowRight from 'lib/flame/images/arrow_right.png';
 
-import '../stylesheets/views/popover.css.scss';
+import '../stylesheets/views/popover.scss';
 
 /**
   Popover provides a means to display a popup in the context of an existing element in the UI.
