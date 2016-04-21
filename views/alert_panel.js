@@ -5,16 +5,17 @@ import LabelView from '../views/label_view';
 import ImageView from '../views/image_view';
 import VerticalStackLayoutManager from '../layout_managers/vertical_stack_layout_manager';
 import { nearest } from '../utils/computed_nearest';
-import { image } from '../utils/images';
 import { measureString } from '../utils/string_measurement';
+
+import '../stylesheets/views/alert_panel.css.scss';
 
 const { alias } = Ember.computed;
 
 const AlertPanel = Panel.extend();
 
-export const INFO_ICON = image('info_icon.svg');
-export const WARN_ICON = image('warn_icon.svg');
-export const ERROR_ICON = image('error_icon.svg');
+import INFO_ICON from 'lib/flame/images/info_icon.svg';
+import WARN_ICON from 'lib/flame/images/warn_icon.svg';
+import ERROR_ICON from 'lib/flame/images/error_icon.svg';
 
 export const AlertPanelButtonView = View.extend({
     layout: { width: '100%', right: 0, height: 30 },

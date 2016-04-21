@@ -1,3 +1,5 @@
+import '../stylesheets/views/panel.css.scss';
+
 import View from '../view';
 import Statechart, { State } from '../statechart';
 import LabelView, { ALIGN_CENTER } from './label_view';

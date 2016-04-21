@@ -1,35 +1,5 @@
-//= require ./reset
-//= require_self
-//= require ./views/label_view
-//= require ./views/button_view
-//= require ./views/checkbox_view
-//= require ./views/radio_button_view
-//= require ./views/select_button_view
-//= require ./views/text_field_view
-//= require ./views/search_text_field_view
-//= require ./views/disclosure_view
-//= require ./views/split_view
-//= require ./views/tab_view
-//= require ./views/collection_view
-//= require ./views/table_view
-//= require ./views/table_view
-//= require ./views/form_view
-//= require ./views/progress_view
-//= require ./views/scroll_view
-//= require ./views/list_view
-//= require ./views/lazy_list_view
-//= require ./views/list_item_view
-//= require ./views/tree_item_view
-//= require ./views/lazy_tree_item_view
-//= require ./views/stack_item_view
-//= require ./views/panel
-//= require ./views/menu_view
-//= require ./views/popover
-//= require ./views/tooltip
-//= require ./views/alert_panel
-//= require ./error_message
-
-@import 'mixins';
+@import "reset.css";
+@import "mixins.css.scss";
 
 body {
     font-size: $default-font-size;
@@ -52,9 +22,6 @@ input[type="password"] {
 }
 
 *[contenteditable="true"] {
-    -moz-user-select: text !important;
-    -ms-user-select: text !important;
-    -webkit-user-select: text !important;
     user-select: text !important;
 }
 

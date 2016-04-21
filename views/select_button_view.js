@@ -1,6 +1,8 @@
 import ButtonView from './button_view';
 import MenuView from './menu_view';
-import { image } from '../utils/images';
+
+import '../stylesheets/views/select_button_view.css.scss';
+import selectButtonArrow from 'lib/flame/images/select_button_arrow.svg';
 
 export default ButtonView.extend({
     classNames: ['flame-select-button-view'],
@@ -14,13 +16,12 @@ export default ButtonView.extend({
 
     handlebars: function() {
         var itemTitleKey = this.get('itemTitleKey');
-        return '<label {{bind-attr title="view._selectedMenuItem.%@"}}>{{view._selectedMenuItem.%@}}</label><div><img src="%@"></div>'.fmt(itemTitleKey, itemTitleKey, image('select_button_arrow.svg'));
+        return '<label {{bind-attr title="view._selectedMenuItem.%@"}}>{{view._selectedMenuItem.%@}}</label><div><img src="%@"></div>'.fmt(itemTitleKey, itemTitleKey, selectButtonArrow);
     }.property('itemTitleKey'),
 
     _selectedMenuItem: function() {
         if (this.get('value') === undefined) return undefined;
-        var selectedItem = this._findItem();
-        return selectedItem;
+        return this._findItem();
     }.property('value', 'itemValueKey', 'subMenuKey', 'items'),
 
     itemsDidChange: function() {

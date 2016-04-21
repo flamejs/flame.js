@@ -1,4 +1,4 @@
-@import '../mixins';
+@import '../mixins.css.scss';
 
 .flame-table-view {
     line-height: normal;
@@ -137,12 +137,12 @@
             }
 
             &.sort-asc {
-                background-image: image-url('images/sort_asc.png');
+                background-image: url('../../images/sort_asc.png');
                 background-position-y: 8px;
             }
 
             &.sort-desc {
-                background-image: image-url('images/sort_desc.png');
+                background-image: url('../../images/sort_desc.png');
                 background-position-y: 0;
             }
         }

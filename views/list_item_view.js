@@ -1,5 +1,7 @@
 import View from '../view';
 
+import '../stylesheets/views/list_item_view.css.scss';
+
 export default View.extend({
     useAbsolutePosition: false,
     classNames: ['flame-list-item-view'],

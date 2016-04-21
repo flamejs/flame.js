@@ -1,6 +1,8 @@
 import View from '../view';
 import SplitViewDividerViewBase from './split_view_divider_view_base';
 
+import '../stylesheets/views/split_view.css.scss';
+
 export default View.extend({
     allowResizing: true,
     dividerThickness: 7,

@@ -1,5 +1,7 @@
 import View from '../view';
 
+import '../stylesheets/views/scroll_view.css.scss';
+
 /**
   ScrollView provides a scrollable container. In the DOM this is just a div
   with `overflow: auto`.

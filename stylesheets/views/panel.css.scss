@@ -1,4 +1,4 @@
-@import '../mixins';
+@import '../mixins.css.scss';
 
 .flame-panel {
     border: 1px solid #888;
@@ -19,7 +19,7 @@
     }
 
     .flame-resize-thumb {
-        background-image: image-url('images/resize_thumb.png');
+        background-image: url('../../images/resize_thumb.png');
         cursor: nwse-resize;
     }
 }

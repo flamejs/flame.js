@@ -1,4 +1,4 @@
-@import 'mixins';
+@import 'mixins.css.scss';
 
 // This is outside the form-view element, so we can't use it as parent selector
 .flame-form-view-validation-error {
@@ -13,22 +13,22 @@
 
     &.points-to-right .pointer {
         float: right;
-        background-image: image-url('images/error_triangle_right.png');
+        background-image: url("../images/error_triangle_right.png");
     }
 
     &.points-to-left .pointer {
-        background-image: image-url('images/error_triangle_left.png');
+        background-image: url("../images/error_triangle_left.png");
         float: left;
     }
 
     &.skinny.points-to-left .pointer {
         margin-top: 0;
-        background-image: image-url('images/error_triangle_left_skinny.png');
+        background-image: url("../images/error_triangle_left_skinny.png");
     }
 
     &.skinny.points-to-right .pointer {
         margin-top: 0;
-        background-image: image-url('images/error_triangle_right_skinny.png');
+        background-image: url("../images/error_triangle_right_skinny.png");
     }
 
     .error-box {

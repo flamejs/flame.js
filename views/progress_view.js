@@ -1,5 +1,7 @@
 import View from '../view';
 
+import '../stylesheets/views/progress_view.css.scss';
+
 export default View.extend({
     classNames: ['flame-progress-view'],
 

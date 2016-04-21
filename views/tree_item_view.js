@@ -4,6 +4,8 @@ import ListItemView from './list_item_view';
 import DisclosureView from './disclosure_view';
 import VerticalStackLayoutManager from '../layout_managers/vertical_stack_layout_manager';
 
+import '../stylesheets/views/tree_item_view.css.scss';
+
 /*
   A child view in a TreeView. In most cases you don't need to extend this, you can instead define
   a handlebarsMap on the tree view. If you want to use a custom view instead of handlebars, consider

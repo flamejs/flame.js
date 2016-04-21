@@ -1,11 +1,15 @@
 import LabelView from './label_view';
-import { image } from '../utils/images';
+
+import '../stylesheets/views/disclosure_view.css.scss';
+
+import triangleDown from 'lib/flame/images/disclosure_triangle_down.svg';
+import triangleRight from 'lib/flame/images/disclosure_triangle_right.svg';
 
 export default LabelView.extend({
     classNames: ['flame-disclosure-view'],
 
-    imageExpanded: image('disclosure_triangle_down.svg'),
-    imageCollapsed: image('disclosure_triangle_right.svg'),
+    imageExpanded: triangleDown,
+    imageCollapsed: triangleRight,
 
     image: function() {
         return this.get('visibilityTarget') ? this.get('imageExpanded') : this.get('imageCollapsed');

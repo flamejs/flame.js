@@ -30,7 +30,7 @@ export default Ember.Mixin.create({
         var totalPadding = paddingTop + paddingBottom;
         var margin = this.get('menuMargin');
         var menuOuterHeight = this.get('items').get('length') * this.get('itemHeight') + totalPadding + 2 * borderWidth;
-        var wh = $(window).height();
+        var wh = Ember.$(window).height();
         var anchorTop = anchorElement.offset().top;
         var anchorHeight = anchorElement.outerHeight();
         var layout = this.get('layout');

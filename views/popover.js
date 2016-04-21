@@ -5,7 +5,13 @@ import Panel, {
     POSITION_LEFT,
     POSITION_MIDDLE
 } from './panel';
-import { image } from '../utils/images';
+
+import arrowUp from 'lib/flame/images/arrow_up.png';
+import arrowLeft from 'lib/flame/images/arrow_left.png';
+import arrowDown from 'lib/flame/images/arrow_down.png';
+import arrowRight from 'lib/flame/images/arrow_right.png';
+
+import '../stylesheets/views/popover.css.scss';
 
 /**
   Popover provides a means to display a popup in the context of an existing element in the UI.
@@ -18,10 +24,10 @@ export default Panel.extend({
     anchor: null,
     position: null,
 
-    ARROW_UP: image('arrow_up.png'),
-    ARROW_DOWN: image('arrow_down.png'),
-    ARROW_LEFT: image('arrow_left.png'),
-    ARROW_RIGHT: image('arrow_right.png'),
+    ARROW_UP: arrowUp,
+    ARROW_DOWN: arrowDown,
+    ARROW_LEFT: arrowLeft,
+    ARROW_RIGHT: arrowRight,
 
     _positionArrow: function() {
         var anchor = this.get('anchor');
