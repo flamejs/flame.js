@@ -4,7 +4,7 @@ import EventManager, { ALLOW_BROWSER_DEFAULT_HANDLING } from '../mixins/event_ma
 import FocusSupport from '../mixins/focus_support';
 import { trueFalse } from '../utils/computed';
 
-import '../stylesheets/views/text_field_view.css.scss';
+import '../stylesheets/views/text_field_view.scss';
 
 const { alias, equal } = Ember.computed;
 

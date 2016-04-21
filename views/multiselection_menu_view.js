@@ -1,4 +1,4 @@
-import 'stylesheets/app/multi-select.css.scss';
+import 'stylesheets/app/multi-select.scss';
 
 import View from '../view';
 import Panel from './panel';

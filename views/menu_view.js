@@ -6,8 +6,8 @@ import MenuViewSupport from '../mixins/menu_view_support';
 
 // We need to import list item view css before menu view's because otherwise menu view's css will
 // override some list view's styles
-import '../stylesheets/views/list_item_view.css.scss';
-import '../stylesheets/views/menu_view.css.scss';
+import '../stylesheets/views/list_item_view.scss';
+import '../stylesheets/views/menu_view.scss';
 
 // Only to be used in MenuView. Represent menu items with normal JS objects as creation of one Ember object took
 // 3.5 ms on fast IE8 machine.

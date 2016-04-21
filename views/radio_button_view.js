@@ -1,6 +1,6 @@
 import CheckboxView from './checkbox_view';
 
-import '../stylesheets/views/radio_button_view.css.scss';
+import '../stylesheets/views/radio_button_view.scss';
 
 export default CheckboxView.extend({
     classNames: ['flame-radio-button-view'],

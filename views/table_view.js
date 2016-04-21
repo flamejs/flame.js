@@ -4,7 +4,7 @@ import TableViewContentAdapter from '../utils/table_view_content_adapter';
 import Statechart, { State } from '../statechart';
 import { measureString } from '../utils/string_measurement';
 
-import '../stylesheets/views/table_view.css.scss';
+import '../stylesheets/views/table_view.scss';
 
 const { alias, readOnly } = Ember.computed;
 

@@ -1,6 +1,6 @@
 import LabelView, { ALIGN_LEFT, ALIGN_RIGHT } from './label_view';
 
-import '../stylesheets/error_message.css.scss';
+import '../stylesheets/error_message.scss';
 
 export default LabelView.extend({
     classNames: ['flame-form-view-validation-error'],

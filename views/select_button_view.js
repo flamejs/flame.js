@@ -1,7 +1,7 @@
 import ButtonView from './button_view';
 import MenuView from './menu_view';
 
-import '../stylesheets/views/select_button_view.css.scss';
+import '../stylesheets/views/select_button_view.scss';
 import selectButtonArrow from 'lib/flame/images/select_button_arrow.svg';
 
 export default ButtonView.extend({
