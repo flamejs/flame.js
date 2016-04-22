@@ -196,7 +196,7 @@ export default View.extend(Statechart, {
                 var totalDepth = columns.length;
                 var cells = [];
                 $table.find('td').each(function() {
-                    var $cell = $(this);
+                    var $cell = Ember.$(this);
                     if (!$cell.attr('colspan')) cells.push($cell);
                     if (cells.length === totalDepth) return false;
                 });
