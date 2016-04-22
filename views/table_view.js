@@ -473,6 +473,7 @@ export default View.extend(Statechart, {
             // We have to support <br> for row headers, so we'll replace them back after escaping
             headerLabel = Ember.Handlebars.Utils.escapeExpression(headerLabel).replace(/&lt;br&gt;/g, '<br>');
             buffer.attr('title', headerLabel.replace(/<br>/g, '\n'));
+            if (header.guid) buffer.attr('data-guid', header.guid);
 
             if (header.rowspan > 1) {
                 buffer.attr('rowspan', header.rowspan);
@@ -530,10 +531,15 @@ export default View.extend(Statechart, {
             cssClasses.push(i % 2 === 0 ? 'even-col' : 'odd-col');
             cssClasses = cssClasses.concat(header.cssClasses());
             if (clickable) cssClasses.push('clickable');
+            if (header.depth === 1) cssClasses.push('base-header');
             buffer.attr('class', cssClasses.join(' '));
 
             buffer.pushOpeningTag(); // td
             buffer.push('<div class="content-container">');
+
+            var headerIcon = header.icon();
+            if (headerIcon) buffer.push(headerIcon);
+
             buffer.push(resizeHandle);
             buffer.push(label.fmt(headerLabel));
             buffer.push('</div>');
