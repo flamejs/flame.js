@@ -1,3 +1,5 @@
+import 'lib/flame/stylesheets/flame.scss';
+
 import ViewSupport from './mixins/view_support';
 import LayoutSupport from './mixins/layout_support';
 import EventManager from './mixins/event_manager';
